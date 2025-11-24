@@ -1,8 +1,8 @@
 import React from 'react';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, Sparkles } from 'lucide-react';
 import { BananaIcon, AppleIcon } from './FoodIcons';
 
-const PickScreen = ({ score, onFoodSelect, foods }) => {
+const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   return (
     <div className="h-screen w-screen bg-white flex flex-col fixed inset-0 overflow-hidden">
       {/* Header with gradient background */}
@@ -10,7 +10,6 @@ const PickScreen = ({ score, onFoodSelect, foods }) => {
         <div className="flex items-center justify-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800">BiomeQuest</h1>
           <div className="ml-3 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md border-2 border-pink-200">
-            {/* BiomeDude image - you'll need to add this to your public folder */}
             <img 
               src="/BiomeDude.png" 
               alt="BiomeDude" 
@@ -84,26 +83,57 @@ const PickScreen = ({ score, onFoodSelect, foods }) => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {foods.map((food) => (
-              <div key={food.id} className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-200">
-                <div className="flex justify-center mb-3 h-20 items-center">
-                  {food.id === 'banana' && <BananaIcon size={70} />}
-                  {food.id === 'apple' && <AppleIcon size={70} />}
-                </div>
-                <h3 className="font-bold text-gray-800 text-center mb-0.5 text-lg">
-                  {food.name}
-                </h3>
-                <p className="text-gray-500 text-sm text-center mb-4">
-                  {food.points} pts.
-                </p>
-                <button
-                  onClick={() => onFoodSelect(food)}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white rounded-full p-3 flex items-center justify-center transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+            {foods.map((food) => {
+              const isNew = !eatenFoods.has(food.id);
+              
+              return (
+                <div 
+                  key={food.id} 
+                  className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-200 relative"
                 >
-                  <Plus className="w-5 h-5" strokeWidth={3} />
-                </button>
-              </div>
-            ))}
+                  {/* NEW badge for first-time foods */}
+                  {isNew && (
+                    <div className="absolute top-3 right-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-md">
+                      <Sparkles className="w-3 h-3" />
+                      NEW
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-center mb-3 h-20 items-center">
+                    {food.id === 'banana' && <BananaIcon size={70} />}
+                    {food.id === 'apple' && <AppleIcon size={70} />}
+                  </div>
+                  
+                  <h3 className="font-bold text-gray-800 text-center mb-0.5 text-lg">
+                    {food.name}
+                  </h3>
+                  
+                  {/* Show different points for first time vs repeat */}
+                  <p className="text-gray-500 text-sm text-center mb-4">
+                    {isNew ? (
+                      <span className="text-green-600 font-bold">
+                        {food.points} pts! 🌟
+                      </span>
+                    ) : (
+                      <span>
+                        {food.repeatPoints} pt.
+                      </span>
+                    )}
+                  </p>
+                  
+                  <button
+                    onClick={() => onFoodSelect(food)}
+                    className={`w-full ${
+                      isNew 
+                        ? 'bg-green-500 hover:bg-green-600' 
+                        : 'bg-gray-400 hover:bg-gray-500'
+                    } text-white rounded-full p-3 flex items-center justify-center transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg`}
+                  >
+                    <Plus className="w-5 h-5" strokeWidth={3} />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
