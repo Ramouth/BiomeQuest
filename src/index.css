@@ -3,24 +3,101 @@
 @tailwind utilities;
 
 @layer base {
+  /* MOBILE FIRST: Critical fixes */
+  html {
+    font-size: 16px; /* Prevents iOS zoom on input focus */
+    -webkit-text-size-adjust: 100%;
+    height: 100%;
+    width: 100%;
+  }
+  
   body {
-    @apply bg-gray-50;
+    @apply bg-white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    /* CRITICAL: Fixed positioning for mobile */
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    
+    /* Prevent overscroll bounce */
+    overscroll-behavior: none;
+  }
+  
+  /* Remove all tap highlights and selections (mobile specific) */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    box-sizing: border-box;
+  }
+  
+  /* Allow selection for text inputs */
+  input,
+  textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  
+  #root {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
   }
 }
 
-/* Custom animations */
+@layer utilities {
+  /* Mobile touch optimization */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Safe areas for notched phones */
+  .safe-top {
+    padding-top: max(env(safe-area-inset-top), 1rem);
+  }
+  
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  }
+  
+  /* Smooth scrolling specifically for mobile */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Prevent overscroll */
+  .overscroll-none {
+    overscroll-behavior: none;
+  }
+}
+
+/* Mobile-optimized animations */
 @keyframes bounce {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-25px) scale(1.05);
   }
 }
 
 @keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
   75%, 100% {
-    transform: scale(2);
+    transform: scale(2.5);
     opacity: 0;
   }
 }
@@ -28,8 +105,128 @@
 @keyframes pulse {
   0%, 100% {
     opacity: 1;
+    transform: scale(1);
   }
   50% {
-    opacity: 0.7;
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-ping {
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: opacity, transform;
+}
+
+/* Button states - mobile optimized */
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button:focus-visible {
+  @apply outline-none ring-2 ring-offset-2 ring-green-500;
+}
+
+/* Input styling - prevent zoom on iOS */
+input[type="text"],
+input[type="search"] {
+  font-size: 16px; /* Prevents iOS zoom */
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 9999px;
+}
+
+input:focus {
+  font-size: 16px; /* Prevents zoom on focus */
+}
+
+/* Custom peach color */
+.bg-peach-50 {
+  background-color: #fff5f0;
+}
+
+/* Hide scrollbars but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile viewport units fix */
+.h-screen-mobile {
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100dvh; /* Dynamic viewport height */
+}
+
+/* Prevent iOS rubber band effect */
+.no-bounce {
+  overscroll-behavior-y: none;
+}
+
+/* Hardware acceleration for smooth animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Touch-friendly spacing */
+.touch-spacing {
+  padding: 0.75rem 1.25rem;
+}
+
+/* Optimized for mobile screens */
+@media (max-width: 428px) {
+  /* Ensure proper sizing on all mobile devices */
+  body {
+    font-size: 16px;
+  }
+  
+  h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+  
+  h2 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+  
+  /* Optimize touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .mobile-scroll {
+    max-height: 100vh;
+  }
+}
+
+/* Very small devices (iPhone SE) */
+@media (max-width: 375px) {
+  body {
+    font-size: 14px;
   }
 }

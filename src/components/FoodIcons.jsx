@@ -2,43 +2,86 @@ import React from 'react';
 
 export const BananaIcon = ({ size = 80 }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    {/* Banana bunch */}
+    {/* Main banana body */}
     <path
-      d="M 45 20 Q 35 25 35 40 Q 35 60 40 75 Q 42 82 48 82 Q 54 82 56 75 Q 60 60 60 40 Q 60 25 50 20"
+      d="M 45 25 Q 40 30 40 45 Q 40 65 45 78 Q 47 83 50 83 Q 53 83 55 78 Q 60 65 60 45 Q 60 30 55 25 Q 52 23 50 23 Q 48 23 45 25"
       fill="#FFE135"
-      stroke="#F4D03F"
-      strokeWidth="2"
+      stroke="#E6C200"
+      strokeWidth="1.5"
     />
+    
+    {/* Highlight */}
     <path
-      d="M 50 20 Q 60 25 60 40 Q 60 60 55 75 Q 53 82 47 82"
-      fill="#FFD700"
-      stroke="#F4D03F"
+      d="M 48 30 Q 46 40 46 55 Q 46 70 48 75"
+      stroke="#FFF4A3"
       strokeWidth="2"
+      fill="none"
+      strokeLinecap="round"
+      opacity="0.6"
     />
+    
+    {/* Shadow/depth */}
+    <path
+      d="M 53 30 Q 55 40 55 55 Q 55 70 53 75"
+      stroke="#D4AF37"
+      strokeWidth="1.5"
+      fill="none"
+      strokeLinecap="round"
+      opacity="0.3"
+    />
+    
     {/* Stem */}
-    <ellipse cx="48" cy="18" rx="4" ry="3" fill="#8B6914" />
-    {/* Details */}
-    <path d="M 40 35 Q 42 50 40 65" stroke="#E6C200" strokeWidth="1.5" fill="none" opacity="0.3" />
-    <path d="M 55 35 Q 53 50 55 65" stroke="#F4D03F" strokeWidth="1.5" fill="none" opacity="0.3" />
+    <rect x="48" y="21" width="4" height="3" fill="#8B7355" rx="1" />
+    <ellipse cx="50" cy="21" rx="3" ry="2" fill="#6B5544" />
+    
+    {/* Bottom tip */}
+    <ellipse cx="50" cy="82" rx="2" ry="1.5" fill="#6B5544" opacity="0.5" />
   </svg>
 );
 
 export const AppleIcon = ({ size = 80 }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    {/* Apple body */}
-    <circle cx="50" cy="55" r="28" fill="#DC143C" />
-    <ellipse cx="50" cy="52" rx="30" ry="26" fill="#FF4444" />
+    {/* Main apple body - red */}
+    <ellipse cx="50" cy="55" rx="28" ry="26" fill="#DC143C" />
+    <ellipse cx="50" cy="52" rx="30" ry="28" fill="#FF4444" />
     
     {/* Shine/highlight */}
-    <ellipse cx="42" cy="45" rx="12" ry="15" fill="#FF6B6B" opacity="0.5" />
-    <ellipse cx="38" cy="42" rx="6" ry="8" fill="white" opacity="0.4" />
+    <ellipse cx="40" cy="45" rx="14" ry="16" fill="#FF6B6B" opacity="0.4" />
+    <ellipse cx="37" cy="42" rx="8" ry="10" fill="white" opacity="0.5" />
     
     {/* Stem */}
-    <rect x="48" y="20" width="4" height="12" fill="#654321" rx="2" />
+    <path
+      d="M 50 25 Q 48 20 50 18 Q 52 20 50 25"
+      fill="#654321"
+      stroke="#4A3219"
+      strokeWidth="0.5"
+    />
     
     {/* Leaf */}
-    <ellipse cx="56" cy="24" rx="8" ry="5" fill="#4CAF50" transform="rotate(20 56 24)" />
-    <path d="M 56 24 Q 58 26 54 28" stroke="#2E7D32" strokeWidth="1" fill="none" />
+    <ellipse 
+      cx="58" cy="26" 
+      rx="9" ry="5" 
+      fill="#4CAF50" 
+      transform="rotate(15 58 26)" 
+    />
+    <ellipse 
+      cx="58" cy="26" 
+      rx="6" ry="3" 
+      fill="#66BB6A" 
+      opacity="0.7"
+      transform="rotate(15 58 26)" 
+    />
+    
+    {/* Leaf vein */}
+    <path 
+      d="M 56 26 L 60 27" 
+      stroke="#2E7D32" 
+      strokeWidth="1" 
+      opacity="0.5"
+    />
+    
+    {/* Bottom indent */}
+    <ellipse cx="50" cy="75" rx="8" ry="4" fill="#C41E3A" opacity="0.3" />
   </svg>
 );
 
@@ -46,26 +89,47 @@ export const VeggieIcons = ({ size = 60 }) => (
   <svg width={size * 3} height={size} viewBox="0 0 180 60" xmlns="http://www.w3.org/2000/svg">
     {/* Carrot */}
     <g transform="translate(15, 10)">
-      <path d="M 20 10 L 15 35 Q 15 42 20 45 Q 25 42 25 35 L 20 10" fill="#FF6B35" />
-      <ellipse cx="20" cy="8" rx="3" ry="2" fill="#4CAF50" />
-      <ellipse cx="17" cy="6" rx="2" ry="4" fill="#4CAF50" transform="rotate(-20 17 6)" />
-      <ellipse cx="23" cy="6" rx="2" ry="4" fill="#4CAF50" transform="rotate(20 23 6)" />
+      <path 
+        d="M 20 12 L 16 38 Q 16 44 20 46 Q 24 44 24 38 L 20 12" 
+        fill="#FF7F50"
+        stroke="#FF6347"
+        strokeWidth="1"
+      />
+      <path 
+        d="M 20 12 L 18 38 Q 18 43 20 46" 
+        fill="#FFA07A"
+        opacity="0.4"
+      />
+      {/* Carrot greens */}
+      <ellipse cx="20" cy="10" rx="3" ry="2" fill="#4CAF50" />
+      <ellipse cx="17" cy="8" rx="2" ry="5" fill="#66BB6A" transform="rotate(-25 17 8)" />
+      <ellipse cx="20" cy="7" rx="2" ry="5" fill="#66BB6A" />
+      <ellipse cx="23" cy="8" rx="2" ry="5" fill="#66BB6A" transform="rotate(25 23 8)" />
     </g>
     
-    {/* Lettuce */}
+    {/* Broccoli */}
     <g transform="translate(60, 10)">
-      <ellipse cx="20" cy="25" rx="18" ry="20" fill="#81C784" />
-      <ellipse cx="15" cy="20" rx="12" ry="15" fill="#A5D6A7" opacity="0.8" />
-      <ellipse cx="25" cy="22" rx="10" ry="13" fill="#C8E6C9" opacity="0.7" />
+      <ellipse cx="20" cy="28" rx="16" ry="18" fill="#4CAF50" />
+      <circle cx="14" cy="22" r="8" fill="#66BB6A" />
+      <circle cx="26" cy="22" r="8" fill="#66BB6A" />
+      <circle cx="20" cy="16" r="7" fill="#81C784" />
+      <circle cx="15" cy="30" r="6" fill="#81C784" opacity="0.8" />
+      <circle cx="25" cy="30" r="6" fill="#81C784" opacity="0.8" />
+      {/* Stem */}
+      <rect x="17" y="38" width="6" height="8" fill="#8D6E63" rx="1" />
     </g>
     
-    {/* Apple (red) */}
-    <g transform="translate(110, 15)">
-      <circle cx="20" cy="22" r="16" fill="#DC143C" />
-      <ellipse cx="20" cy="20" rx="17" ry="15" fill="#FF4444" />
-      <ellipse cx="15" cy="17" rx="7" ry="9" fill="#FF6B6B" opacity="0.5" />
-      <rect x="19" y="8" width="2" height="8" fill="#654321" rx="1" />
-      <ellipse cx="24" cy="10" rx="5" ry="3" fill="#4CAF50" transform="rotate(20 24 10)" />
+    {/* Tomato */}
+    <g transform="translate(115, 15)">
+      <ellipse cx="18" cy="24" rx="15" ry="14" fill="#FF6347" />
+      <ellipse cx="18" cy="22" rx="16" ry="15" fill="#FF7F50" />
+      <ellipse cx="13" cy="20" rx="8" ry="10" fill="#FFA07A" opacity="0.4" />
+      <ellipse cx="11" cy="18" rx="4" ry="6" fill="white" opacity="0.5" />
+      {/* Tomato top */}
+      <path d="M 18 10 L 18 15" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round" />
+      <ellipse cx="18" cy="11" rx="6" ry="3" fill="#66BB6A" />
+      <ellipse cx="15" cy="10" rx="3" ry="2" fill="#81C784" transform="rotate(-20 15 10)" />
+      <ellipse cx="21" cy="10" rx="3" ry="2" fill="#81C784" transform="rotate(20 21 10)" />
     </g>
   </svg>
 );
