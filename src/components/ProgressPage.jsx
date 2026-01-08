@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { BananaIcon, AppleIcon, MangoIcon } from './FoodIcons';
+import GoalModal from './GoalModal';
 
 const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
   const [weeklyGoal, setWeeklyGoal] = useState(30);
-  const [showGoalInput, setShowGoalInput] = useState(false);
-  const [goalInput, setGoalInput] = useState(weeklyGoal);
+  const [showGoalModal, setShowGoalModal] = useState(false);
 
   const today = new Date();
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -19,8 +19,12 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
   const progressPercent = Math.min((weeklyProgress / weeklyGoal) * 100, 100);
 
   const handleSetGoal = () => {
-    setWeeklyGoal(parseInt(goalInput));
-    setShowGoalInput(false);
+    setShowGoalModal(false);
+  };
+
+  const handleSaveGoal = (goal) => {
+    setWeeklyGoal(goal);
+    setShowGoalModal(false);
   };
 
   return (
@@ -120,26 +124,26 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
           </div>
 
           {/* Weekly Goal Info */}
-          {!showGoalInput ? (
-            <div className="flex items-center gap-2 py-2">
-              <span className="text-green-500">✓</span>
-              <span className="font-medium text-gray-800">Weekly goal: {weeklyGoal} points</span>
-            </div>
-          ) : (
-            <div className="flex gap-2 py-2">
-              <input
-                type="number"
-                value={goalInput}
-                onChange={(e) => setGoalInput(e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+          {weeklyGoal ? (
+            <div className="flex items-center justify-between py-3 px-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-center gap-2">
+                <span className="text-green-500">✓</span>
+                <span className="text-sm font-medium text-gray-700">Weekly goal: {weeklyGoal} points</span>
+              </div>
               <button
-                onClick={handleSetGoal}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600"
+                onClick={() => setShowGoalModal(true)}
+                className="text-green-500 hover:text-green-600 font-medium text-sm"
               >
-                Set
+                Edit
               </button>
             </div>
+          ) : (
+            <button
+              onClick={() => setShowGoalModal(true)}
+              className="w-full px-4 py-3 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors"
+            >
+              Set weekly goal
+            </button>
           )}
 
           {/* Goal Updated Message */}
@@ -162,6 +166,15 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
         <p className="text-gray-600 font-medium text-lg">Your biome is growing!</p>
       </div>
       </div>
+
+      {/* Goal Modal */}
+      {showGoalModal && (
+        <GoalModal
+          currentGoal={weeklyGoal}
+          onSave={handleSaveGoal}
+          onClose={() => setShowGoalModal(false)}
+        />
+      )}
     </div>
   );
 };
