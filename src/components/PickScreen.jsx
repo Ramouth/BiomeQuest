@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, Plus, Sparkles } from 'lucide-react';
-import { BananaIcon, AppleIcon } from './FoodIcons';
+import { BananaIcon, AppleIcon, MangoIcon } from './FoodIcons';
 
 const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   return (
@@ -30,7 +30,7 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
       </div>
 
       {/* Content - scrollable area */}
-      <div className="flex-1 px-5 py-6 overflow-y-auto pb-24 overscroll-none" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex-1 px-5 py-6 overflow-y-auto pb-24 smooth-scroll" style={{ WebkitOverflowScrolling: 'touch' }}>
         {/* Register plant banner */}
         <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-peach-50 rounded-3xl p-5 mb-6 shadow-sm relative overflow-hidden border border-orange-100/50">
           <div className="flex items-center justify-between relative z-10">
@@ -102,6 +102,7 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                   <div className="flex justify-center mb-3 h-20 items-center">
                     {food.id === 'banana' && <BananaIcon size={70} />}
                     {food.id === 'apple' && <AppleIcon size={70} />}
+                    {food.id === 'mango' && <MangoIcon size={70} />}
                   </div>
                   
                   <h3 className="font-bold text-gray-800 text-center mb-0.5 text-lg">
