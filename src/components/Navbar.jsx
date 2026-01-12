@@ -1,7 +1,7 @@
 import React from 'react';
 import { Home, PlusCircle, BarChart3 } from 'lucide-react';
 
-const Navbar = ({ activeTab, onTabChange, score }) => {
+const Navbar = ({ activeTab, onTabChange, score, userId }) => {
   return (
     <>
       {/* Score Display - Above Navbar (Only on home tab) */}
@@ -35,26 +35,30 @@ const Navbar = ({ activeTab, onTabChange, score }) => {
           )}
         </button>
 
-        {/* Register Button */}
+        {/* Profile Button */}
         <button
-          onClick={() => onTabChange('register')}
+          onClick={() => onTabChange('profile')}
           className="flex flex-col items-center gap-1 group relative active:scale-95 transition-transform"
         >
           <div
-            className={`w-14 h-14 rounded-full flex items-center justify-center -mt-6 transition-all ${
-              activeTab === 'register' ? 'bg-green-600 scale-105' : 'bg-green-500'
+            className={`w-14 h-14 rounded-full flex items-center justify-center -mt-6 transition-all overflow-hidden border-2 ${
+              activeTab === 'profile' ? 'bg-green-600 scale-105 border-green-700' : 'bg-white border-green-500'
             }`}
           >
-            <PlusCircle className="w-7 h-7 text-white" />
+            <img
+              src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${userId}`}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span
             className={`text-xs transition-colors ${
-              activeTab === 'register' ? 'text-green-500' : 'text-gray-400'
+              activeTab === 'profile' ? 'text-green-500' : 'text-gray-400'
             }`}
           >
-            Register
+            Profile
           </span>
-          {activeTab === 'register' && (
+          {activeTab === 'profile' && (
             <div className="absolute -bottom-1 w-12 h-1 bg-green-500 rounded-full" />
           )}
         </button>

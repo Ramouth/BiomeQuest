@@ -6,12 +6,31 @@ import GoalModal from './GoalModal';
 const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
   const [weeklyGoal, setWeeklyGoal] = useState(30);
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [selectedDayIndex, setSelectedDayIndex] = useState(null);
 
   const today = new Date();
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const currentDayIndex = today.getDay() === 0 ? 6 : today.getDay() - 1;
   
-  // Calculate daily points from registrations
+  // Set initial selected day to today
+  const displayDayIndex = selectedDayIndex !== null ? selectedDayIndex : currentDayIndex;
+  
+  // Get data for selected day
+  const getSelectedDayData = () => {
+    const selectedDate = new Date(today);
+    const daysDiff = displayDayIndex - currentDayIndex;
+    selectedDate.setDate(selectedDate.getDate() + daysDiff);
+    
+    return foodRegistrations.filter(reg => {
+      const regDate = new Date(reg.timestamp);
+      return regDate.toDateString() === selectedDate.toDateString();
+    });
+  };
+  
+  const selectedDayRegistrations = getSelectedDayData();
+  const selectedDayPoints = selectedDayRegistrations.reduce((sum, reg) => sum + reg.points, 0);
+  
+  // Calculate daily points from registrations (for today)
   const dailyPoints = foodRegistrations.reduce((sum, reg) => sum + reg.points, 0);
   
   // Weekly progress (using daily points * days)
@@ -26,6 +45,13 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
     setWeeklyGoal(goal);
     setShowGoalModal(false);
   };
+  
+  const handleDaySelect = (index) => {
+    // Allow selecting past days and today, but not future days
+    if (index <= currentDayIndex) {
+      setSelectedDayIndex(index === selectedDayIndex ? null : index);
+    }
+  };
 
   return (
     <div className="h-screen w-screen flex flex-col fixed inset-0 bg-white">
@@ -37,39 +63,44 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
         </div>
 
         {/* Days of Week Selector */}
-        <div className="flex gap-2 mb-8 justify-between">
-        {daysOfWeek.map((day, index) => (
-          <button
-            key={day}
-            className={`flex-1 px-2 py-2 rounded-lg font-semibold text-sm transition-all ${
-              index === currentDayIndex
-                ? 'bg-green-500 text-white shadow-md'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {day}
-          </button>
-        ))}
-      </div>
+        <div className="flex items-center justify-between mb-5 bg-white/50 rounded-2xl p-1">
+          {daysOfWeek.map((day, index) => (
+            <button
+              key={day}
+              onClick={() => handleDaySelect(index)}
+              disabled={index > currentDayIndex}
+              className={`flex-1 py-2 px-1 rounded-xl text-sm font-medium transition-colors ${
+                index > currentDayIndex
+                  ? 'text-gray-300 cursor-not-allowed opacity-50'
+                  : displayDayIndex === index
+                  ? 'bg-[#6fb584] text-white'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              title={index > currentDayIndex ? 'Future days are locked' : ''}
+            >
+              {day}
+            </button>
+          ))}
+        </div>
 
       {/* Today's Points Section */}
       <div className="mb-8 pr-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
             <span>🌱</span>
-            Today's Points
+            {displayDayIndex === currentDayIndex ? "Today's Points" : `${daysOfWeek[displayDayIndex]}'s Points`}
           </h2>
-          <button className="text-gray-400 hover:text-gray-600 text-xl">⋯</button>
+          <button className="text-gray-400 hover:text-gray-600">⋯</button>
         </div>
 
         <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-          {foodRegistrations.length === 0 ? (
+          {selectedDayRegistrations.length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-gray-500">No plants registered today yet.</p>
+              <p className="text-gray-500">No plants registered on this day.</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {foodRegistrations.map((registration, index) => {
+              {selectedDayRegistrations.map((registration, index) => {
                 const food = foods.find(f => f.id === registration.foodId);
                 return (
                   <div key={index} className="flex items-center justify-between py-3 border-b last:border-b-0">
@@ -89,11 +120,11 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
                 );
               })}
               
-              {/* Total Plants Today */}
+              {/* Total Plants for Selected Day */}
               <div className="pt-3 mt-2">
                 <p className="text-center text-sm text-gray-600">
-                  <span>Total plants today: </span>
-                  <span className="font-bold text-gray-800">{eatenFoods.size}</span>
+                  <span>Total plants {displayDayIndex === currentDayIndex ? 'today' : `on ${daysOfWeek[displayDayIndex]}`}: </span>
+                  <span className="font-bold text-gray-800">{selectedDayRegistrations.length}</span>
                   <span className="ml-1">🌿</span>
                 </p>
               </div>

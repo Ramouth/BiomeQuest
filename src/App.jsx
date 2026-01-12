@@ -3,6 +3,7 @@ import WelcomeScreen from './components/WelcomeScreen';
 import PickScreen from './components/PickScreen';
 import CelebrationScreen from './components/CelebrationScreen';
 import ProgressPage from './components/ProgressPage';
+import ProfilePage from './components/ProfilePage';
 import Navbar from './components/Navbar';
 
 const App = () => {
@@ -12,6 +13,10 @@ const App = () => {
   const [selectedFood, setSelectedFood] = useState(null);
   const [eatenFoods, setEatenFoods] = useState(new Set()); // Track which foods have been eaten
   const [foodRegistrations, setFoodRegistrations] = useState([]); // Track each registration with points
+  
+  // User profile data
+  const [userId] = useState('USER' + Math.random().toString(36).substr(2, 9).toUpperCase());
+  const [userName] = useState('Plant Lover');
 
   // Food database
   const foods = [
@@ -113,7 +118,18 @@ const App = () => {
             />
           )}
           
-          <Navbar activeTab={activeTab} onTabChange={handleTabChange} score={score} />
+          {activeTab === 'profile' && (
+            <ProfilePage 
+              onBack={() => setActiveTab('home')}
+              userName={userName}
+              userId={userId}
+              foodRegistrations={foodRegistrations}
+              foods={foods}
+              score={score}
+            />
+          )}
+          
+          <Navbar activeTab={activeTab} onTabChange={handleTabChange} score={score} userId={userId} />
         </>
       )}
       
