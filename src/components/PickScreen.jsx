@@ -1,8 +1,35 @@
-import React from 'react';
-import { Search, Plus, Sparkles } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Search, Plus, Sparkles, X } from 'lucide-react';
 import { BananaIcon, AppleIcon, MangoIcon } from './FoodIcons';
 
 const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchActive, setIsSearchActive] = useState(false);
+
+  // Efficient search using useMemo
+  const filteredFoods = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return [];
+    }
+    
+    const query = searchQuery.toLowerCase().trim();
+    
+    return foods.filter(food => 
+      food.name.toLowerCase().includes(query) ||
+      food.id.toLowerCase().includes(query)
+    );
+  }, [searchQuery, foods]);
+
+  const handleFoodSelect = (food) => {
+    onFoodSelect(food);
+    setSearchQuery('');
+    setIsSearchActive(false);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setIsSearchActive(false);
+  };
   return (
     <div className="h-screen w-screen bg-white flex flex-col fixed inset-0 overflow-hidden">
       {/* Header with gradient background */}
@@ -23,9 +50,62 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
           <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="Search Store"
-            className="w-full pl-12 pr-4 py-3.5 rounded-full bg-white shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-transparent text-gray-700 placeholder-gray-400"
+            placeholder="Search Plant"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setIsSearchActive(true);
+            }}
+            onFocus={() => setIsSearchActive(true)}
+            className="w-full pl-12 pr-12 py-3.5 rounded-full bg-white shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-transparent text-gray-700 placeholder-gray-400"
           />
+          {searchQuery && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+
+          {/* Search Dropdown */}
+          {isSearchActive && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-lg border border-gray-100 z-50 overflow-hidden">
+              {filteredFoods.length > 0 ? (
+                <div className="max-h-80 overflow-y-auto">
+                  {filteredFoods.map((food) => {
+                    const isNew = !eatenFoods.has(food.id);
+                    return (
+                      <button
+                        key={food.id}
+                        onClick={() => handleFoodSelect(food)}
+                        className="w-full px-4 py-3 flex items-center gap-4 hover:bg-green-50 transition-colors border-b border-gray-100 last:border-b-0 text-left"
+                      >
+                        <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center">
+                          {food.id === 'banana' && <BananaIcon size={40} />}
+                          {food.id === 'apple' && <AppleIcon size={40} />}
+                          {food.id === 'mango' && <MangoIcon size={40} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-800">{food.name}</p>
+                          <p className="text-sm text-gray-500">
+                            {isNew ? `${food.points} pts - New!` : `${food.repeatPoints} pt - Repeat`}
+                          </p>
+                        </div>
+                        {isNew && (
+                          <Sparkles className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : searchQuery.trim() ? (
+                <div className="px-4 py-6 text-center">
+                  <p className="text-gray-500">No plants found for "<span className="font-semibold">{searchQuery}</span>"</p>
+                </div>
+              ) : null}
+            </div>
+          )}
         </div>
       </div>
 
