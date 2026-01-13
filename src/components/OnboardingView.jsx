@@ -1,27 +1,14 @@
 import React, { useState } from 'react';
-import { ChevronRight, Sparkles, Award, Leaf, RotateCcw, Play } from 'lucide-react';
+import { ChevronRight, Play, Heart, Sparkles, Zap } from 'lucide-react';
 
 const OnboardingView = ({ onComplete, onSkipToPick }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps = [
-    {
-      type: 'welcome',
-      title: 'BiomeQuest',
-      subtitle: 'Plant-Powered Health Game',
-      description: 'Transform healthy eating into an exciting adventure by logging your plants!',
-    },
-    {
-      type: 'rules',
-      title: 'Game Rules',
-      subtitle: 'Simple & Fun',
-    },
-    {
-      type: 'ready',
-      icon: '🎮',
-      title: 'Ready to Start?',
-      subtitle: 'Begin Your Plant Quest',
-    },
+    { type: 'welcome' },
+    { type: 'why' },
+    { type: 'how' },
+    { type: 'ready' },
   ];
 
   const currentStepData = steps[currentStep];
@@ -44,11 +31,26 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-[#f5f3ef] to-[#e8e6e1] relative overflow-hidden">
-      {/* Decorative Background */}
+    <div className="h-screen w-screen flex flex-col relative overflow-hidden">
+      {/* Dynamic Background based on step */}
+      {currentStepData.type === 'welcome' && (
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-100" />
+      )}
+      {currentStepData.type === 'why' && (
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-100 via-purple-50 to-fuchsia-100" />
+      )}
+      {currentStepData.type === 'how' && (
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-100" />
+      )}
+      {currentStepData.type === 'ready' && (
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-100 via-orange-100 to-rose-200" />
+      )}
+
+      {/* Floating organic shapes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#6fb584]/10 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-[#5a9f6e]/10 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-20 -left-20 w-64 h-64 bg-white/30 rounded-full blur-3xl animate-float1" />
+        <div className="absolute bottom-40 -right-20 w-80 h-80 bg-white/40 rounded-full blur-3xl animate-float2" />
+        <div className="absolute top-1/2 left-1/3 w-40 h-40 bg-white/20 rounded-full blur-2xl animate-float3" />
       </div>
 
       {/* Skip Button */}
@@ -56,160 +58,249 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
         <div className="absolute top-8 right-5 z-50">
           <button
             onClick={handleSkip}
-            className="text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors px-4 py-2 rounded-xl hover:bg-white/50"
+            className="text-sm text-gray-500/80 hover:text-gray-700 font-medium transition-all px-4 py-2 rounded-full hover:bg-white/50 backdrop-blur-sm"
           >
-            Skip
+            Skip intro
           </button>
         </div>
       )}
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
-        {/* Welcome Screen */}
+
+        {/* WELCOME SCREEN */}
         {currentStepData.type === 'welcome' && (
           <div className="text-center w-full max-w-sm animate-fadeIn">
-            {/* BiomeDude Image */}
-            <div className="w-64 h-64 mx-auto mb-6 rounded-[36px] bg-gradient-to-br from-[#6fb584] to-[#5a9f6e] flex items-center justify-center shadow-2xl relative overflow-hidden flex-shrink-0">
-              <div className="absolute inset-0 bg-white/20 rounded-[36px]"></div>
-              <img 
-                src="/BiomeDude.png" 
-                alt="BiomeDude" 
-                className="w-48 h-48 object-contain relative z-10"
-              />
-              <div className="absolute -inset-1 bg-gradient-to-br from-[#6fb584] to-[#5a9f6e] rounded-[32px] blur-xl opacity-50 -z-10"></div>
+            {/* Animated BiomeDude */}
+            <div className="relative mb-8">
+              <div className="w-56 h-56 mx-auto rounded-[3rem] bg-gradient-to-br from-orange-400 via-amber-400 to-yellow-400 flex items-center justify-center shadow-2xl relative overflow-hidden animate-containerFloat">
+                {/* Inner glow */}
+                <div className="absolute inset-2 bg-gradient-to-br from-white/40 to-transparent rounded-[2.5rem]" />
+
+                {/* Dancing BiomeDude */}
+                <img
+                  src="/BiomeDude.png"
+                  alt="BiomeDude"
+                  className="w-40 h-40 object-contain relative z-10 animate-dance"
+                />
+
+                {/* Floating elements */}
+                <span className="absolute top-3 right-4 text-2xl animate-floatEmoji1">🦠</span>
+                <span className="absolute bottom-4 left-4 text-xl animate-floatEmoji2">✨</span>
+                <span className="absolute top-1/2 right-2 text-lg animate-floatEmoji3">💫</span>
+              </div>
+
+              {/* Decorative rings */}
+              <div className="absolute inset-0 w-56 h-56 mx-auto rounded-[3rem] border-4 border-orange-300/30 animate-ping-slow" />
             </div>
 
-            <h1 className="text-5xl font-bold text-gray-800 mb-3">
-              {currentStepData.title}
+            <h1 className="text-4xl font-black text-gray-800 mb-3 tracking-tight">
+              Meet Your
+              <span className="block text-5xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
+                Gut Buddy
+              </span>
             </h1>
-            
-            <div className="inline-block bg-[#5a9f6e] text-white px-5 py-2 rounded-full text-sm font-semibold mb-6">
-              {currentStepData.subtitle}
-            </div>
 
-            <p className="text-gray-600 text-lg leading-relaxed">
-              {currentStepData.description}
+            <p className="text-gray-600 text-lg leading-relaxed mt-4 font-medium">
+              Your tiny helpers inside are hungry for
+              <span className="text-orange-500 font-bold"> plant power</span>!
+              Let's feed them together.
             </p>
+
+            {/* Friendly bacteria illustrations */}
+            <div className="flex justify-center gap-3 mt-6">
+              <span className="text-3xl animate-bounce" style={{ animationDelay: '0s' }}>🦠</span>
+              <span className="text-3xl animate-bounce" style={{ animationDelay: '0.1s' }}>🧫</span>
+              <span className="text-3xl animate-bounce" style={{ animationDelay: '0.2s' }}>🌿</span>
+              <span className="text-3xl animate-bounce" style={{ animationDelay: '0.3s' }}>💚</span>
+            </div>
           </div>
         )}
 
-        {/* Rules Screen */}
-        {currentStepData.type === 'rules' && (
+        {/* WHY SCREEN - The Science/Benefits */}
+        {currentStepData.type === 'why' && (
           <div className="w-full max-w-sm animate-fadeIn">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-gray-800 mb-2">
-                {currentStepData.title}
+              <span className="text-5xl mb-4 block animate-pulse">🔬</span>
+              <h1 className="text-3xl font-black text-gray-800 mb-2">
+                Why <span className="text-purple-500">30 Plants</span>?
               </h1>
-              <div className="inline-block bg-[#5a9f6e] text-white px-4 py-1.5 rounded-full text-sm font-semibold">
-                {currentStepData.subtitle}
+              <p className="text-gray-500 text-sm font-medium">The science is delicious</p>
+            </div>
+
+            <div className="space-y-4">
+              {/* Benefit 1 */}
+              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 animate-slideIn" style={{ animationDelay: '0.1s' }}>
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-violet-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Heart className="text-white" size={26} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">Happier Gut</h3>
+                    <p className="text-gray-500 text-sm">More plant variety = more happy bacteria</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Benefit 2 */}
+              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 animate-slideIn" style={{ animationDelay: '0.2s' }}>
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-fuchsia-400 to-pink-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Zap className="text-white" size={26} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">More Energy</h3>
+                    <p className="text-gray-500 text-sm">A diverse microbiome boosts vitality</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Benefit 3 */}
+              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 animate-slideIn" style={{ animationDelay: '0.3s' }}>
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <Sparkles className="text-white" size={26} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-800 text-lg">Better Mood</h3>
+                    <p className="text-gray-500 text-sm">90% of serotonin is made in your gut!</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Rule Cards */}
-            <div className="space-y-4">
-              {/* Rule 1: Earn Points */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-white/50 animate-slideUp" style={{ animationDelay: '0.1s' }}>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6fb584] to-[#5a9f6e] flex items-center justify-center flex-shrink-0">
-                    <Leaf className="text-white" size={24} />
+            <p className="text-center text-gray-400 text-xs mt-6 font-medium">
+              Studies show 30+ plants/week = optimal gut diversity
+            </p>
+          </div>
+        )}
+
+        {/* HOW IT WORKS SCREEN */}
+        {currentStepData.type === 'how' && (
+          <div className="w-full max-w-sm animate-fadeIn">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-black text-gray-800 mb-2">
+                Simple as <span className="text-teal-500">1, 2, 3</span>
+              </h1>
+              <p className="text-gray-500 text-sm font-medium">No counting calories, just plants!</p>
+            </div>
+
+            {/* Step cards with connecting line */}
+            <div className="relative">
+              {/* Connecting line */}
+              <div className="absolute left-7 top-10 bottom-10 w-1 bg-gradient-to-b from-teal-300 via-emerald-300 to-green-300 rounded-full" />
+
+              <div className="space-y-5">
+                {/* Step 1 */}
+                <div className="flex items-center gap-4 animate-slideIn" style={{ animationDelay: '0.1s' }}>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white">
+                    <span className="text-white font-black text-xl">1</span>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-800 mb-2 text-lg">1. Log Your Plants</h3>
-                    <p className="text-gray-600 text-sm mb-3">Log plants to earn points and grow your biome</p>
-                    <div className="flex flex-wrap gap-2">
-                      <div className="bg-[#f5f3ef] px-3 py-1.5 rounded-lg text-xs">
-                        <span className="mr-1">🍎</span>
-                        <span className="font-medium">Apple +5pts</span>
-                      </div>
-                      <div className="bg-[#f5f3ef] px-3 py-1.5 rounded-lg text-xs">
-                        <span className="mr-1">🍌</span>
-                        <span className="font-medium">Banana +5pts</span>
-                      </div>
-                      <div className="bg-[#f5f3ef] px-3 py-1.5 rounded-lg text-xs">
-                        <span className="mr-1">🥭</span>
-                        <span className="font-medium">Mango +5pts</span>
-                      </div>
-                    </div>
-                    <p className="text-gray-500 text-xs mt-2">Repeats: +1pt each</p>
+                  <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50">
+                    <h3 className="font-bold text-gray-800">Eat a plant</h3>
+                    <p className="text-gray-500 text-sm">Any fruit, veggie, nut, seed, or grain</p>
+                  </div>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex items-center gap-4 animate-slideIn" style={{ animationDelay: '0.2s' }}>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white">
+                    <span className="text-white font-black text-xl">2</span>
+                  </div>
+                  <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50">
+                    <h3 className="font-bold text-gray-800">Log it here</h3>
+                    <p className="text-gray-500 text-sm">Search & tap - takes 2 seconds!</p>
+                  </div>
+                </div>
+
+                {/* Step 3 */}
+                <div className="flex items-center gap-4 animate-slideIn" style={{ animationDelay: '0.3s' }}>
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-lime-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white">
+                    <span className="text-white font-black text-xl">3</span>
+                  </div>
+                  <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50">
+                    <h3 className="font-bold text-gray-800">Watch it grow</h3>
+                    <p className="text-gray-500 text-sm">Your biome thrives, you earn badges!</p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Rule 2: Unlock Badges */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-white/50 animate-slideUp" style={{ animationDelay: '0.2s' }}>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center flex-shrink-0">
-                    <Award className="text-white" size={24} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-800 mb-2 text-lg">2. Unlock Achievement Badges</h3>
-                    <p className="text-gray-600 text-sm mb-3">Reach point milestones to unlock special badges</p>
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 px-4 py-3 rounded-xl text-sm">
-                      <div className="font-bold text-gray-800 mb-1">🌱 10pts → 🌿 25pts → 🌳 50pts</div>
-                      <div className="text-xs text-gray-600">And more badges awaiting discovery!</div>
-                    </div>
-                  </div>
+            {/* Points explanation */}
+            <div className="mt-8 bg-white/50 backdrop-blur-md rounded-2xl p-4 border border-white/50">
+              <div className="flex justify-around text-center">
+                <div>
+                  <div className="text-2xl font-black text-teal-500">+5</div>
+                  <div className="text-xs text-gray-500">New plant</div>
                 </div>
-              </div>
-
-              {/* Rule 3: Weekly Reset */}
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-5 shadow-lg border border-white/50 animate-slideUp" style={{ animationDelay: '0.3s' }}>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6fb584] to-[#5a9f6e] flex items-center justify-center flex-shrink-0">
-                    <RotateCcw className="text-white" size={24} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-800 mb-2 text-lg">3. Weekly Challenges</h3>
-                    <p className="text-gray-600 text-sm">Aim for 30 points each week to unlock the weekly badge! Your badges stay forever, but points reset weekly. 📅</p>
-                  </div>
+                <div className="w-px bg-gray-200" />
+                <div>
+                  <div className="text-2xl font-black text-emerald-500">+1</div>
+                  <div className="text-xs text-gray-500">Repeat</div>
+                </div>
+                <div className="w-px bg-gray-200" />
+                <div>
+                  <div className="text-2xl font-black text-green-500">30</div>
+                  <div className="text-xs text-gray-500">Weekly goal</div>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Ready Screen */}
+        {/* READY SCREEN */}
         {currentStepData.type === 'ready' && (
           <div className="text-center w-full max-w-sm animate-fadeIn">
-            {/* Animated Icon */}
-            <div className="w-48 h-48 mx-auto mb-6 rounded-[32px] bg-gradient-to-br from-[#6fb584] to-[#5a9f6e] flex items-center justify-center shadow-2xl relative overflow-hidden flex-shrink-0">
-              <div className="absolute inset-0 bg-white/20 rounded-[32px]"></div>
-              <span className="text-7xl relative z-10 animate-bounce">{currentStepData.icon}</span>
-              
-              {/* Sparkles */}
-              <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#6fb584] rounded-full animate-pulse"></div>
-              <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-[#8b9d7e] rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+            {/* Celebration visual */}
+            <div className="relative mb-6">
+              <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-orange-400 via-rose-400 to-pink-500 flex items-center justify-center shadow-2xl animate-containerFloat">
+                <div className="absolute inset-2 bg-gradient-to-br from-white/30 to-transparent rounded-full" />
+                <img
+                  src="/BiomeDude.png"
+                  alt="BiomeDude"
+                  className="w-32 h-32 object-contain relative z-10 animate-wiggle"
+                />
+              </div>
+
+              {/* Celebration particles */}
+              <span className="absolute top-0 left-1/4 text-3xl animate-celebrateFloat1">🎉</span>
+              <span className="absolute top-4 right-1/4 text-2xl animate-celebrateFloat2">🌟</span>
+              <span className="absolute bottom-0 left-1/3 text-2xl animate-celebrateFloat3">🌱</span>
+              <span className="absolute bottom-4 right-1/4 text-3xl animate-celebrateFloat4">✨</span>
             </div>
 
-            <h1 className="text-4xl font-bold text-gray-800 mb-3">
-              {currentStepData.title}
+            <h1 className="text-4xl font-black text-gray-800 mb-2">
+              You're <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-rose-500">Ready!</span>
             </h1>
-            
-            <div className="inline-block bg-[#5a9f6e] text-white px-5 py-2 rounded-full text-sm font-semibold mb-6">
-              {currentStepData.subtitle}
-            </div>
 
-            <p className="text-gray-600 text-lg leading-relaxed mb-8">
-              Your BiomeDude buddy is ready! Start logging your plants and watch your biome thrive. 🌿
+            <p className="text-gray-600 text-lg leading-relaxed font-medium mb-8">
+              Your gut buddies are excited to meet all the plants you'll eat!
             </p>
 
-            {/* Quick Stats Preview */}
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+            {/* Starting stats */}
+            <div className="bg-white/60 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/50">
+              <p className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Your starting stats</p>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="text-3xl mb-1">🌱</div>
-                  <div className="text-2xl font-bold text-gray-800">0</div>
-                  <div className="text-xs text-gray-500">Points</div>
+                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center">
+                    <span className="text-2xl">🌱</span>
+                  </div>
+                  <div className="text-2xl font-black text-gray-800">0</div>
+                  <div className="text-xs text-gray-400 font-medium">Plants</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl mb-1">🏆</div>
-                  <div className="text-2xl font-bold text-gray-800">0</div>
-                  <div className="text-xs text-gray-500">Badges</div>
+                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-rose-100 to-pink-100 flex items-center justify-center">
+                    <span className="text-2xl">⭐</span>
+                  </div>
+                  <div className="text-2xl font-black text-gray-800">0</div>
+                  <div className="text-xs text-gray-400 font-medium">Points</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl mb-1">🎯</div>
-                  <div className="text-2xl font-bold text-gray-800">30</div>
-                  <div className="text-xs text-gray-500">Weekly Goal</div>
+                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
+                    <span className="text-2xl">🏆</span>
+                  </div>
+                  <div className="text-2xl font-black text-gray-800">0</div>
+                  <div className="text-xs text-gray-400 font-medium">Badges</div>
                 </div>
               </div>
             </div>
@@ -217,18 +308,17 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
         )}
       </div>
 
-      {/* Progress Dots */}
-      <div className="flex items-center justify-center gap-1.5 mb-6 relative z-10">
+      {/* Progress Dots (non-interactive) */}
+      <div className="flex items-center justify-center gap-2 mb-6 relative z-10">
         {steps.map((_, index) => (
-          <button
+          <div
             key={index}
-            onClick={() => setCurrentStep(index)}
-            className={`h-1.5 rounded-full transition-all ${
+            className={`rounded-full transition-all duration-300 ${
               index === currentStep
-                ? 'w-6 bg-[#5a9f6e]'
+                ? 'w-8 h-2 bg-gray-800'
                 : index < currentStep
-                ? 'w-1.5 bg-[#6fb584]'
-                : 'w-1.5 bg-gray-300'
+                ? 'w-2 h-2 bg-gray-400'
+                : 'w-2 h-2 bg-gray-300'
             }`}
           />
         ))}
@@ -238,17 +328,21 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
       <div className="px-6 pb-8 relative z-10">
         <button
           onClick={handleNext}
-          className="w-full bg-gradient-to-r from-[#6fb584] to-[#5a9f6e] text-white py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-2 text-lg hover:from-[#7ec497] hover:to-[#6db081]"
+          className={`w-full py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-lg ${
+            isLastStep
+              ? 'bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500 text-white hover:from-orange-600 hover:via-rose-600 hover:to-pink-600'
+              : 'bg-gray-800 text-white hover:bg-gray-900'
+          }`}
         >
           {isLastStep ? (
             <>
-              <Play size={20} fill="white" />
-              <span>Start Playing</span>
+              <Play size={22} fill="white" />
+              <span>Let's Grow!</span>
             </>
           ) : (
             <>
               <span>Continue</span>
-              <ChevronRight size={20} />
+              <ChevronRight size={22} />
             </>
           )}
         </button>
@@ -256,32 +350,107 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
 
       <style>{`
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
         }
 
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-in-out;
+        @keyframes dance {
+          0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+          15% { transform: translateY(-6px) rotate(-8deg) scale(1.03); }
+          30% { transform: translateY(0) rotate(0deg) scale(1); }
+          45% { transform: translateY(-6px) rotate(8deg) scale(1.03); }
+          60% { transform: translateY(0) rotate(0deg) scale(1); }
+          75% { transform: translateY(-10px) rotate(-4deg) scale(1.05); }
         }
 
-        .animate-slideUp {
-          animation: slideUp 0.5s ease-in-out forwards;
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-5deg); }
+          75% { transform: rotate(5deg); }
         }
+
+        @keyframes containerFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+
+        @keyframes float1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(20px, -20px) scale(1.1); }
+        }
+
+        @keyframes float2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-30px, 20px) scale(1.05); }
+        }
+
+        @keyframes float3 {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(15px, -15px); }
+        }
+
+        @keyframes floatEmoji1 {
+          0%, 100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+          50% { transform: translateY(-12px) rotate(20deg); opacity: 0.8; }
+        }
+
+        @keyframes floatEmoji2 {
+          0%, 100% { transform: translateY(0) scale(1); opacity: 0.9; }
+          50% { transform: translateY(-8px) scale(1.1); opacity: 1; }
+        }
+
+        @keyframes floatEmoji3 {
+          0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+          50% { transform: translateY(-10px) rotate(-15deg); opacity: 1; }
+        }
+
+        @keyframes celebrateFloat1 {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          50% { transform: translate(-10px, -20px) rotate(-20deg); }
+        }
+
+        @keyframes celebrateFloat2 {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          50% { transform: translate(15px, -15px) rotate(15deg); }
+        }
+
+        @keyframes celebrateFloat3 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-8px, -12px) scale(1.2); }
+        }
+
+        @keyframes celebrateFloat4 {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          50% { transform: translate(10px, -18px) rotate(25deg); }
+        }
+
+        @keyframes ping-slow {
+          0% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.05); opacity: 0.2; }
+          100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        .animate-fadeIn { animation: fadeIn 0.6s ease-out forwards; }
+        .animate-slideIn { animation: slideIn 0.5s ease-out forwards; opacity: 0; }
+        .animate-dance { animation: dance 2s ease-in-out infinite; }
+        .animate-wiggle { animation: wiggle 1s ease-in-out infinite; }
+        .animate-containerFloat { animation: containerFloat 3s ease-in-out infinite; }
+        .animate-float1 { animation: float1 8s ease-in-out infinite; }
+        .animate-float2 { animation: float2 10s ease-in-out infinite; }
+        .animate-float3 { animation: float3 6s ease-in-out infinite; }
+        .animate-floatEmoji1 { animation: floatEmoji1 2s ease-in-out infinite; }
+        .animate-floatEmoji2 { animation: floatEmoji2 2.5s ease-in-out infinite 0.3s; }
+        .animate-floatEmoji3 { animation: floatEmoji3 1.8s ease-in-out infinite 0.6s; }
+        .animate-celebrateFloat1 { animation: celebrateFloat1 2s ease-in-out infinite; }
+        .animate-celebrateFloat2 { animation: celebrateFloat2 2.3s ease-in-out infinite 0.2s; }
+        .animate-celebrateFloat3 { animation: celebrateFloat3 1.9s ease-in-out infinite 0.4s; }
+        .animate-celebrateFloat4 { animation: celebrateFloat4 2.1s ease-in-out infinite 0.6s; }
+        .animate-ping-slow { animation: ping-slow 2s ease-in-out infinite; }
       `}</style>
     </div>
   );

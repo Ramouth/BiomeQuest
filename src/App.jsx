@@ -146,12 +146,7 @@ const AppContent = () => {
           )}
 
           {activeTab === 'progress' && (
-            <ProgressPage
-              score={score}
-              eatenFoods={eatenFoods}
-              foodRegistrations={foodRegistrations}
-              foods={foods}
-            />
+            <ProgressPage score={score} />
           )}
 
           {activeTab === 'profile' && (
