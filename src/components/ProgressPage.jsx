@@ -58,7 +58,7 @@ const ProgressPage = ({ score }) => {
     }
   };
 
-  const weeklyProgress = weeklyData?.summary?.totalPoints || 0;
+  const weeklyProgress = weeklyData?.summary?.weeklyPoints || 0;
   const progressPercent = Math.min((weeklyProgress / weeklyGoal) * 100, 100);
 
   const handleSaveGoal = (goal) => {
@@ -219,9 +219,9 @@ const ProgressPage = ({ score }) => {
         {/* Growing Plant Visualization */}
         <div className="text-center space-y-3">
           {(() => {
-            // Growth stages based on total score (capped at 150 points for max size)
+            // Growth stages based on all-time score (capped at 150 points for max size)
             const maxPoints = 150;
-            const totalScore = weeklyData?.summary?.totalPoints || score || 0;
+            const totalScore = weeklyData?.summary?.allTimePoints || score || 0;
             const growthPercent = Math.min(totalScore / maxPoints, 1);
 
             // Scale from 3rem (48px) to 8rem (128px)

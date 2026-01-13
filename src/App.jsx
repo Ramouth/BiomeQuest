@@ -154,8 +154,6 @@ const AppContent = () => {
               onBack={() => setActiveTab('home')}
               userName={userName}
               userId={userId}
-              foodRegistrations={foodRegistrations}
-              foods={foods}
               score={score}
             />
           )}

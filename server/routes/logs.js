@@ -213,13 +213,20 @@ router.get('/weekly', authenticateToken, (req, res) => {
       WHERE user_id = ? AND logged_at >= date('now', '-7 days')
     `, [req.user.userId]);
 
+    // Get all-time total points for plant growth visualization
+    const allTimePoints = queryOne(
+      'SELECT SUM(points_earned) as total FROM plant_logs WHERE user_id = ?',
+      [req.user.userId]
+    );
+
     const user = queryOne('SELECT weekly_goal FROM users WHERE id = ?', [req.user.userId]);
 
     res.json({
       dailyBreakdown: logs,
       summary: {
         totalLogs: summary?.total_logs || 0,
-        totalPoints: summary?.total_points || 0,
+        weeklyPoints: summary?.total_points || 0,
+        allTimePoints: allTimePoints?.total || 0,
         uniquePlants: summary?.unique_plants || 0,
         weeklyGoal: user?.weekly_goal || 30,
         progress: Math.min(100, Math.round(((summary?.total_points || 0) / (user?.weekly_goal || 30)) * 100))

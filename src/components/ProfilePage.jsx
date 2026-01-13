@@ -1,21 +1,13 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Award, Trophy, TrendingUp, Calendar } from 'lucide-react';
-import { 
-  BananaIcon, 
-  AppleIcon, 
-  MangoIcon,
-  OrangeIcon,
-  StrawberryIcon,
-  BlueberryIcon,
-  WatermelonIcon,
-  GrapeIcon,
-  PineappleIcon,
-  PapayaIcon
-} from './FoodIcons';
+import { logsAPI, badgesAPI } from '../api';
 
-const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score }) => {
-  const [unlockedBadges, setUnlockedBadges] = useState(new Set());
+const ProfilePage = ({ onBack, userName, userId, score }) => {
   const [showBadgePopup, setShowBadgePopup] = useState(null);
+  const [topPlants, setTopPlants] = useState([]);
+  const [weeklyData, setWeeklyData] = useState(null);
+  const [userBadges, setUserBadges] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Badge thresholds
   const BADGE_THRESHOLDS = [
@@ -27,93 +19,43 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
   ];
 
   // Weekly goal
-  const WEEKLY_GOAL = 30;
+  const WEEKLY_GOAL = weeklyData?.summary?.weeklyGoal || 30;
 
-  // Calculate most eaten plants (top 5) with correct points calculation
-  const foodCounts = useMemo(() => {
-    const counts = {};
-    const firstTimeTracking = {};
-    
-    foodRegistrations.forEach(reg => {
-      if (!counts[reg.foodName]) {
-        counts[reg.foodName] = {
-          count: 0,
-          points: 0,
-          firstTimePoints: 0,
-          repeatPoints: 0,
-          icon: null
-        };
-        firstTimeTracking[reg.foodName] = false;
-      }
-      
-      counts[reg.foodName].count += 1;
-      
-      // Track first time vs repeat based on isFirstTime flag
-      if (reg.isFirstTime && !firstTimeTracking[reg.foodName]) {
-        counts[reg.foodName].firstTimePoints += 5; // First time = 5 points
-        firstTimeTracking[reg.foodName] = true;
-      } else {
-        counts[reg.foodName].repeatPoints += 1; // Repeat = 1 point
-      }
-      
-      counts[reg.foodName].points = counts[reg.foodName].firstTimePoints + counts[reg.foodName].repeatPoints;
-    });
-    
-    return counts;
-  }, [foodRegistrations]);
+  // Fetch data on mount
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
 
-  const mostEatenPlants = useMemo(() => {
-    return Object.entries(foodCounts)
-      .sort((a, b) => b[1].count - a[1].count)
-      .slice(0, 5);
-  }, [foodCounts]);
+  const fetchProfileData = async () => {
+    try {
+      const [topPlantsData, weeklyDataRes, badgesData] = await Promise.all([
+        logsAPI.getTopPlants(5),
+        logsAPI.getWeekly(),
+        badgesAPI.getUserBadges().catch(() => ({ badges: [] }))
+      ]);
 
-  // Calculate weekly points (from last 7 days)
-  const weeklyPoints = useMemo(() => {
-    const now = new Date();
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    
-    return foodRegistrations
-      .filter(reg => {
-        const regDate = new Date(reg.timestamp);
-        return regDate >= weekAgo && regDate <= now;
-      })
-      .reduce((sum, reg) => sum + reg.points, 0);
-  }, [foodRegistrations]);
+      setTopPlants(topPlantsData || []);
+      setWeeklyData(weeklyDataRes);
+      setUserBadges(badgesData.badges || []);
+    } catch (err) {
+      console.error('Failed to fetch profile data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Calculate weekly badges (unique plants in last 7 days)
-  const weeklyBadgesCount = useMemo(() => {
-    const now = new Date();
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    
-    const weeklyRegs = foodRegistrations.filter(reg => {
-      const regDate = new Date(reg.timestamp);
-      return regDate >= weekAgo && regDate <= now;
-    });
-    
-    return new Set(weeklyRegs.map(reg => reg.foodId)).size;
-  }, [foodRegistrations]);
+  // Get total points (from weekly data or prop)
+  const totalPoints = weeklyData?.summary?.allTimePoints || score || 0;
+
+  // Weekly stats
+  const weeklyPoints = weeklyData?.summary?.weeklyPoints || 0;
+  const uniquePlantsThisWeek = weeklyData?.summary?.uniquePlants || 0;
 
   // Get unlocked badges based on total points
-  const unlockedBadgesList = useMemo(() => {
-    return BADGE_THRESHOLDS.filter(badge => score >= badge.points);
-  }, [score]);
+  const unlockedBadgesList = BADGE_THRESHOLDS.filter(badge => totalPoints >= badge.points);
 
   // Get next badge
-  const nextBadge = useMemo(() => {
-    return BADGE_THRESHOLDS.find(badge => score < badge.points);
-  }, [score]);
-
-  // Get join date (first registration or current date)
-  const joinDate = useMemo(() => {
-    if (foodRegistrations.length === 0) return new Date();
-    const dates = foodRegistrations.map(reg => new Date(reg.timestamp)).sort((a, b) => a - b);
-    return dates[0];
-  }, [foodRegistrations]);
-
-  const formatJoinDate = (date) => {
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  };
+  const nextBadge = BADGE_THRESHOLDS.find(badge => totalPoints < badge.points);
 
   // Get motivation message based on weekly progress
   const getMotivationMessage = () => {
@@ -121,14 +63,22 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
     if (weeklyPoints >= WEEKLY_GOAL) {
       return { message: '🎉 Weekly goal achieved! Great work!', color: 'text-green-600', bgColor: 'bg-green-50' };
     } else if (remaining > 0) {
-      return { 
-        message: `💪 ${remaining} more points to unlock this week's badge! You got this!`, 
-        color: 'text-[#5a9f6e]', 
-        bgColor: 'bg-green-50' 
+      return {
+        message: `💪 ${remaining} more points to unlock this week's badge! You got this!`,
+        color: 'text-[#5a9f6e]',
+        bgColor: 'bg-green-50'
       };
     }
     return { message: '', color: '', bgColor: '' };
   };
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-blue-50">
+        <p className="text-gray-500">Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen flex flex-col" style={{ background: 'linear-gradient(to bottom, #f0fdf4, #eff6ff)' }}>
@@ -168,7 +118,7 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
         {/* Header with Avatar */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-24 h-24 rounded-full overflow-hidden shadow-xl border-4 border-white mb-4 ring-4 ring-[#5a9f6e]/20">
-            <img 
+            <img
               src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${userId}`}
               alt="Profile Avatar"
               className="w-full h-full object-cover"
@@ -180,10 +130,6 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
               ID: {userId}
             </span>
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            <Calendar size={14} />
-            <span>Member since {formatJoinDate(joinDate)}</span>
-          </div>
         </div>
 
         {/* Stats Cards */}
@@ -193,7 +139,7 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
               <TrendingUp size={20} />
               <span className="text-2xl">🌟</span>
             </div>
-            <div className="text-2xl font-bold mb-1">{score}</div>
+            <div className="text-2xl font-bold mb-1">{totalPoints}</div>
             <div className="text-xs opacity-90">Total Points</div>
           </div>
 
@@ -227,7 +173,7 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
 
           <div className="grid grid-cols-3 gap-3">
             {BADGE_THRESHOLDS.map((badge) => {
-              const isUnlocked = score >= badge.points;
+              const isUnlocked = totalPoints >= badge.points;
               return (
                 <div
                   key={badge.level}
@@ -267,11 +213,11 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
               <div className="w-full bg-gray-300 rounded-full h-2 overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-[#6fb584] to-[#5a9f6e] h-full transition-all duration-500"
-                  style={{ width: `${Math.min((score / nextBadge.points) * 100, 100)}%` }}
+                  style={{ width: `${Math.min((totalPoints / nextBadge.points) * 100, 100)}%` }}
                 />
               </div>
               <p className="text-xs text-gray-600 mt-2">
-                {nextBadge.points - score} points to go!
+                {nextBadge.points - totalPoints} points to go!
               </p>
             </div>
           )}
@@ -283,7 +229,7 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
             <span className="text-2xl">📅</span>
             This Week's Progress
           </h3>
-          
+
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200">
               <span className="text-sm font-medium text-gray-700">Weekly Points</span>
@@ -299,7 +245,7 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
             </div>
             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200">
               <span className="text-sm font-medium text-gray-700">Unique Plants This Week</span>
-              <span className="text-lg font-bold text-[#5a9f6e]">{weeklyBadgesCount}</span>
+              <span className="text-lg font-bold text-[#5a9f6e]">{uniquePlantsThisWeek}</span>
             </div>
           </div>
         </div>
@@ -311,30 +257,20 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
             <h2 className="text-lg font-semibold text-gray-800">Most Eaten Plants</h2>
           </div>
 
-          {mostEatenPlants.length > 0 ? (
+          {topPlants.length > 0 ? (
             <div className="space-y-3">
-              {mostEatenPlants.map(([name, data], index) => (
-                <div key={name} className="flex items-center gap-4 p-4 bg-gradient-to-r from-white/80 to-white/40 rounded-2xl border border-white/60 shadow-sm hover:shadow-md transition-shadow">
+              {topPlants.map((plant, index) => (
+                <div key={plant.id} className="flex items-center gap-4 p-4 bg-gradient-to-r from-white/80 to-white/40 rounded-2xl border border-white/60 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#6fb584] to-[#5a9f6e] text-white font-bold text-sm flex-shrink-0">
                     {index + 1}
                   </div>
                   <div className="text-4xl flex-shrink-0">
-                    {name === 'Apple' && <AppleIcon size={40} />}
-                    {name === 'Banana' && <BananaIcon size={40} />}
-                    {name === 'Mango' && <MangoIcon size={40} />}
-                    {name === 'Orange' && <OrangeIcon size={40} />}
-                    {name === 'Strawberry' && <StrawberryIcon size={40} />}
-                    {name === 'Blueberry' && <BlueberryIcon size={40} />}
-                    {name === 'Watermelon' && <WatermelonIcon size={40} />}
-                    {name === 'Grape' && <GrapeIcon size={40} />}
-                    {name === 'Pineapple' && <PineappleIcon size={40} />}
-                    {name === 'Papaya' && <PapayaIcon size={40} />}
+                    {plant.emoji || '🌱'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-800 text-base mb-1">{name}</h3>
+                    <h3 className="font-semibold text-gray-800 text-base mb-1">{plant.name}</h3>
                     <div className="flex items-center gap-3 text-xs text-gray-600">
-                      <span className="font-medium">Eaten {data.count}x</span>
-                      <span className="text-[#5a9f6e] font-bold">+{data.points} pts</span>
+                      <span className="font-medium">Eaten {plant.times_eaten}x</span>
                     </div>
                   </div>
                 </div>
