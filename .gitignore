@@ -16,6 +16,10 @@ build/
 .env.local
 .env.*.local
 
+# Database
+*.db
+db/*.db
+
 # IDE and editor files
 .vscode/
 .idea/

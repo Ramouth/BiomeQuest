@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AuthProvider, useAuth } from './AuthContext';
 import WelcomeScreen from './components/WelcomeScreen';
 import PickScreen from './components/PickScreen';
 import CelebrationScreen from './components/CelebrationScreen';
@@ -6,18 +7,21 @@ import ProgressPage from './components/ProgressPage';
 import ProfilePage from './components/ProfilePage';
 import Navbar from './components/Navbar';
 import OnboardingView from './components/OnboardingView';
+import AuthScreen from './components/AuthScreen';
 
-const App = () => {
+const AppContent = () => {
+  const { isAuthenticated, user, loading } = useAuth();
+
   const [currentScreen, setCurrentScreen] = useState('onboarding');
   const [activeTab, setActiveTab] = useState('home');
   const [score, setScore] = useState(0);
   const [selectedFood, setSelectedFood] = useState(null);
   const [eatenFoods, setEatenFoods] = useState(new Set()); // Track which foods have been eaten
   const [foodRegistrations, setFoodRegistrations] = useState([]); // Track each registration with points
-  
-  // User profile data
-  const [userId] = useState('USER' + Math.random().toString(36).substr(2, 9).toUpperCase());
-  const [userName] = useState('Plant Lover');
+
+  // User profile data from auth
+  const userId = user?.id || 'GUEST';
+  const userName = user?.username || 'Plant Lover';
 
   // Food database
   const foods = [
@@ -149,43 +153,57 @@ const App = () => {
     }, 2000);
   };
 
+  // Show loading spinner while checking auth
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-green-400 to-green-600 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  // Show auth screen if not logged in
+  if (!isAuthenticated) {
+    return <AuthScreen />;
+  }
+
   return (
     <div className="font-sans antialiased">
       {currentScreen === 'onboarding' && (
-        <OnboardingView 
+        <OnboardingView
           onComplete={() => setCurrentScreen('welcome')}
           onSkipToPick={() => {
             setCurrentScreen('welcome');
           }}
         />
       )}
-      
+
       {currentScreen === 'welcome' && (
         <WelcomeScreen onStart={handleStart} />
       )}
-      
+
       {currentScreen === 'pick' && (
         <>
           {activeTab === 'home' && (
-            <PickScreen 
-              score={score} 
+            <PickScreen
+              score={score}
               onFoodSelect={handleFoodSelect}
               foods={foods}
               eatenFoods={eatenFoods}
             />
           )}
-          
+
           {activeTab === 'progress' && (
-            <ProgressPage 
+            <ProgressPage
               score={score}
               eatenFoods={eatenFoods}
               foodRegistrations={foodRegistrations}
               foods={foods}
             />
           )}
-          
+
           {activeTab === 'profile' && (
-            <ProfilePage 
+            <ProfilePage
               onBack={() => setActiveTab('home')}
               userName={userName}
               userId={userId}
@@ -194,15 +212,24 @@ const App = () => {
               score={score}
             />
           )}
-          
+
           <Navbar activeTab={activeTab} onTabChange={handleTabChange} score={score} userId={userId} />
         </>
       )}
-      
+
       {currentScreen === 'celebration' && selectedFood && (
         <CelebrationScreen message={selectedFood.displayMessage} />
       )}
     </div>
+  );
+};
+
+// Wrap with AuthProvider
+const App = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 
