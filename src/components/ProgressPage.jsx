@@ -1,17 +1,5 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { 
-  BananaIcon, 
-  AppleIcon, 
-  MangoIcon,
-  OrangeIcon,
-  StrawberryIcon,
-  BlueberryIcon,
-  WatermelonIcon,
-  GrapeIcon,
-  PineappleIcon,
-  PapayaIcon
-} from './FoodIcons';
 import GoalModal from './GoalModal';
 
 const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
@@ -65,9 +53,9 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-col fixed inset-0 bg-white">
+    <div className="fixed inset-0 flex flex-col bg-white overflow-hidden">
       {/* Scrollable content area */}
-      <div className="flex-1 overflow-y-auto smooth-scroll px-6 pt-6" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex-1 overflow-y-auto px-6 pt-6 pb-24" style={{ WebkitOverflowScrolling: 'touch' }}>
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800">My Progress</h1>
@@ -95,7 +83,7 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
         </div>
 
       {/* Today's Points Section */}
-      <div className="mb-8 pr-6">
+      <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
             <span>🌱</span>
@@ -116,17 +104,8 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
                 return (
                   <div key={index} className="flex items-center justify-between py-3 border-b last:border-b-0">
                     <div className="flex items-center gap-4">
-                      <div className="flex-shrink-0">
-                        {registration.foodId === 'banana' && <BananaIcon size={32} />}
-                        {registration.foodId === 'apple' && <AppleIcon size={32} />}
-                        {registration.foodId === 'mango' && <MangoIcon size={32} />}
-                        {registration.foodId === 'orange' && <OrangeIcon size={32} />}
-                        {registration.foodId === 'strawberry' && <StrawberryIcon size={32} />}
-                        {registration.foodId === 'blueberry' && <BlueberryIcon size={32} />}
-                        {registration.foodId === 'watermelon' && <WatermelonIcon size={32} />}
-                        {registration.foodId === 'grape' && <GrapeIcon size={32} />}
-                        {registration.foodId === 'pineapple' && <PineappleIcon size={32} />}
-                        {registration.foodId === 'papaya' && <PapayaIcon size={32} />}
+                      <div className="flex-shrink-0 text-3xl">
+                        {food?.emoji || '🌱'}
                       </div>
                       <span className="font-medium text-gray-800 text-base">{registration.foodName}</span>
                     </div>
@@ -208,10 +187,64 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
         </div>
       </div>
 
-      {/* BiomeDude Mascot */}
-      <div className="text-center space-y-3 pb-24 pr-6">
-        <div className="text-8xl">🌱</div>
-        <p className="text-gray-600 font-medium text-lg">Your biome is growing!</p>
+      {/* Growing Plant Visualization */}
+      <div className="text-center space-y-3">
+        {(() => {
+          // Growth stages based on total score (capped at 150 points for max size)
+          const maxPoints = 150;
+          const growthPercent = Math.min(score / maxPoints, 1);
+
+          // Scale from 3rem (48px) to 8rem (128px)
+          const minSize = 48;
+          const maxSize = 128;
+          const plantSize = minSize + (maxSize - minSize) * growthPercent;
+
+          // Plant stages: seedling -> sprout -> plant -> tree
+          let plantEmoji = '🌱';
+          let stageName = 'Seedling';
+          if (score >= 100) {
+            plantEmoji = '🌳';
+            stageName = 'Mighty Tree';
+          } else if (score >= 50) {
+            plantEmoji = '🌿';
+            stageName = 'Thriving Plant';
+          } else if (score >= 25) {
+            plantEmoji = '🌱';
+            stageName = 'Growing Sprout';
+          } else if (score >= 10) {
+            plantEmoji = '🌱';
+            stageName = 'Young Seedling';
+          }
+
+          return (
+            <>
+              <div
+                className="transition-all duration-700 ease-out inline-block"
+                style={{
+                  fontSize: `${plantSize}px`,
+                  transform: `scale(${0.8 + growthPercent * 0.2})`,
+                  filter: `drop-shadow(0 ${4 + growthPercent * 8}px ${8 + growthPercent * 12}px rgba(34, 197, 94, ${0.2 + growthPercent * 0.2}))`
+                }}
+              >
+                {plantEmoji}
+              </div>
+              <p className="text-gray-600 font-medium text-lg">Your biome is growing!</p>
+              <p className="text-sm text-gray-500">{stageName} • {score} pts</p>
+              {/* Growth progress bar */}
+              <div className="max-w-[200px] mx-auto mt-2">
+                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-700"
+                    style={{ width: `${growthPercent * 100}%` }}
+                  />
+                </div>
+                <p className="text-xs text-gray-400 mt-1">
+                  {score >= maxPoints ? 'Max growth reached!' : `${maxPoints - score} pts to full growth`}
+                </p>
+              </div>
+            </>
+          );
+        })()}
       </div>
       </div>
 

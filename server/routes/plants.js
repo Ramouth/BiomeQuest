@@ -74,7 +74,16 @@ router.get('/user/status', authenticateToken, (req, res) => {
       ORDER BY p.name
     `, [req.user.userId]);
 
-    res.json(plants);
+    // Get user's total points
+    const totalPointsResult = queryOne(
+      'SELECT SUM(points_earned) as total FROM plant_logs WHERE user_id = ?',
+      [req.user.userId]
+    );
+
+    res.json({
+      plants,
+      totalPoints: totalPointsResult?.total || 0
+    });
   } catch (error) {
     console.error('Get plants with status error:', error);
     res.status(500).json({ error: 'Failed to get plants' });

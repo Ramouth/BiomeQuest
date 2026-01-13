@@ -1,51 +1,21 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Plus, Sparkles, X } from 'lucide-react';
-import { 
-  BananaIcon, 
-  AppleIcon, 
-  MangoIcon,
-  OrangeIcon,
-  StrawberryIcon,
-  BlueberryIcon,
-  WatermelonIcon,
-  GrapeIcon,
-  PineappleIcon,
-  PapayaIcon
-} from './FoodIcons';
 
 const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [showAllPlants, setShowAllPlants] = useState(false);
 
-  // Helper function to get food icon based on name
-  const getFoodIcon = (foodId) => {
-    switch(foodId) {
-      case 'banana': return <BananaIcon size={70} />;
-      case 'apple': return <AppleIcon size={70} />;
-      case 'mango': return <MangoIcon size={70} />;
-      case 'orange': return <OrangeIcon size={70} />;
-      case 'strawberry': return <StrawberryIcon size={70} />;
-      case 'blueberry': return <BlueberryIcon size={70} />;
-      case 'watermelon': return <WatermelonIcon size={70} />;
-      case 'grape': return <GrapeIcon size={70} />;
-      case 'pineapple': return <PineappleIcon size={70} />;
-      case 'papaya': return <PapayaIcon size={70} />;
-      default: return <span className="text-6xl">🌱</span>;
-    }
-  };
-
   // Efficient search using useMemo
   const filteredFoods = useMemo(() => {
     if (!searchQuery.trim()) {
       return [];
     }
-    
+
     const query = searchQuery.toLowerCase().trim();
-    
-    return foods.filter(food => 
-      food.name.toLowerCase().includes(query) ||
-      food.id.toLowerCase().includes(query)
+
+    return foods.filter(food =>
+      food.name.toLowerCase().includes(query)
     );
   }, [searchQuery, foods]);
 
@@ -110,10 +80,8 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                         onClick={() => handleFoodSelect(food)}
                         className="w-full px-4 py-3 flex items-center gap-4 hover:bg-green-50 transition-colors border-b border-gray-100 last:border-b-0 text-left"
                       >
-                        <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center">
-                          {food.id === 'banana' && <BananaIcon size={40} />}
-                          {food.id === 'apple' && <AppleIcon size={40} />}
-                          {food.id === 'mango' && <MangoIcon size={40} />}
+                        <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center text-4xl">
+                          {food.emoji || '🌱'}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-gray-800">{food.name}</p>
@@ -211,8 +179,8 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                     </div>
                   )}
                   
-                  <div className="flex justify-center mb-3 h-20 items-center">
-                    {getFoodIcon(food.id)}
+                  <div className="flex justify-center mb-3 h-20 items-center text-6xl">
+                    {food.emoji || '🌱'}
                   </div>
                   
                   <h3 className="font-bold text-gray-800 text-center mb-0.5 text-lg">
