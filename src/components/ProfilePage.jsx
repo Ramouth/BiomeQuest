@@ -1,6 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import { Award, Trophy, TrendingUp, Calendar } from 'lucide-react';
-import { BananaIcon, AppleIcon, MangoIcon } from './FoodIcons';
+import { 
+  BananaIcon, 
+  AppleIcon, 
+  MangoIcon,
+  OrangeIcon,
+  StrawberryIcon,
+  BlueberryIcon,
+  WatermelonIcon,
+  GrapeIcon,
+  PineappleIcon,
+  PapayaIcon
+} from './FoodIcons';
 
 const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score }) => {
   const [unlockedBadges, setUnlockedBadges] = useState(new Set());
@@ -311,6 +322,13 @@ const ProfilePage = ({ onBack, userName, userId, foodRegistrations, foods, score
                     {name === 'Apple' && <AppleIcon size={40} />}
                     {name === 'Banana' && <BananaIcon size={40} />}
                     {name === 'Mango' && <MangoIcon size={40} />}
+                    {name === 'Orange' && <OrangeIcon size={40} />}
+                    {name === 'Strawberry' && <StrawberryIcon size={40} />}
+                    {name === 'Blueberry' && <BlueberryIcon size={40} />}
+                    {name === 'Watermelon' && <WatermelonIcon size={40} />}
+                    {name === 'Grape' && <GrapeIcon size={40} />}
+                    {name === 'Pineapple' && <PineappleIcon size={40} />}
+                    {name === 'Papaya' && <PapayaIcon size={40} />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-800 text-base mb-1">{name}</h3>

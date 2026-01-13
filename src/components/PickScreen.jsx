@@ -1,10 +1,39 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Plus, Sparkles, X } from 'lucide-react';
-import { BananaIcon, AppleIcon, MangoIcon } from './FoodIcons';
+import { 
+  BananaIcon, 
+  AppleIcon, 
+  MangoIcon,
+  OrangeIcon,
+  StrawberryIcon,
+  BlueberryIcon,
+  WatermelonIcon,
+  GrapeIcon,
+  PineappleIcon,
+  PapayaIcon
+} from './FoodIcons';
 
 const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [showAllPlants, setShowAllPlants] = useState(false);
+
+  // Helper function to get food icon based on name
+  const getFoodIcon = (foodId) => {
+    switch(foodId) {
+      case 'banana': return <BananaIcon size={70} />;
+      case 'apple': return <AppleIcon size={70} />;
+      case 'mango': return <MangoIcon size={70} />;
+      case 'orange': return <OrangeIcon size={70} />;
+      case 'strawberry': return <StrawberryIcon size={70} />;
+      case 'blueberry': return <BlueberryIcon size={70} />;
+      case 'watermelon': return <WatermelonIcon size={70} />;
+      case 'grape': return <GrapeIcon size={70} />;
+      case 'pineapple': return <PineappleIcon size={70} />;
+      case 'papaya': return <PapayaIcon size={70} />;
+      default: return <span className="text-6xl">🌱</span>;
+    }
+  };
 
   // Efficient search using useMemo
   const filteredFoods = useMemo(() => {
@@ -156,14 +185,17 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
         {/* Most common section */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-800">Most common</h2>
-            <button className="text-green-600 font-semibold text-sm hover:text-green-700 transition-colors">
-              See all
+            <h2 className="text-xl font-bold text-gray-800">{showAllPlants ? 'All Plants' : 'Most common'}</h2>
+            <button 
+              onClick={() => setShowAllPlants(!showAllPlants)}
+              className="text-green-600 font-semibold text-sm hover:text-green-700 transition-colors"
+            >
+              {showAllPlants ? 'See less' : 'See all'}
             </button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {foods.map((food) => {
+            {(showAllPlants ? foods : foods.slice(0, 4)).map((food) => {
               const isNew = !eatenFoods.has(food.id);
               
               return (
@@ -180,9 +212,7 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                   )}
                   
                   <div className="flex justify-center mb-3 h-20 items-center">
-                    {food.id === 'banana' && <BananaIcon size={70} />}
-                    {food.id === 'apple' && <AppleIcon size={70} />}
-                    {food.id === 'mango' && <MangoIcon size={70} />}
+                    {getFoodIcon(food.id)}
                   </div>
                   
                   <h3 className="font-bold text-gray-800 text-center mb-0.5 text-lg">
@@ -220,7 +250,7 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
       </div>
 
       {/* Score footer - fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-green-500 px-5 py-4 flex items-center justify-between rounded-t-3xl shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 bg-green-500 px-5 py-4 flex items-center justify-between rounded-t-3xl shadow-2xl z-40">
         <span className="text-white font-bold text-lg">Your Score: {score}</span>
         <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-pink-200">
           <img 

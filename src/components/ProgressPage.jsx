@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { BananaIcon, AppleIcon, MangoIcon } from './FoodIcons';
+import { 
+  BananaIcon, 
+  AppleIcon, 
+  MangoIcon,
+  OrangeIcon,
+  StrawberryIcon,
+  BlueberryIcon,
+  WatermelonIcon,
+  GrapeIcon,
+  PineappleIcon,
+  PapayaIcon
+} from './FoodIcons';
 import GoalModal from './GoalModal';
 
 const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
@@ -109,7 +120,13 @@ const ProgressPage = ({ score, eatenFoods, foodRegistrations, foods }) => {
                         {registration.foodId === 'banana' && <BananaIcon size={32} />}
                         {registration.foodId === 'apple' && <AppleIcon size={32} />}
                         {registration.foodId === 'mango' && <MangoIcon size={32} />}
-                        {!['banana', 'apple', 'mango'].includes(registration.foodId) && <span className="text-2xl">{food?.emoji}</span>}
+                        {registration.foodId === 'orange' && <OrangeIcon size={32} />}
+                        {registration.foodId === 'strawberry' && <StrawberryIcon size={32} />}
+                        {registration.foodId === 'blueberry' && <BlueberryIcon size={32} />}
+                        {registration.foodId === 'watermelon' && <WatermelonIcon size={32} />}
+                        {registration.foodId === 'grape' && <GrapeIcon size={32} />}
+                        {registration.foodId === 'pineapple' && <PineappleIcon size={32} />}
+                        {registration.foodId === 'papaya' && <PapayaIcon size={32} />}
                       </div>
                       <span className="font-medium text-gray-800 text-base">{registration.foodName}</span>
                     </div>

@@ -5,9 +5,10 @@ import CelebrationScreen from './components/CelebrationScreen';
 import ProgressPage from './components/ProgressPage';
 import ProfilePage from './components/ProfilePage';
 import Navbar from './components/Navbar';
+import OnboardingView from './components/OnboardingView';
 
 const App = () => {
-  const [currentScreen, setCurrentScreen] = useState('welcome');
+  const [currentScreen, setCurrentScreen] = useState('onboarding');
   const [activeTab, setActiveTab] = useState('home');
   const [score, setScore] = useState(0);
   const [selectedFood, setSelectedFood] = useState(null);
@@ -36,11 +37,67 @@ const App = () => {
       firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
       repeatMessage: 'Plants are good, but diversity is KING! 👑'
     },
-     { 
+    { 
       id: 'mango', 
       name: 'Mango', 
       points: 5, // First time points
       repeatPoints: 1, // Repeat points
+      firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
+      repeatMessage: 'Plants are good, but diversity is KING! 👑'
+    },
+    { 
+      id: 'orange', 
+      name: 'Orange', 
+      points: 5, 
+      repeatPoints: 1, 
+      firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
+      repeatMessage: 'Plants are good, but diversity is KING! 👑'
+    },
+    { 
+      id: 'strawberry', 
+      name: 'Strawberry', 
+      points: 5, 
+      repeatPoints: 1, 
+      firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
+      repeatMessage: 'Plants are good, but diversity is KING! 👑'
+    },
+    { 
+      id: 'blueberry', 
+      name: 'Blueberry', 
+      points: 5, 
+      repeatPoints: 1, 
+      firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
+      repeatMessage: 'Plants are good, but diversity is KING! 👑'
+    },
+    { 
+      id: 'watermelon', 
+      name: 'Watermelon', 
+      points: 5, 
+      repeatPoints: 1, 
+      firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
+      repeatMessage: 'Plants are good, but diversity is KING! 👑'
+    },
+    { 
+      id: 'grape', 
+      name: 'Grape', 
+      points: 5, 
+      repeatPoints: 1, 
+      firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
+      repeatMessage: 'Plants are good, but diversity is KING! 👑'
+    },
+    { 
+      id: 'pineapple', 
+      name: 'Pineapple', 
+      points: 5, 
+      repeatPoints: 1, 
+      firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
+      repeatMessage: 'Plants are good, but diversity is KING! 👑'
+    },
+    { 
+      id: 'papaya', 
+      name: 'Papaya', 
+      points: 5, 
+      repeatPoints: 1, 
       firstTimeMessage: 'Congrats! You just helped your biome with a new plant! 🎉',
       repeatMessage: 'Plants are good, but diversity is KING! 👑'
     }
@@ -94,6 +151,15 @@ const App = () => {
 
   return (
     <div className="font-sans antialiased">
+      {currentScreen === 'onboarding' && (
+        <OnboardingView 
+          onComplete={() => setCurrentScreen('welcome')}
+          onSkipToPick={() => {
+            setCurrentScreen('welcome');
+          }}
+        />
+      )}
+      
       {currentScreen === 'welcome' && (
         <WelcomeScreen onStart={handleStart} />
       )}
