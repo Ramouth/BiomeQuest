@@ -1,234 +1,274 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus, Sparkles, X } from 'lucide-react';
+import { Search, Plus, X, Sparkles, TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
 
 const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchActive, setIsSearchActive] = useState(false);
-  const [showAllPlants, setShowAllPlants] = useState(false);
+  const [recentlyAdded, setRecentlyAdded] = useState(null);
+  const [showRepeatFoods, setShowRepeatFoods] = useState(false);
 
-  // Efficient search using useMemo
   const filteredFoods = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return [];
-    }
-
+    if (!searchQuery.trim()) return [];
     const query = searchQuery.toLowerCase().trim();
-
-    return foods.filter(food =>
-      food.name.toLowerCase().includes(query)
-    );
+    return foods.filter(food => food.name.toLowerCase().includes(query));
   }, [searchQuery, foods]);
 
   const handleFoodSelect = (food) => {
     onFoodSelect(food);
+    setRecentlyAdded(food.id);
+    setTimeout(() => setRecentlyAdded(null), 1500);
     setSearchQuery('');
-    setIsSearchActive(false);
   };
 
-  const clearSearch = () => {
-    setSearchQuery('');
-    setIsSearchActive(false);
-  };
+  const showSearchResults = searchQuery.trim().length > 0;
+
+  // Separate new and repeat foods for better visibility
+  const newFoods = foods.filter(f => !eatenFoods.has(f.id));
+  const repeatFoods = foods.filter(f => eatenFoods.has(f.id));
+
   return (
-    <div className="h-screen w-screen bg-white flex flex-col fixed inset-0 overflow-hidden">
-      {/* Header with gradient background */}
-      <div className="bg-gradient-to-b from-green-100 via-green-50 to-transparent rounded-b-[2.5rem] pb-6 pt-4 px-5 shadow-sm">
-        <div className="flex items-center justify-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">BiomeQuest</h1>
-          <div className="ml-3 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md border-2 border-pink-200">
-            <img 
-              src="/BiomeDude.png" 
-              alt="BiomeDude" 
-              className="w-10 h-10 object-contain"
-            />
+    <div className="h-screen w-screen bg-gradient-to-b from-green-50 to-white flex flex-col fixed inset-0">
+      {/* Header with improved visual hierarchy */}
+      <div className="bg-white shadow-sm px-5 pt-6 pb-5">
+        <div className="flex items-center gap-4 mb-5">
+          <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-500 rounded-3xl flex items-center justify-center shadow-lg">
+            <img src="/BiomeDude.png" alt="" className="w-12 h-12" />
           </div>
+          <h1 className="text-3xl font-bold text-gray-900">BiomeQuest</h1>
         </div>
 
-        {/* Search bar */}
+        {/* Search with immediate feedback */}
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search Plant"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setIsSearchActive(true);
-            }}
-            onFocus={() => setIsSearchActive(true)}
-            className="w-full pl-12 pr-12 py-3.5 rounded-full bg-white shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-transparent text-gray-700 placeholder-gray-400"
-          />
-          {searchQuery && (
-            <button
-              onClick={clearSearch}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          )}
-
-          {/* Search Dropdown */}
-          {isSearchActive && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-3xl shadow-lg border border-gray-100 z-50 overflow-hidden">
-              {filteredFoods.length > 0 ? (
-                <div className="max-h-80 overflow-y-auto">
-                  {filteredFoods.map((food) => {
-                    const isNew = !eatenFoods.has(food.id);
-                    return (
-                      <button
-                        key={food.id}
-                        onClick={() => handleFoodSelect(food)}
-                        className="w-full px-4 py-3 flex items-center gap-4 hover:bg-green-50 transition-colors border-b border-gray-100 last:border-b-0 text-left"
-                      >
-                        <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center text-4xl">
-                          {food.emoji || '🌱'}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-800">{food.name}</p>
-                          <p className="text-sm text-gray-500">
-                            {isNew ? `${food.points} pts - New!` : `${food.repeatPoints} pt - Repeat`}
-                          </p>
-                        </div>
-                        {isNew && (
-                          <Sparkles className="w-4 h-4 text-yellow-400 flex-shrink-0" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              ) : searchQuery.trim() ? (
-                <div className="px-4 py-6 text-center">
-                  <p className="text-gray-500">No plants found for "<span className="font-semibold">{searchQuery}</span>"</p>
-                </div>
-              ) : null}
-            </div>
-          )}
+          <div className={`absolute inset-0 rounded-2xl transition-all ${
+            searchQuery ? 'bg-green-100 scale-105' : 'bg-gray-100'
+          }`} style={{ zIndex: 0 }} />
+          
+          <div className="relative z-10 flex items-center">
+            <Search className={`absolute left-4 w-5 h-5 transition-colors ${
+              searchQuery ? 'text-green-600' : 'text-gray-400'
+            }`} />
+            <input
+              type="text"
+              placeholder="Search for any plant..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-transparent border-0 focus:outline-none text-gray-900 placeholder-gray-500 font-medium"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 p-1 hover:bg-white rounded-full transition-all active:scale-90"
+              >
+                <X className="w-4 h-4 text-gray-600" />
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Content - scrollable area */}
-      <div className="flex-1 px-5 py-6 overflow-y-auto pb-24 smooth-scroll" style={{ WebkitOverflowScrolling: 'touch' }}>
-        {/* Register plant banner */}
-        <div className="bg-gradient-to-br from-orange-50 via-yellow-50 to-peach-50 rounded-3xl p-5 mb-6 shadow-sm relative overflow-hidden border border-orange-100/50">
-          <div className="flex items-center justify-between relative z-10">
-            <div className="flex-1">
-              <div className="flex items-center mb-1">
-                {/* Mini veggie icons */}
-                <div className="flex -space-x-2 mr-3">
-                  <div className="w-10 h-10 rounded-full bg-yellow-400 flex items-center justify-center shadow-sm">
-                    <span className="text-xl">🍌</span>
+      {/* Content with smooth transitions */}
+      <div className="flex-1 overflow-y-auto px-5 py-5 pb-32">
+        {!showSearchResults ? (
+          <div className="space-y-6">
+            {/* New Plants Section - Gamification principle */}
+            {newFoods.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-yellow-500" />
+                    <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
+                      Discover New ({newFoods.length})
+                    </h2>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-orange-400 flex items-center justify-center shadow-sm">
-                    <span className="text-xl">🥕</span>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-red-400 flex items-center justify-center shadow-sm">
-                    <span className="text-xl">🍅</span>
+                  
+                  {/* Score badge aligned with section */}
+                  <div className="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl px-3 py-1.5 shadow-lg">
+                    <div className="flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                      <span className="font-bold text-sm">{score}</span>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-gray-800 text-lg leading-tight">Register plant</h3>
-                  <p className="text-gray-600 text-sm">Help your biome</p>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  {newFoods.slice(0, 6).map((food) => (
+                    <FoodCard
+                      key={food.id}
+                      food={food}
+                      isNew={true}
+                      points={food.points}
+                      onSelect={handleFoodSelect}
+                      isRecentlyAdded={recentlyAdded === food.id}
+                    />
+                  ))}
                 </div>
               </div>
-            </div>
-          </div>
-          
-          {/* Decorative BiomeDude */}
-          <div className="absolute -top-2 -right-2 opacity-20 rotate-12">
-            <img 
-              src="/BiomeDude.png" 
-              alt="" 
-              className="w-12 h-12 object-contain"
-            />
-          </div>
-          <div className="absolute -bottom-3 right-8 opacity-15 -rotate-12">
-            <img 
-              src="/BiomeDude.png" 
-              alt="" 
-              className="w-10 h-10 object-contain"
-            />
-          </div>
-        </div>
+            )}
 
-        {/* Most common section */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-800">{showAllPlants ? 'All Plants' : 'Most common'}</h2>
-            <button 
-              onClick={() => setShowAllPlants(!showAllPlants)}
-              className="text-green-600 font-semibold text-sm hover:text-green-700 transition-colors"
-            >
-              {showAllPlants ? 'See less' : 'See all'}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            {(showAllPlants ? foods : foods.slice(0, 4)).map((food) => {
-              const isNew = !eatenFoods.has(food.id);
-              
-              return (
-                <div 
-                  key={food.id} 
-                  className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-green-200 transition-all duration-200 relative"
+            {/* Repeat Plants Section - Collapsible */}
+            {repeatFoods.length > 0 && (
+              <div>
+                <button
+                  onClick={() => setShowRepeatFoods(!showRepeatFoods)}
+                  className="w-full flex items-center justify-between mb-4 p-3 rounded-xl bg-white border border-gray-200 hover:border-gray-300 transition-all active:scale-98"
                 >
-                  {/* NEW badge for first-time foods */}
-                  {isNew && (
-                    <div className="absolute top-3 right-3 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-md">
-                      <Sparkles className="w-3 h-3" />
-                      NEW
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center">
+                      <Plus className="w-3 h-3 text-gray-600" />
                     </div>
-                  )}
-                  
-                  <div className="flex justify-center mb-3 h-20 items-center text-6xl">
-                    {food.emoji || '🌱'}
+                    <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
+                      Add Again ({repeatFoods.length})
+                    </h2>
                   </div>
                   
-                  <h3 className="font-bold text-gray-800 text-center mb-0.5 text-lg">
-                    {food.name}
-                  </h3>
-                  
-                  {/* Show different points for first time vs repeat */}
-                  <p className="text-gray-500 text-sm text-center mb-4">
-                    {isNew ? (
-                      <span className="text-green-600 font-bold">
-                        {food.points} pts! 🌟
-                      </span>
-                    ) : (
-                      <span>
-                        {food.repeatPoints} pt.
-                      </span>
-                    )}
-                  </p>
-                  
-                  <button
-                    onClick={() => onFoodSelect(food)}
-                    className={`w-full ${
-                      isNew 
-                        ? 'bg-green-500 hover:bg-green-600' 
-                        : 'bg-gray-400 hover:bg-gray-500'
-                    } text-white rounded-full p-3 flex items-center justify-center transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg`}
-                  >
-                    <Plus className="w-5 h-5" strokeWidth={3} />
-                  </button>
-                </div>
-              );
-            })}
+                  {showRepeatFoods ? (
+                    <ChevronUp className="w-5 h-5 text-gray-600" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-600" />
+                  )}
+                </button>
+                
+                {showRepeatFoods && (
+                  <div className="grid grid-cols-2 gap-3 animate-fadeIn">
+                    {repeatFoods.slice(0, 6).map((food) => (
+                      <FoodCard
+                        key={food.id}
+                        food={food}
+                        isNew={false}
+                        points={food.repeatPoints}
+                        onSelect={handleFoodSelect}
+                        isRecentlyAdded={recentlyAdded === food.id}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        </div>
+        ) : (
+          // Search Results with instant feedback
+          <div className="space-y-2">
+            <p className="text-xs text-gray-500 mb-3">
+              {filteredFoods.length} {filteredFoods.length === 1 ? 'result' : 'results'} for "{searchQuery}"
+            </p>
+            
+            {filteredFoods.length > 0 ? (
+              filteredFoods.map((food) => {
+                const isNew = !eatenFoods.has(food.id);
+                const points = isNew ? food.points : food.repeatPoints;
+                
+                return (
+                  <button
+                    key={food.id}
+                    onClick={() => handleFoodSelect(food)}
+                    className="w-full bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all border-2 border-transparent hover:border-green-200"
+                  >
+                    <div className="w-14 h-14 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center text-4xl flex-shrink-0">
+                      {food.emoji || '🌱'}
+                    </div>
+                    
+                    <div className="flex-1 text-left min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="font-semibold text-gray-900 truncate">
+                          {food.name}
+                        </p>
+                        {isNew && (
+                          <span className="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                            NEW
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-green-600 font-semibold">
+                        +{points} {points === 1 ? 'point' : 'points'}
+                      </p>
+                    </div>
+                    
+                    <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                      <Plus className="w-5 h-5 text-white" strokeWidth={3} />
+                    </div>
+                  </button>
+                );
+              })
+            ) : (
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">🔍</div>
+                <p className="text-gray-600 font-medium mb-1">
+                  No plants found
+                </p>
+                <p className="text-sm text-gray-500">
+                  Try a different search term
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Score footer - fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-green-500 px-5 py-4 flex items-center justify-between rounded-t-3xl shadow-2xl z-40">
-        <span className="text-white font-bold text-lg">Your Score: {score}</span>
-        <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-lg border-2 border-pink-200">
-          <img 
-            src="/BiomeDude.png" 
-            alt="BiomeDude" 
-            className="w-9 h-9 object-contain"
-          />
+      {/* Success toast - Immediate feedback principle */}
+      {recentlyAdded && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-2xl shadow-2xl z-50 animate-bounce">
+          <p className="font-bold text-sm">Plant added! 🎉</p>
         </div>
-      </div>
+      )}
     </div>
+  );
+};
+
+// Reusable Food Card Component - DRY principle
+const FoodCard = ({ food, isNew, points, onSelect, isRecentlyAdded }) => {
+  return (
+    <button
+      onClick={() => onSelect(food)}
+      className={`
+        relative bg-white rounded-2xl p-3 
+        transition-all duration-200
+        ${isRecentlyAdded 
+          ? 'scale-110 shadow-2xl ring-4 ring-green-400' 
+          : 'hover:shadow-lg hover:scale-105 active:scale-95'
+        }
+        ${isNew 
+          ? 'border-2 border-green-200 shadow-md' 
+          : 'border border-gray-200'
+        }
+      `}
+    >
+      {/* Visual indicator for new items */}
+      {isNew && (
+        <div className="absolute -top-1.5 -right-1.5 bg-gradient-to-br from-yellow-400 to-orange-400 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-lg flex items-center gap-1">
+          <Sparkles className="w-2.5 h-2.5" />
+          NEW
+        </div>
+      )}
+      
+      {/* Large emoji for recognition */}
+      <div className="text-4xl mb-2 flex justify-center h-12 items-center">
+        {food.emoji || '🌱'}
+      </div>
+      
+      {/* Clear text hierarchy */}
+      <div className="text-center mb-2">
+        <h3 className="font-bold text-gray-900 text-xs mb-0.5 leading-tight">
+          {food.name}
+        </h3>
+        <p className={`text-xs font-semibold ${
+          isNew ? 'text-green-600' : 'text-gray-500'
+        }`}>
+          +{points} {points === 1 ? 'pt' : 'pts'}
+          {isNew && ' 🌟'}
+        </p>
+      </div>
+      
+      {/* Action button - clear affordance */}
+      <div className={`
+        w-full py-2 rounded-xl flex items-center justify-center
+        transition-all
+        ${isNew 
+          ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700' 
+          : 'bg-gray-100 hover:bg-gray-200'
+        }
+      `}>
+        <Plus className={`w-4 h-4 ${isNew ? 'text-white' : 'text-gray-600'}`} strokeWidth={3} />
+      </div>
+    </button>
   );
 };
 

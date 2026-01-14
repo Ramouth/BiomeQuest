@@ -4,13 +4,7 @@ import { Home, PlusCircle, BarChart3 } from 'lucide-react';
 const Navbar = ({ activeTab, onTabChange, score, userId }) => {
   return (
     <>
-      {/* Score Display - Above Navbar (Only on home tab) */}
-      {activeTab === 'home' && (
-        <div className="fixed bottom-32 left-1/2 transform -translate-x-1/2 bg-green-500 text-white rounded-full px-5 py-2 text-sm font-bold shadow-lg z-40">
-          Score: {score}
-        </div>
-      )}
-
+      
       {/* Navbar */}
       <div className="absolute bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 flex items-center justify-around px-8">
         {/* Home Button */}
