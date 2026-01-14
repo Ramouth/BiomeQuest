@@ -65,7 +65,7 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
     } else if (remaining > 0) {
       return {
         message: `💪 ${remaining} more points to unlock this week's badge! You got this!`,
-        color: 'text-[#5a9f6e]',
+        color: 'text-green-600',
         bgColor: 'bg-green-50'
       };
     }
@@ -117,7 +117,7 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
       <div className="flex-1 overflow-y-auto px-5 pt-2 pb-32">
         {/* Header with Avatar */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-24 h-24 rounded-full overflow-hidden shadow-xl border-4 border-white mb-4 ring-4 ring-[#5a9f6e]/20">
+          <div className="w-24 h-24 rounded-full overflow-hidden shadow-xl border-4 border-white mb-4 ring-4 ring-green-500/20">
             <img
               src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${userId}`}
               alt="Profile Avatar"
@@ -134,7 +134,7 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="bg-gradient-to-br from-[#6fb584] to-[#5a9f6e] rounded-2xl p-4 shadow-lg text-white">
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-4 shadow-lg text-white">
             <div className="flex items-center justify-between mb-2">
               <TrendingUp size={20} />
               <span className="text-2xl">🌟</span>
@@ -212,7 +212,7 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
               </p>
               <div className="w-full bg-gray-300 rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-gradient-to-r from-[#6fb584] to-[#5a9f6e] h-full transition-all duration-500"
+                  className="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-500"
                   style={{ width: `${Math.min((totalPoints / nextBadge.points) * 100, 100)}%` }}
                 />
               </div>
@@ -238,14 +238,14 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
             <div>
               <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
                 <div
-                  className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-500"
+                  className="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-500"
                   style={{ width: `${Math.min((weeklyPoints / WEEKLY_GOAL) * 100, 100)}%` }}
                 />
               </div>
             </div>
             <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200">
               <span className="text-sm font-medium text-gray-700">Unique Plants This Week</span>
-              <span className="text-lg font-bold text-[#5a9f6e]">{uniquePlantsThisWeek}</span>
+              <span className="text-lg font-bold text-green-600">{uniquePlantsThisWeek}</span>
             </div>
           </div>
         </div>
@@ -261,7 +261,7 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
             <div className="space-y-3">
               {topPlants.map((plant, index) => (
                 <div key={plant.id} className="flex items-center gap-4 p-4 bg-gradient-to-r from-white/80 to-white/40 rounded-2xl border border-white/60 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[#6fb584] to-[#5a9f6e] text-white font-bold text-sm flex-shrink-0">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-600 text-white font-bold text-sm flex-shrink-0">
                     {index + 1}
                   </div>
                   <div className="text-4xl flex-shrink-0">

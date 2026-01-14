@@ -105,7 +105,7 @@ const ProgressPage = ({ score }) => {
                 index > currentDayIndex
                   ? 'text-gray-300 cursor-not-allowed opacity-50'
                   : displayDayIndex === index
-                  ? 'bg-[#6fb584] text-white'
+                  ? 'bg-green-500 text-white'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
               title={index > currentDayIndex ? 'Future days are locked' : ''}
@@ -122,7 +122,7 @@ const ProgressPage = ({ score }) => {
               <span>🌱</span>
               {displayDayIndex === currentDayIndex ? "Today's Points" : `${daysOfWeek[displayDayIndex]}'s Points`}
             </h2>
-            <span className="text-green-500 font-bold">{dailyPoints} pts</span>
+            <span className="text-green-600 font-bold">{dailyPoints} pts</span>
           </div>
 
           <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
@@ -140,7 +140,7 @@ const ProgressPage = ({ score }) => {
                       </div>
                       <span className="font-medium text-gray-800 text-base">{log.plant_name}</span>
                     </div>
-                    <span className="text-green-500 font-bold text-lg">
+                    <span className="text-green-600 font-bold text-lg">
                       {log.points_earned} pt.
                     </span>
                   </div>
@@ -162,7 +162,7 @@ const ProgressPage = ({ score }) => {
         {/* This Week Section */}
         <div className="mb-8">
           <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
-            <Calendar className="w-6 h-6 text-green-500" />
+            <Calendar className="w-6 h-6 text-green-600" />
             This Week
             <span className="ml-auto text-sm font-semibold text-gray-600">
               {weeklyProgress} / {weeklyGoal} points
@@ -174,7 +174,7 @@ const ProgressPage = ({ score }) => {
             <div>
               <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
                 <div
-                  className="bg-green-500 h-full transition-all duration-500"
+                  className="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -184,12 +184,12 @@ const ProgressPage = ({ score }) => {
             {weeklyGoal ? (
               <div className="flex items-center justify-between py-3 px-4 bg-green-50 rounded-lg border border-green-200">
                 <div className="flex items-center gap-2">
-                  <span className="text-green-500">✓</span>
+                  <span className="text-green-600">✓</span>
                   <span className="text-sm font-medium text-gray-700">Weekly goal: {weeklyGoal} points</span>
                 </div>
                 <button
                   onClick={() => setShowGoalModal(true)}
-                  className="text-green-500 hover:text-green-600 font-medium text-sm"
+                  className="text-green-600 hover:text-green-700 font-medium text-sm"
                 >
                   Edit
                 </button>
@@ -197,7 +197,7 @@ const ProgressPage = ({ score }) => {
             ) : (
               <button
                 onClick={() => setShowGoalModal(true)}
-                className="w-full px-4 py-3 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors"
+                className="w-full px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
               >
                 Set weekly goal
               </button>
@@ -208,7 +208,7 @@ const ProgressPage = ({ score }) => {
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center gap-2">
                 <span className="text-xl">🎉</span>
                 <div>
-                  <p className="font-semibold text-green-700">Goal achieved!</p>
+                  <p className="font-semibold text-green-600">Goal achieved!</p>
                   <p className="text-sm text-green-600">You've reached your weekly goal of {weeklyGoal} points!</p>
                 </div>
               </div>
@@ -264,7 +264,7 @@ const ProgressPage = ({ score }) => {
                 <div className="max-w-[200px] mx-auto mt-2">
                   <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-700"
+                      className="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-700"
                       style={{ width: `${growthPercent * 100}%` }}
                     />
                   </div>
