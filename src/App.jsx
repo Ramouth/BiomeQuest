@@ -1,113 +1,134 @@
-import React, { useState, useEffect } from 'react';
-import { AuthProvider, useAuth } from './AuthContext';
-import PickScreen from './components/PickScreen';
-import CelebrationScreen from './components/CelebrationScreen';
-import ProgressPage from './components/ProgressPage';
-import ProfilePage from './components/ProfilePage';
-import Navbar from './components/Navbar';
-import OnboardingView from './components/OnboardingView';
-import AuthScreen from './components/AuthScreen';
-import { logsAPI, plantsAPI } from './api';
+/**
+ * App.jsx
+ * Main application component using MVVM architecture
+ *
+ * Architecture:
+ * - Models: src/models/api/* (data layer)
+ * - ViewModels: src/viewmodels/* (business logic)
+ * - Views: src/views/* (UI components)
+ */
 
+import React, { useState, Component } from 'react';
+import { AuthProvider, useAuth } from './context/AuthContext';
+
+// Views
+import PickScreen from './views/PickScreen';
+import CelebrationScreen from './views/CelebrationScreen';
+import ProgressPage from './views/ProgressPage';
+import ProfilePage from './views/ProfilePage';
+import Navbar from './views/Navbar';
+import OnboardingView from './views/OnboardingView';
+import AuthScreen from './views/AuthScreen';
+
+// ViewModels
+import { usePlantData } from './viewmodels/usePlantData';
+import { useFood } from './viewmodels/useFood';
+
+/**
+ * Error Boundary to catch rendering errors
+ */
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('React Error Boundary caught an error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-red-100 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md shadow-lg">
+            <h1 className="text-xl font-bold text-red-600 mb-2">Something went wrong</h1>
+            <p className="text-gray-600 mb-4">{this.state.error?.message || 'Unknown error'}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+/**
+ * AppContent - Main application content with MVVM pattern
+ */
 const AppContent = () => {
   const { isAuthenticated, user, loading } = useAuth();
 
   // Check if user has completed onboarding before
   const hasCompletedOnboarding = localStorage.getItem('onboardingComplete') === 'true';
+
+  // View state (navigation)
   const [currentScreen, setCurrentScreen] = useState(hasCompletedOnboarding ? 'pick' : 'onboarding');
   const [activeTab, setActiveTab] = useState('home');
-  const [score, setScore] = useState(0);
-  const [selectedFood, setSelectedFood] = useState(null);
-  const [eatenFoods, setEatenFoods] = useState(new Set()); // Track which foods have been eaten
-  const [foodRegistrations, setFoodRegistrations] = useState([]); // Track each registration with points
-  const [foods, setFoods] = useState([]); // Plants from database
+
+  // ViewModel: Plant data management
+  const {
+    foods,
+    eatenFoods,
+    score,
+    loading: plantsLoading,
+    markFoodEaten,
+    addPoints,
+    setScore
+  } = usePlantData(isAuthenticated);
+
+  // ViewModel: Food selection and logging
+  const {
+    selectedFood,
+    selectFood,
+    clearSelectedFood
+  } = useFood({
+    eatenFoods,
+    markFoodEaten,
+    addPoints,
+    setScore
+  });
 
   // User profile data from auth
   const userId = user?.id || 'GUEST';
   const userName = user?.username || 'Plant Lover';
 
-  // Fetch plants from database on mount
-  useEffect(() => {
-    if (isAuthenticated) {
-      plantsAPI.getWithStatus()
-        .then(data => {
-          const plantsWithMessages = data.plants.map(plant => ({
-            id: plant.id,
-            name: plant.name,
-            emoji: plant.emoji,
-            points: plant.points || 5,
-            repeatPoints: plant.repeat_points || 1,
-            firstTimeMessage: plant.first_time_message || 'Congrats! You just helped your biome with a new plant! 🎉',
-            repeatMessage: plant.repeat_message || 'Plants are good, but diversity is KING! 👑',
-            hasEaten: plant.has_eaten,
-            timesEaten: plant.times_eaten || 0
-          }));
-          setFoods(plantsWithMessages);
-
-          // Set eaten foods from database
-          const eaten = new Set(plantsWithMessages.filter(p => p.hasEaten).map(p => p.id));
-          setEatenFoods(eaten);
-
-          // Set score from database
-          if (data.totalPoints) {
-            setScore(data.totalPoints);
-          }
-        })
-        .catch(err => console.error('Failed to fetch plants:', err));
-    }
-  }, [isAuthenticated]);
-
+  /**
+   * Handle onboarding completion
+   */
   const handleOnboardingComplete = () => {
     localStorage.setItem('onboardingComplete', 'true');
     setCurrentScreen('pick');
     setActiveTab('home');
   };
 
+  /**
+   * Handle tab navigation
+   */
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
+  /**
+   * Handle food selection with celebration flow
+   */
   const handleFoodSelect = async (food) => {
-    // Check if this food has been eaten before (local state for immediate UI feedback)
-    const isFirstTime = !eatenFoods.has(food.id);
-
-    // Optimistically update local state for immediate UI feedback
-    const pointsToAdd = isFirstTime ? food.points : food.repeatPoints;
-    setScore(prevScore => prevScore + pointsToAdd);
-    setEatenFoods(prevEaten => new Set([...prevEaten, food.id]));
-    setFoodRegistrations(prev => [...prev, {
-      foodId: food.id,
-      foodName: food.name,
-      points: pointsToAdd,
-      isFirstTime: isFirstTime,
-      timestamp: new Date()
-    }]);
-
-    // Set the food with appropriate message
-    setSelectedFood({
-      ...food,
-      displayMessage: isFirstTime ? food.firstTimeMessage : food.repeatMessage,
-      isFirstTime: isFirstTime
-    });
-
-    // Show celebration screen
+    await selectFood(food);
     setCurrentScreen('celebration');
-
-    // Persist to database
-    try {
-      const response = await logsAPI.logPlant(food.id);
-      // Update score with actual total from database
-      if (response.totalPoints !== undefined) {
-        setScore(response.totalPoints);
-      }
-    } catch (err) {
-      console.error('Failed to log plant:', err);
-    }
 
     // Auto return to pick screen after 2 seconds
     setTimeout(() => {
       setCurrentScreen('pick');
-      setSelectedFood(null);
+      clearSelectedFood();
     }, 2000);
   };
 
@@ -126,7 +147,8 @@ const AppContent = () => {
   }
 
   return (
-    <div className="font-sans antialiased">
+    <div className="font-sans antialiased h-screen overflow-hidden">
+      {/* Onboarding Screen */}
       {currentScreen === 'onboarding' && (
         <OnboardingView
           onComplete={handleOnboardingComplete}
@@ -134,6 +156,7 @@ const AppContent = () => {
         />
       )}
 
+      {/* Main App Screens */}
       {currentScreen === 'pick' && (
         <>
           {activeTab === 'home' && (
@@ -162,6 +185,7 @@ const AppContent = () => {
         </>
       )}
 
+      {/* Celebration Screen */}
       {currentScreen === 'celebration' && selectedFood && (
         <CelebrationScreen message={selectedFood.displayMessage} />
       )}
@@ -169,12 +193,16 @@ const AppContent = () => {
   );
 };
 
-// Wrap with AuthProvider
+/**
+ * App - Root component with AuthProvider
+ */
 const App = () => {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 };
 
