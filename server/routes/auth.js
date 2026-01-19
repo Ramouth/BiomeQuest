@@ -43,8 +43,8 @@ router.post('/register', async (req, res, next) => {
     );
 
     const userId = result.lastInsertRowid;
-    if (!userId) {
-      throw createError.database('create your account');
+    if (userId === undefined || userId === null) {
+      throw createError.database('save');
     }
 
     // Generate JWT token

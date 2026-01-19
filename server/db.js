@@ -77,10 +77,18 @@ export function queryOne(sql, params = []) {
 // Helper function to run insert/update/delete
 export function run(sql, params = []) {
   db.run(sql, params);
+  const changes = db.getRowsModified();
+
+  // Get last insert rowid using a prepared statement for reliability
+  const stmt = db.prepare("SELECT last_insert_rowid() as id");
+  stmt.step();
+  const lastInsertRowid = stmt.getAsObject().id;
+  stmt.free();
+
   saveDatabase();
   return {
-    lastInsertRowid: db.exec("SELECT last_insert_rowid()")[0]?.values[0]?.[0],
-    changes: db.getRowsModified()
+    lastInsertRowid,
+    changes
   };
 }
 
