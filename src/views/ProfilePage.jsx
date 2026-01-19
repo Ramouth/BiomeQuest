@@ -3,10 +3,11 @@
  * Pure presentational component using ViewModels
  */
 
-import React from 'react';
-import { Award, Trophy, TrendingUp } from 'lucide-react';
+import React, { useState } from 'react';
+import { Award, Trophy, TrendingUp, Settings, LogOut } from 'lucide-react';
 import { useProfile } from '../viewmodels/useProfile';
 import { useBadges } from '../viewmodels/useBadges';
+import { useAuth } from '../context/AuthContext';
 
 const ProfilePage = ({ onBack, userName, userId, score }) => {
   // Use ViewModels for business logic
@@ -32,6 +33,15 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
     hideBadgePopup,
     checkBadgeUnlocked
   } = useBadges(totalPoints || score, weeklyPoints, weeklyGoal);
+
+  // Settings menu state
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const { logout } = useAuth();
+
+  const handleSignOut = () => {
+    setShowSettingsMenu(false);
+    logout();
+  };
 
   if (loading) {
     return (
@@ -72,7 +82,32 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
           <span className="text-xl">←</span>
         </button>
         <h1 className="text-lg font-bold text-gray-800">Profile</h1>
-        <div className="w-10" />
+        <div className="relative">
+          <button
+            onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <Settings size={20} className="text-gray-600" />
+          </button>
+
+          {showSettingsMenu && (
+            <>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setShowSettingsMenu(false)}
+              />
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                <button
+                  onClick={handleSignOut}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <LogOut size={18} />
+                  <span className="font-medium">Sign Out</span>
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 pt-2 pb-32">
