@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { initDatabase } from './db.js';
+import { errorHandler } from './utils/errors.js';
 
 // Load environment variables
 dotenv.config();
@@ -54,11 +55,8 @@ async function startServer() {
       res.json({ status: 'ok', message: 'BiomeQuest API is running' });
     });
 
-    // Error handling middleware
-    app.use((err, req, res, next) => {
-      console.error(err.stack);
-      res.status(500).json({ error: 'Something went wrong!' });
-    });
+    // Error handling middleware - provides user-friendly error messages
+    app.use(errorHandler);
 
     app.listen(PORT, () => {
       console.log(`BiomeQuest server running on http://localhost:${PORT}`);

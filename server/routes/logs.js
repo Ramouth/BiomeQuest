@@ -1,23 +1,28 @@
 import express from 'express';
 import { query, queryOne, run } from '../db.js';
 import { authenticateToken } from './auth.js';
+import { createError, validateUser, validateRequiredFields } from '../utils/errors.js';
 
 const router = express.Router();
 
 // Log a plant intake
-router.post('/', authenticateToken, (req, res) => {
+router.post('/', authenticateToken, (req, res, next) => {
   try {
     const { plantId } = req.body;
     const userId = req.user.userId;
 
     if (!plantId) {
-      return res.status(400).json({ error: 'Plant ID is required' });
+      throw createError.missingFields(['plantId']);
     }
+
+    // Verify user exists in database
+    const userExists = queryOne('SELECT id FROM users WHERE id = ?', [userId]);
+    validateUser(userExists, userId);
 
     // Get plant details
     const plant = queryOne('SELECT * FROM plants WHERE id = ? AND is_active = 1', [plantId]);
     if (!plant) {
-      return res.status(404).json({ error: 'Plant not found' });
+      throw createError.plantNotFound();
     }
 
     // Check if user has eaten this plant before
@@ -74,8 +79,7 @@ router.post('/', authenticateToken, (req, res) => {
       newBadges
     });
   } catch (error) {
-    console.error('Log plant error:', error);
-    res.status(500).json({ error: 'Failed to log plant' });
+    next(error);
   }
 });
 
@@ -83,6 +87,11 @@ router.post('/', authenticateToken, (req, res) => {
 function updateStreak(userId) {
   const user = queryOne('SELECT last_log_date, current_streak, longest_streak FROM users WHERE id = ?', [userId]);
   const today = new Date().toISOString().split('T')[0];
+
+  if (!user) {
+    console.error('updateStreak: User not found for userId:', userId);
+    return;
+  }
 
   if (!user.last_log_date) {
     // First log ever
@@ -150,8 +159,15 @@ function checkAndAwardBadges(userId) {
 }
 
 // Get user's logs for a specific day
-router.get('/daily/:date', authenticateToken, (req, res) => {
+router.get('/daily/:date', authenticateToken, (req, res, next) => {
   try {
+    const { date } = req.params;
+
+    // Validate date format
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw createError.badRequest('Invalid date format. Please use YYYY-MM-DD');
+    }
+
     const logs = query(`
       SELECT
         pl.id,
@@ -165,7 +181,7 @@ router.get('/daily/:date', authenticateToken, (req, res) => {
       JOIN plants p ON pl.plant_id = p.id
       WHERE pl.user_id = ? AND DATE(pl.logged_at) = ?
       ORDER BY pl.logged_at DESC
-    `, [req.user.userId, req.params.date]);
+    `, [req.user.userId, date]);
 
     const summary = queryOne(`
       SELECT
@@ -173,10 +189,10 @@ router.get('/daily/:date', authenticateToken, (req, res) => {
         SUM(points_earned) as points_earned
       FROM plant_logs
       WHERE user_id = ? AND DATE(logged_at) = ?
-    `, [req.user.userId, req.params.date]);
+    `, [req.user.userId, date]);
 
     res.json({
-      date: req.params.date,
+      date,
       logs,
       summary: {
         plantsLogged: summary?.plants_logged || 0,
@@ -184,14 +200,19 @@ router.get('/daily/:date', authenticateToken, (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get daily logs error:', error);
-    res.status(500).json({ error: 'Failed to get daily logs' });
+    next(error);
   }
 });
 
 // Get user's weekly summary (last 7 days)
-router.get('/weekly', authenticateToken, (req, res) => {
+router.get('/weekly', authenticateToken, (req, res, next) => {
   try {
+    // Verify user exists
+    const user = queryOne('SELECT weekly_goal FROM users WHERE id = ?', [req.user.userId]);
+    if (!user) {
+      throw createError.userNotFound();
+    }
+
     const logs = query(`
       SELECT
         DATE(logged_at) as date,
@@ -219,7 +240,7 @@ router.get('/weekly', authenticateToken, (req, res) => {
       [req.user.userId]
     );
 
-    const user = queryOne('SELECT weekly_goal FROM users WHERE id = ?', [req.user.userId]);
+    const weeklyGoal = user.weekly_goal || 30;
 
     res.json({
       dailyBreakdown: logs,
@@ -228,19 +249,24 @@ router.get('/weekly', authenticateToken, (req, res) => {
         weeklyPoints: summary?.total_points || 0,
         allTimePoints: allTimePoints?.total || 0,
         uniquePlants: summary?.unique_plants || 0,
-        weeklyGoal: user?.weekly_goal || 30,
-        progress: Math.min(100, Math.round(((summary?.total_points || 0) / (user?.weekly_goal || 30)) * 100))
+        weeklyGoal,
+        progress: Math.min(100, Math.round(((summary?.total_points || 0) / weeklyGoal) * 100))
       }
     });
   } catch (error) {
-    console.error('Get weekly logs error:', error);
-    res.status(500).json({ error: 'Failed to get weekly logs' });
+    next(error);
   }
 });
 
 // Get user's monthly summary (last 30 days)
-router.get('/monthly', authenticateToken, (req, res) => {
+router.get('/monthly', authenticateToken, (req, res, next) => {
   try {
+    // Verify user exists
+    const user = queryOne('SELECT monthly_goal FROM users WHERE id = ?', [req.user.userId]);
+    if (!user) {
+      throw createError.userNotFound();
+    }
+
     const logs = query(`
       SELECT
         DATE(logged_at) as date,
@@ -261,7 +287,7 @@ router.get('/monthly', authenticateToken, (req, res) => {
       WHERE user_id = ? AND logged_at >= date('now', '-30 days')
     `, [req.user.userId]);
 
-    const user = queryOne('SELECT monthly_goal FROM users WHERE id = ?', [req.user.userId]);
+    const monthlyGoal = user.monthly_goal || 120;
 
     res.json({
       dailyBreakdown: logs,
@@ -269,20 +295,23 @@ router.get('/monthly', authenticateToken, (req, res) => {
         totalLogs: summary?.total_logs || 0,
         totalPoints: summary?.total_points || 0,
         uniquePlants: summary?.unique_plants || 0,
-        monthlyGoal: user?.monthly_goal || 120,
-        progress: Math.min(100, Math.round(((summary?.total_points || 0) / (user?.monthly_goal || 120)) * 100))
+        monthlyGoal,
+        progress: Math.min(100, Math.round(((summary?.total_points || 0) / monthlyGoal) * 100))
       }
     });
   } catch (error) {
-    console.error('Get monthly logs error:', error);
-    res.status(500).json({ error: 'Failed to get monthly logs' });
+    next(error);
   }
 });
 
 // Get user's top plants
-router.get('/top-plants', authenticateToken, (req, res) => {
+router.get('/top-plants', authenticateToken, (req, res, next) => {
   try {
-    const limit = req.query.limit || 5;
+    // Validate and sanitize limit parameter
+    let limit = parseInt(req.query.limit, 10);
+    if (isNaN(limit) || limit < 1) limit = 5;
+    if (limit > 50) limit = 50; // Cap at reasonable maximum
+
     const plants = query(`
       SELECT
         p.id,
@@ -299,16 +328,21 @@ router.get('/top-plants', authenticateToken, (req, res) => {
 
     res.json(plants);
   } catch (error) {
-    console.error('Get top plants error:', error);
-    res.status(500).json({ error: 'Failed to get top plants' });
+    next(error);
   }
 });
 
 // Get all logs (with pagination)
-router.get('/', authenticateToken, (req, res) => {
+router.get('/', authenticateToken, (req, res, next) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    // Validate and sanitize pagination parameters
+    let page = parseInt(req.query.page, 10);
+    let limit = parseInt(req.query.limit, 10);
+
+    if (isNaN(page) || page < 1) page = 1;
+    if (isNaN(limit) || limit < 1) limit = 20;
+    if (limit > 100) limit = 100; // Cap at reasonable maximum
+
     const offset = (page - 1) * limit;
 
     const logs = query(`
@@ -342,8 +376,7 @@ router.get('/', authenticateToken, (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get logs error:', error);
-    res.status(500).json({ error: 'Failed to get logs' });
+    next(error);
   }
 });
 

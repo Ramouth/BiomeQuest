@@ -3,8 +3,18 @@
  * Handles weekly/daily progress data fetching and calculations
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { logsAPI } from '../models/api';
+
+/**
+ * Get user-friendly error message
+ */
+const getErrorMessage = (error) => {
+  if (error.userMessage) return error.userMessage;
+  if (error.code === 'AUTH_USER_NOT_FOUND') return 'Account not found. Please log out and register again';
+  if (error.code === 'NETWORK_ERROR') return 'Unable to connect. Please check your internet connection';
+  return error.message || 'Failed to load data. Please try again';
+};
 
 /**
  * Calculate progress percentage
@@ -76,25 +86,32 @@ export const useProgress = () => {
   /**
    * Fetch weekly summary data
    */
-  const fetchWeeklyData = async () => {
+  const fetchWeeklyData = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const data = await logsAPI.getWeekly();
       setWeeklyData(data);
       setWeeklyGoal(data.summary?.weeklyGoal || 30);
     } catch (err) {
       console.error('Failed to fetch weekly data:', err);
-      setError(err.message);
+      const errorMessage = getErrorMessage(err);
+      setError(errorMessage);
+
+      // If auth error, let it bubble up
+      if (err.requiresAuth) {
+        throw err;
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   /**
    * Fetch logs for a specific day
    * @param {number} dayIndex - Day index to fetch
    */
-  const fetchDailyLogs = async (dayIndex) => {
+  const fetchDailyLogs = useCallback(async (dayIndex) => {
     try {
       const dateStr = getDateForDayIndex(dayIndex, currentDayIndex);
       const data = await logsAPI.getDaily(dateStr);
@@ -102,8 +119,9 @@ export const useProgress = () => {
     } catch (err) {
       console.error('Failed to fetch daily logs:', err);
       setDailyLogs([]);
+      // Don't set error for daily logs - weekly data error is more important
     }
-  };
+  }, [currentDayIndex]);
 
   /**
    * Handle day selection

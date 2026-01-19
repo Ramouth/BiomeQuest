@@ -1,62 +1,64 @@
 import express from 'express';
 import { query, queryOne, run } from '../db.js';
 import { authenticateToken } from './auth.js';
+import { createError, validateRequiredFields } from '../utils/errors.js';
 
 const router = express.Router();
 
 // Submit a new plant request
-router.post('/', authenticateToken, (req, res) => {
+router.post('/', authenticateToken, (req, res, next) => {
   try {
     const { plantName, suggestedEmoji, description } = req.body;
 
-    if (!plantName) {
-      return res.status(400).json({ error: 'Plant name is required' });
+    if (!plantName || !plantName.trim()) {
+      throw createError.missingFields(['plantName']);
     }
+
+    const trimmedName = plantName.trim();
 
     // Check if plant already exists
     const existingPlant = queryOne(
       'SELECT id FROM plants WHERE LOWER(name) = LOWER(?)',
-      [plantName]
+      [trimmedName]
     );
 
     if (existingPlant) {
-      return res.status(409).json({ error: 'This plant already exists in the database' });
+      throw createError.badRequest('This plant already exists in the database');
     }
 
     // Check if there's already a pending request for this plant
     const existingRequest = queryOne(
       "SELECT id FROM plant_requests WHERE LOWER(plant_name) = LOWER(?) AND status = 'pending'",
-      [plantName]
+      [trimmedName]
     );
 
     if (existingRequest) {
-      return res.status(409).json({ error: 'A request for this plant is already pending' });
+      throw createError.badRequest('A request for this plant is already pending');
     }
 
     // Insert request
     const result = run(
       'INSERT INTO plant_requests (user_id, plant_name, suggested_emoji, description) VALUES (?, ?, ?, ?)',
-      [req.user.userId, plantName, suggestedEmoji || null, description || null]
+      [req.user.userId, trimmedName, suggestedEmoji || null, description || null]
     );
 
     res.status(201).json({
       message: 'Plant request submitted successfully',
       request: {
         id: result.lastInsertRowid,
-        plantName,
+        plantName: trimmedName,
         suggestedEmoji,
         description,
         status: 'pending'
       }
     });
   } catch (error) {
-    console.error('Submit request error:', error);
-    res.status(500).json({ error: 'Failed to submit request' });
+    next(error);
   }
 });
 
 // Get user's own requests
-router.get('/my-requests', authenticateToken, (req, res) => {
+router.get('/my-requests', authenticateToken, (req, res, next) => {
   try {
     const requests = query(`
       SELECT id, plant_name, suggested_emoji, description, status, admin_notes, created_at, reviewed_at
@@ -67,13 +69,12 @@ router.get('/my-requests', authenticateToken, (req, res) => {
 
     res.json(requests);
   } catch (error) {
-    console.error('Get my requests error:', error);
-    res.status(500).json({ error: 'Failed to get requests' });
+    next(error);
   }
 });
 
 // Get all pending requests (admin only - for now, anyone can view)
-router.get('/pending', authenticateToken, (req, res) => {
+router.get('/pending', authenticateToken, (req, res, next) => {
   try {
     const requests = query(`
       SELECT
@@ -92,16 +93,20 @@ router.get('/pending', authenticateToken, (req, res) => {
 
     res.json(requests);
   } catch (error) {
-    console.error('Get pending requests error:', error);
-    res.status(500).json({ error: 'Failed to get pending requests' });
+    next(error);
   }
 });
 
 // Approve a plant request (admin only - simplified, no admin check for now)
-router.post('/:id/approve', authenticateToken, (req, res) => {
+router.post('/:id/approve', authenticateToken, (req, res, next) => {
   try {
     const { emoji, points, repeatPoints } = req.body;
     const requestId = req.params.id;
+
+    // Validate request ID
+    if (!requestId || isNaN(parseInt(requestId, 10))) {
+      throw createError.badRequest('Invalid request ID');
+    }
 
     // Get the request
     const request = queryOne(
@@ -110,11 +115,11 @@ router.post('/:id/approve', authenticateToken, (req, res) => {
     );
 
     if (!request) {
-      return res.status(404).json({ error: 'Request not found' });
+      throw createError.notFound('Plant request');
     }
 
     if (request.status !== 'pending') {
-      return res.status(400).json({ error: 'Request has already been processed' });
+      throw createError.badRequest('Request has already been processed');
     }
 
     // Insert the new plant
@@ -139,16 +144,20 @@ router.post('/:id/approve', authenticateToken, (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Approve request error:', error);
-    res.status(500).json({ error: 'Failed to approve request' });
+    next(error);
   }
 });
 
 // Reject a plant request (admin only)
-router.post('/:id/reject', authenticateToken, (req, res) => {
+router.post('/:id/reject', authenticateToken, (req, res, next) => {
   try {
     const { adminNotes } = req.body;
     const requestId = req.params.id;
+
+    // Validate request ID
+    if (!requestId || isNaN(parseInt(requestId, 10))) {
+      throw createError.badRequest('Invalid request ID');
+    }
 
     // Get the request
     const request = queryOne(
@@ -157,11 +166,11 @@ router.post('/:id/reject', authenticateToken, (req, res) => {
     );
 
     if (!request) {
-      return res.status(404).json({ error: 'Request not found' });
+      throw createError.notFound('Plant request');
     }
 
     if (request.status !== 'pending') {
-      return res.status(400).json({ error: 'Request has already been processed' });
+      throw createError.badRequest('Request has already been processed');
     }
 
     // Update request status
@@ -172,8 +181,7 @@ router.post('/:id/reject', authenticateToken, (req, res) => {
 
     res.json({ message: 'Plant request rejected' });
   } catch (error) {
-    console.error('Reject request error:', error);
-    res.status(500).json({ error: 'Failed to reject request' });
+    next(error);
   }
 });
 

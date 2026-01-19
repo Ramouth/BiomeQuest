@@ -5,7 +5,7 @@ import { authenticateToken } from './auth.js';
 const router = express.Router();
 
 // Get all badges
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   try {
     const badges = query(
       'SELECT id, name, emoji, description, points_required FROM badges WHERE is_active = 1 ORDER BY sort_order, points_required'
@@ -13,13 +13,12 @@ router.get('/', (req, res) => {
 
     res.json(badges);
   } catch (error) {
-    console.error('Get badges error:', error);
-    res.status(500).json({ error: 'Failed to get badges' });
+    next(error);
   }
 });
 
 // Get user's badges with unlock status
-router.get('/user', authenticateToken, (req, res) => {
+router.get('/user', authenticateToken, (req, res, next) => {
   try {
     const badges = query(`
       SELECT
@@ -63,8 +62,7 @@ router.get('/user', authenticateToken, (req, res) => {
       } : null
     });
   } catch (error) {
-    console.error('Get user badges error:', error);
-    res.status(500).json({ error: 'Failed to get user badges' });
+    next(error);
   }
 });
 

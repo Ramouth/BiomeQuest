@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { query, queryOne, run } from '../db.js';
+import { createError, validateUser, validateRequiredFields } from '../utils/errors.js';
 
 const router = express.Router();
 
@@ -13,14 +14,12 @@ function generateAvatarSeed() {
 }
 
 // Register new user
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
     // Validate input
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: 'Username, email, and password are required' });
-    }
+    validateRequiredFields(req.body, ['username', 'email', 'password']);
 
     // Check if user already exists
     const existingUser = queryOne(
@@ -29,7 +28,7 @@ router.post('/register', async (req, res) => {
     );
 
     if (existingUser) {
-      return res.status(409).json({ error: 'Username or email already exists' });
+      throw createError.userExists();
     }
 
     // Hash password
@@ -44,6 +43,9 @@ router.post('/register', async (req, res) => {
     );
 
     const userId = result.lastInsertRowid;
+    if (!userId) {
+      throw createError.database('create your account');
+    }
 
     // Generate JWT token
     const token = jwt.sign({ userId, username }, JWT_SECRET, { expiresIn: '7d' });
@@ -59,19 +61,16 @@ router.post('/register', async (req, res) => {
       token
     });
   } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ error: 'Failed to register user' });
+    next(error);
   }
 });
 
 // Login
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
-    }
+    validateRequiredFields(req.body, ['email', 'password']);
 
     // Find user
     const user = queryOne(
@@ -80,13 +79,13 @@ router.post('/login', async (req, res) => {
     );
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      throw createError.invalidCredentials();
     }
 
     // Check password
     const validPassword = await bcrypt.compare(password, user.password_hash);
     if (!validPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      throw createError.invalidCredentials();
     }
 
     // Generate JWT token
@@ -112,8 +111,7 @@ router.post('/login', async (req, res) => {
       token
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Failed to login' });
+    next(error);
   }
 });
 
@@ -123,12 +121,14 @@ export function authenticateToken(req, res, next) {
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
-    return res.status(401).json({ error: 'Access token required' });
+    const error = createError.unauthorized();
+    return res.status(error.statusCode).json(error.toJSON());
   }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({ error: 'Invalid or expired token' });
+      const error = createError.invalidToken();
+      return res.status(error.statusCode).json(error.toJSON());
     }
     req.user = user;
     next();
@@ -136,16 +136,14 @@ export function authenticateToken(req, res, next) {
 }
 
 // Get current user profile
-router.get('/me', authenticateToken, (req, res) => {
+router.get('/me', authenticateToken, (req, res, next) => {
   try {
     const user = queryOne(
       'SELECT * FROM users WHERE id = ?',
       [req.user.userId]
     );
 
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+    validateUser(user, req.user.userId);
 
     // Get total points
     const points = queryOne(
@@ -182,15 +180,18 @@ router.get('/me', authenticateToken, (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get profile error:', error);
-    res.status(500).json({ error: 'Failed to get profile' });
+    next(error);
   }
 });
 
 // Update user goals
-router.patch('/goals', authenticateToken, (req, res) => {
+router.patch('/goals', authenticateToken, (req, res, next) => {
   try {
     const { weeklyGoal, monthlyGoal } = req.body;
+
+    // Verify user exists first
+    const user = queryOne('SELECT id FROM users WHERE id = ?', [req.user.userId]);
+    validateUser(user, req.user.userId);
 
     if (weeklyGoal !== undefined) {
       run('UPDATE users SET weekly_goal = ? WHERE id = ?', [weeklyGoal, req.user.userId]);
@@ -202,8 +203,7 @@ router.patch('/goals', authenticateToken, (req, res) => {
 
     res.json({ message: 'Goals updated successfully' });
   } catch (error) {
-    console.error('Update goals error:', error);
-    res.status(500).json({ error: 'Failed to update goals' });
+    next(error);
   }
 });
 

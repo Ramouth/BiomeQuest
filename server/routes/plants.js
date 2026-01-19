@@ -1,11 +1,12 @@
 import express from 'express';
 import { query, queryOne } from '../db.js';
 import { authenticateToken } from './auth.js';
+import { createError } from '../utils/errors.js';
 
 const router = express.Router();
 
 // Get all active plants
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
   try {
     const plants = query(
       'SELECT id, name, emoji, points, repeat_points, first_time_message, repeat_message FROM plants WHERE is_active = 1 ORDER BY name'
@@ -13,34 +14,48 @@ router.get('/', (req, res) => {
 
     res.json(plants);
   } catch (error) {
-    console.error('Get plants error:', error);
-    res.status(500).json({ error: 'Failed to get plants' });
+    next(error);
   }
 });
 
 // Get single plant by ID
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
   try {
+    const { id } = req.params;
+
+    // Validate ID is a number
+    if (!id || isNaN(parseInt(id, 10))) {
+      throw createError.badRequest('Invalid plant ID');
+    }
+
     const plant = queryOne(
       'SELECT id, name, emoji, points, repeat_points, first_time_message, repeat_message FROM plants WHERE id = ? AND is_active = 1',
-      [req.params.id]
+      [id]
     );
 
     if (!plant) {
-      return res.status(404).json({ error: 'Plant not found' });
+      throw createError.plantNotFound();
     }
 
     res.json(plant);
   } catch (error) {
-    console.error('Get plant error:', error);
-    res.status(500).json({ error: 'Failed to get plant' });
+    next(error);
   }
 });
 
 // Search plants by name
-router.get('/search/:query', (req, res) => {
+router.get('/search/:query', (req, res, next) => {
   try {
-    const searchQuery = `%${req.params.query}%`;
+    const { query: searchTerm } = req.params;
+
+    if (!searchTerm || searchTerm.trim().length === 0) {
+      throw createError.badRequest('Search term is required');
+    }
+
+    // Sanitize and limit search term length
+    const sanitizedTerm = searchTerm.trim().slice(0, 100);
+    const searchQuery = `%${sanitizedTerm}%`;
+
     const plants = query(
       'SELECT id, name, emoji, points, repeat_points FROM plants WHERE is_active = 1 AND name LIKE ? ORDER BY name LIMIT 10',
       [searchQuery]
@@ -48,13 +63,12 @@ router.get('/search/:query', (req, res) => {
 
     res.json(plants);
   } catch (error) {
-    console.error('Search plants error:', error);
-    res.status(500).json({ error: 'Failed to search plants' });
+    next(error);
   }
 });
 
 // Get plants with user's eaten status (requires auth)
-router.get('/user/status', authenticateToken, (req, res) => {
+router.get('/user/status', authenticateToken, (req, res, next) => {
   try {
     const plants = query(`
       SELECT
@@ -85,8 +99,7 @@ router.get('/user/status', authenticateToken, (req, res) => {
       totalPoints: totalPointsResult?.total || 0
     });
   } catch (error) {
-    console.error('Get plants with status error:', error);
-    res.status(500).json({ error: 'Failed to get plants' });
+    next(error);
   }
 });
 

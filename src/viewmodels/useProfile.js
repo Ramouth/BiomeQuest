@@ -3,8 +3,18 @@
  * Handles profile data fetching and aggregation
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { logsAPI, badgesAPI } from '../models/api';
+
+/**
+ * Get user-friendly error message
+ */
+const getErrorMessage = (error) => {
+  if (error.userMessage) return error.userMessage;
+  if (error.code === 'AUTH_USER_NOT_FOUND') return 'Account not found. Please log out and register again';
+  if (error.code === 'NETWORK_ERROR') return 'Unable to connect. Please check your internet connection';
+  return error.message || 'Failed to load profile. Please try again';
+};
 
 /**
  * ViewModel hook for profile data management
@@ -17,15 +27,10 @@ export const useProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch all profile data on mount
-  useEffect(() => {
-    fetchProfileData();
-  }, []);
-
   /**
    * Fetch all profile data in parallel
    */
-  const fetchProfileData = async () => {
+  const fetchProfileData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -41,11 +46,22 @@ export const useProfile = () => {
       setUserBadges(badgesData.badges || []);
     } catch (err) {
       console.error('Failed to fetch profile data:', err);
-      setError(err.message);
+      const errorMessage = getErrorMessage(err);
+      setError(errorMessage);
+
+      // If auth error, let it bubble up
+      if (err.requiresAuth) {
+        throw err;
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Fetch all profile data on mount
+  useEffect(() => {
+    fetchProfileData();
+  }, [fetchProfileData]);
 
   // Computed values from weekly data
   const totalPoints = weeklyData?.summary?.allTimePoints || 0;
