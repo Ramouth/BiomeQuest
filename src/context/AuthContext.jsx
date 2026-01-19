@@ -61,8 +61,12 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
+    // Clear all user-related data from localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('onboardingComplete');
+    // Reset user state
     setUser(null);
+    setError(null);
   };
 
   const value = {

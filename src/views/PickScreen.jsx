@@ -1,16 +1,25 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus, X, Sparkles, TrendingUp, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, Plus, X, Sparkles, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
+
+const ITEMS_PER_PAGE = 6;
 
 const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [recentlyAdded, setRecentlyAdded] = useState(null);
-  const [showRepeatFoods, setShowRepeatFoods] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredFoods = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const query = searchQuery.toLowerCase().trim();
     return foods.filter(food => food.name.toLowerCase().includes(query));
   }, [searchQuery, foods]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(foods.length / ITEMS_PER_PAGE);
+  const paginatedFoods = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return foods.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [foods, currentPage]);
 
   const handleFoodSelect = (food) => {
     onFoodSelect(food);
@@ -19,11 +28,11 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
     setSearchQuery('');
   };
 
-  const showSearchResults = searchQuery.trim().length > 0;
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
-  // Separate new and repeat foods for better visibility
-  const newFoods = foods.filter(f => !eatenFoods.has(f.id));
-  const repeatFoods = foods.filter(f => eatenFoods.has(f.id));
+  const showSearchResults = searchQuery.trim().length > 0;
 
   return (
     <div className="h-screen w-screen bg-gradient-to-b from-green-50 to-white flex flex-col fixed inset-0">
@@ -69,14 +78,14 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
       <div className="flex-1 overflow-y-auto px-5 py-5 pb-32">
         {!showSearchResults ? (
           <div className="space-y-6">
-            {/* New Plants Section - Gamification principle */}
-            {newFoods.length > 0 && (
+            {/* All Plants Section */}
+            {foods.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-yellow-500" />
                     <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                      Discover New ({newFoods.length})
+                      Plants ({foods.length})
                     </h2>
                   </div>
                   
@@ -90,55 +99,63 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">
-                  {newFoods.slice(0, 6).map((food) => (
-                    <FoodCard
-                      key={food.id}
-                      food={food}
-                      isNew={true}
-                      points={food.points}
-                      onSelect={handleFoodSelect}
-                      isRecentlyAdded={recentlyAdded === food.id}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Repeat Plants Section - Collapsible */}
-            {repeatFoods.length > 0 && (
-              <div>
-                <button
-                  onClick={() => setShowRepeatFoods(!showRepeatFoods)}
-                  className="w-full flex items-center justify-between mb-4 p-3 rounded-xl bg-white border border-gray-200 hover:border-gray-300 transition-all active:scale-98"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center">
-                      <Plus className="w-3 h-3 text-gray-600" />
-                    </div>
-                    <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
-                      Add Again ({repeatFoods.length})
-                    </h2>
-                  </div>
-                  
-                  {showRepeatFoods ? (
-                    <ChevronUp className="w-5 h-5 text-gray-600" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-600" />
-                  )}
-                </button>
-                
-                {showRepeatFoods && (
-                  <div className="grid grid-cols-2 gap-3 animate-fadeIn">
-                    {repeatFoods.slice(0, 6).map((food) => (
+                  {paginatedFoods.map((food) => {
+                    const isNew = !eatenFoods.has(food.id);
+                    return (
                       <FoodCard
                         key={food.id}
                         food={food}
-                        isNew={false}
-                        points={food.repeatPoints}
+                        isNew={isNew}
+                        points={isNew ? food.points : food.repeatPoints}
                         onSelect={handleFoodSelect}
                         isRecentlyAdded={recentlyAdded === food.id}
                       />
-                    ))}
+                    );
+                  })}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-6">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`p-2 rounded-xl transition-all ${
+                        currentPage === 1
+                          ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 active:scale-95'
+                      }`}
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`w-10 h-10 rounded-xl font-semibold text-sm transition-all ${
+                            currentPage === page
+                              ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg'
+                              : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 active:scale-95'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`p-2 rounded-xl transition-all ${
+                        currentPage === totalPages
+                          ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 active:scale-95'
+                      }`}
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
                   </div>
                 )}
               </div>
@@ -259,7 +276,7 @@ const FoodCard = ({ food, isNew, points, onSelect, isRecentlyAdded }) => {
       
       {/* Action button - clear affordance */}
       <div className={`
-        w-full py-2 rounded-xl flex items-center justify-center
+        w-full py-2 rounded-xl flex items-center justify-center gap-1
         transition-all
         ${isNew 
           ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700' 
@@ -267,6 +284,7 @@ const FoodCard = ({ food, isNew, points, onSelect, isRecentlyAdded }) => {
         }
       `}>
         <Plus className={`w-4 h-4 ${isNew ? 'text-white' : 'text-gray-600'}`} strokeWidth={3} />
+        {!isNew && <span className="text-xs font-semibold text-gray-600">Add Again</span>}
       </div>
     </button>
   );

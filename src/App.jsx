@@ -71,6 +71,19 @@ const AppContent = () => {
   // Check if user has completed onboarding before
   const hasCompletedOnboarding = localStorage.getItem('onboardingComplete') === 'true';
 
+  // Animation state - persisted to localStorage
+  const [animationsEnabled, setAnimationsEnabled] = useState(() => {
+    const saved = localStorage.getItem('animationsEnabled');
+    return saved !== null ? saved === 'true' : true; // Default to true
+  });
+
+  // Handle animation toggle
+  const handleToggleAnimations = () => {
+    const newValue = !animationsEnabled;
+    setAnimationsEnabled(newValue);
+    localStorage.setItem('animationsEnabled', String(newValue));
+  };
+
   // View state (navigation)
   const [currentScreen, setCurrentScreen] = useState(hasCompletedOnboarding ? 'pick' : 'onboarding');
   const [activeTab, setActiveTab] = useState('home');
@@ -123,13 +136,20 @@ const AppContent = () => {
    */
   const handleFoodSelect = async (food) => {
     await selectFood(food);
-    setCurrentScreen('celebration');
+    
+    // Only show celebration screen if animations are enabled
+    if (animationsEnabled) {
+      setCurrentScreen('celebration');
 
-    // Auto return to pick screen after 2 seconds
-    setTimeout(() => {
-      setCurrentScreen('pick');
+      // Auto return to pick screen after 2 seconds
+      setTimeout(() => {
+        setCurrentScreen('pick');
+        clearSelectedFood();
+      }, 2000);
+    } else {
+      // Skip celebration when animations are off
       clearSelectedFood();
-    }, 2000);
+    }
   };
 
   // Show loading spinner while checking auth
@@ -178,6 +198,8 @@ const AppContent = () => {
               userName={userName}
               userId={userId}
               score={score}
+              animationsEnabled={animationsEnabled}
+              onToggleAnimations={handleToggleAnimations}
             />
           )}
 
@@ -187,7 +209,7 @@ const AppContent = () => {
 
       {/* Celebration Screen */}
       {currentScreen === 'celebration' && selectedFood && (
-        <CelebrationScreen message={selectedFood.displayMessage} />
+        <CelebrationScreen message={selectedFood.displayMessage} animationsEnabled={animationsEnabled} />
       )}
     </div>
   );

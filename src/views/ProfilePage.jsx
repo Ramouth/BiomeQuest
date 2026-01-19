@@ -3,13 +3,13 @@
  * Pure presentational component using ViewModels
  */
 
-import React, { useState } from 'react';
-import { Award, Trophy, TrendingUp, Settings, LogOut } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles } from 'lucide-react';
 import { useProfile } from '../viewmodels/useProfile';
 import { useBadges } from '../viewmodels/useBadges';
 import { useAuth } from '../context/AuthContext';
 
-const ProfilePage = ({ onBack, userName, userId, score }) => {
+const ProfilePage = ({ onBack, userName, userId, score, animationsEnabled, onToggleAnimations }) => {
   // Use ViewModels for business logic
   const {
     topPlants,
@@ -53,8 +53,8 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
 
   return (
     <div className="w-full h-screen flex flex-col" style={{ background: 'linear-gradient(to bottom, #f0fdf4, #eff6ff)' }}>
-      {/* Badge Unlock Popup */}
-      {showBadgePopup && (
+      {/* Badge Unlock Popup - only show when animations enabled */}
+      {animationsEnabled && showBadgePopup && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-3xl p-8 max-w-sm mx-4 animate-bounce shadow-2xl transform scale-100">
             <div className="text-center">
@@ -74,7 +74,7 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
       )}
 
       {/* Header with back button */}
-      <div className="flex-shrink-0 bg-white/80 backdrop-blur-md border-b border-gray-200 p-4 flex items-center justify-between">
+      <div className="flex-shrink-0 bg-white/80 backdrop-blur-md border-b border-gray-200 p-4 flex items-center justify-between relative z-[120]">
         <button
           onClick={onBack}
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -93,24 +93,75 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
           {showSettingsMenu && (
             <>
               <div
-                className="fixed inset-0 z-40"
+                className="fixed inset-0 z-[100]"
                 onClick={() => setShowSettingsMenu(false)}
               />
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
-                <button
-                  onClick={handleSignOut}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
-                >
-                  <LogOut size={18} />
-                  <span className="font-medium">Sign Out</span>
-                </button>
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-[130]">
+                {/* Animation Toggle */}
+                <div className="px-4 py-4 bg-gradient-to-r from-gray-50 to-white">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                        animationsEnabled 
+                          ? 'bg-gradient-to-br from-amber-400 to-orange-500' 
+                          : 'bg-gray-200'
+                      }`}>
+                        <Sparkles size={16} className={animationsEnabled ? 'text-white' : 'text-gray-500'} />
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-800 text-sm block">Animations</span>
+                        <span className="text-xs text-gray-500">
+                          {animationsEnabled ? 'Celebrations & effects on' : 'Minimal mode'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={onToggleAnimations}
+                    className={`relative w-full h-10 rounded-xl transition-all duration-300 ${
+                      animationsEnabled 
+                        ? 'bg-gradient-to-r from-green-500 to-green-600 shadow-lg shadow-green-500/30' 
+                        : 'bg-gray-200'
+                    }`}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-between px-3">
+                      <span className={`text-xs font-semibold transition-opacity ${
+                        animationsEnabled ? 'text-white/70' : 'text-transparent'
+                      }`}>ON</span>
+                      <span className={`text-xs font-semibold transition-opacity ${
+                        !animationsEnabled ? 'text-gray-500' : 'text-transparent'
+                      }`}>OFF</span>
+                    </div>
+                    <div
+                      className={`absolute top-1.5 w-12 h-7 bg-white rounded-lg shadow-md transition-all duration-300 flex items-center justify-center ${
+                        animationsEnabled ? 'left-[calc(100%-52px)]' : 'left-1.5'
+                      }`}
+                    >
+                      <span className={`text-xs font-bold ${
+                        animationsEnabled ? 'text-green-600' : 'text-gray-500'
+                      }`}>
+                        {animationsEnabled ? 'ON' : 'OFF'}
+                      </span>
+                    </div>
+                  </button>
+                </div>
+
+                <div className="border-t border-gray-100">
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <LogOut size={18} />
+                    <span className="font-medium">Sign Out</span>
+                  </button>
+                </div>
               </div>
             </>
           )}
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-5 pt-2 pb-32">
+      <div className="flex-1 overflow-y-auto px-5 pt-2 pb-32 relative z-0">
         {/* Header with Avatar */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-24 h-24 rounded-full overflow-hidden shadow-xl border-4 border-white mb-4 ring-4 ring-green-500/20">
@@ -122,7 +173,7 @@ const ProfilePage = ({ onBack, userName, userId, score }) => {
           </div>
           <h1 className="text-2xl font-bold text-gray-800 mb-1">{userName}</h1>
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm text-gray-500 font-mono bg-white/70 backdrop-blur-sm px-3 py-1 rounded-full">
+            <span className="text-sm text-gray-500 font-mono bg-white px-3 py-1 rounded-full">
               ID: {userId}
             </span>
           </div>
