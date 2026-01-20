@@ -1,51 +1,74 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- Outer lettuce leaves -->
-  <path d="M50 5 Q80 15 90 50 Q85 85 50 95 Q15 85 10 50 Q20 15 50 5 Z" fill="#81C784"/>
-  <path d="M50 5 Q80 15 90 50 Q85 85 50 95 Q15 85 10 50 Q20 15 50 5 Z" fill="url(#leafGrad1)"/>
+  <path d="M50 3 Q85 18 92 52 Q88 88 50 97 Q12 88 8 52 Q15 18 50 3 Z" fill="url(#leafGrad1)"/>
 
-  <!-- Wavy leaf edges -->
-  <path d="M50 5 Q60 10 65 5 Q75 15 80 12 Q88 25 90 50" stroke="#66BB6A" stroke-width="2" fill="none"/>
-  <path d="M50 5 Q40 10 35 5 Q25 15 20 12 Q12 25 10 50" stroke="#66BB6A" stroke-width="2" fill="none"/>
+  <!-- Leaf shadow -->
+  <path d="M60 10 Q88 30 85 65 Q75 95 50 97" fill="#43A047" opacity="0.2"/>
+
+  <!-- Wavy leaf edges with more detail -->
+  <path d="M50 3 Q58 8 62 4 Q72 12 78 8 Q86 22 90 18 Q94 35 92 52" stroke="#4CAF50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M50 3 Q42 8 38 4 Q28 12 22 8 Q14 22 10 18 Q6 35 8 52" stroke="#4CAF50" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
   <!-- Inner leaves layer -->
-  <path d="M50 15 Q72 25 78 50 Q72 75 50 85 Q28 75 22 50 Q28 25 50 15 Z" fill="#A5D6A7"/>
+  <path d="M50 14 Q75 28 80 52 Q75 78 50 87 Q25 78 20 52 Q25 28 50 14 Z" fill="#81C784"/>
 
   <!-- Center light area (the heart) -->
-  <ellipse cx="50" cy="55" rx="25" ry="30" fill="#C8E6C9"/>
+  <ellipse cx="50" cy="56" rx="27" ry="32" fill="url(#leafInner)"/>
 
-  <!-- Leaf veins -->
-  <path d="M50 25 Q50 50 50 80" stroke="#81C784" stroke-width="1.5" fill="none" opacity="0.5"/>
-  <path d="M50 40 Q35 50 25 55" stroke="#81C784" stroke-width="1" fill="none" opacity="0.4"/>
-  <path d="M50 40 Q65 50 75 55" stroke="#81C784" stroke-width="1" fill="none" opacity="0.4"/>
-  <path d="M50 55 Q38 65 30 72" stroke="#81C784" stroke-width="1" fill="none" opacity="0.4"/>
-  <path d="M50 55 Q62 65 70 72" stroke="#81C784" stroke-width="1" fill="none" opacity="0.4"/>
+  <!-- Leaf veins with detail -->
+  <path d="M50 22 Q50 52 50 84" stroke="#66BB6A" stroke-width="2" fill="none" opacity="0.5"/>
+  <path d="M50 35 Q38 45 26 52" stroke="#66BB6A" stroke-width="1.5" fill="none" opacity="0.4"/>
+  <path d="M50 35 Q62 45 74 52" stroke="#66BB6A" stroke-width="1.5" fill="none" opacity="0.4"/>
+  <path d="M50 50 Q40 60 28 70" stroke="#66BB6A" stroke-width="1.2" fill="none" opacity="0.35"/>
+  <path d="M50 50 Q60 60 72 70" stroke="#66BB6A" stroke-width="1.2" fill="none" opacity="0.35"/>
+  <path d="M50 65 Q42 72 35 80" stroke="#66BB6A" stroke-width="1" fill="none" opacity="0.3"/>
+  <path d="M50 65 Q58 72 65 80" stroke="#66BB6A" stroke-width="1" fill="none" opacity="0.3"/>
+
+  <!-- Highlight -->
+  <ellipse cx="32" cy="35" rx="10" ry="14" fill="white" opacity="0.12"/>
 
   <!-- Face - Gentle eyes -->
-  <ellipse cx="38" cy="48" rx="7" ry="8" fill="white"/>
-  <ellipse cx="62" cy="48" rx="7" ry="8" fill="white"/>
-  <circle cx="39" cy="49" r="4" fill="#2E7D32"/>
-  <circle cx="63" cy="49" r="4" fill="#2E7D32"/>
-  <circle cx="40" cy="48" r="1.5" fill="white"/>
-  <circle cx="64" cy="48" r="1.5" fill="white"/>
+  <ellipse cx="38" cy="50" rx="8" ry="9" fill="white"/>
+  <ellipse cx="62" cy="50" rx="8" ry="9" fill="white"/>
+  <ellipse cx="38" cy="50" rx="7" ry="8" fill="#FAFAFA"/>
+  <ellipse cx="62" cy="50" rx="7" ry="8" fill="#FAFAFA"/>
+  <circle cx="39" cy="51" r="4.5" fill="#2E7D32"/>
+  <circle cx="63" cy="51" r="4.5" fill="#2E7D32"/>
+  <circle cx="40" cy="50" r="1.8" fill="white"/>
+  <circle cx="64" cy="50" r="1.8" fill="white"/>
+  <circle cx="38" cy="52" r="0.8" fill="white" opacity="0.5"/>
+  <circle cx="62" cy="52" r="0.8" fill="white" opacity="0.5"/>
 
   <!-- Soft eyebrows -->
-  <path d="M29 40 Q38 36 47 41" stroke="#43A047" stroke-width="2" fill="none"/>
-  <path d="M53 41 Q62 36 71 40" stroke="#43A047" stroke-width="2" fill="none"/>
+  <path d="M27 41 Q38 36 49 42" stroke="#43A047" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M51 42 Q62 36 73 41" stroke="#43A047" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
   <!-- Small nose -->
-  <ellipse cx="50" cy="60" rx="3" ry="4" fill="#81C784"/>
+  <ellipse cx="50" cy="62" rx="3.5" ry="4.5" fill="#81C784"/>
+  <ellipse cx="50" cy="63" rx="2" ry="2" fill="#66BB6A" opacity="0.4"/>
 
   <!-- Peaceful smile -->
-  <path d="M38 72 Q50 82 62 72" stroke="#2E7D32" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M38 75 Q50 86 62 75" stroke="#2E7D32" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M40 76 Q50 84 60 76" stroke="#A5D6A7" stroke-width="1.5" fill="none" opacity="0.3"/>
 
   <!-- Soft cheeks -->
-  <circle cx="28" cy="60" r="6" fill="#A5D6A7" opacity="0.6"/>
-  <circle cx="72" cy="60" r="6" fill="#A5D6A7" opacity="0.6"/>
+  <circle cx="26" cy="62" r="7" fill="url(#leafCheek)"/>
+  <circle cx="74" cy="62" r="7" fill="url(#leafCheek)"/>
 
   <defs>
-    <radialGradient id="leafGrad1" cx="50%" cy="50%">
+    <radialGradient id="leafGrad1" cx="50%" cy="30%">
       <stop offset="0%" stop-color="#A5D6A7"/>
+      <stop offset="50%" stop-color="#81C784"/>
       <stop offset="100%" stop-color="#66BB6A"/>
+    </radialGradient>
+    <radialGradient id="leafInner" cx="50%" cy="35%">
+      <stop offset="0%" stop-color="#E8F5E9"/>
+      <stop offset="50%" stop-color="#C8E6C9"/>
+      <stop offset="100%" stop-color="#A5D6A7"/>
+    </radialGradient>
+    <radialGradient id="leafCheek" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#C8E6C9" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#C8E6C9" stop-opacity="0"/>
     </radialGradient>
   </defs>
 </svg>

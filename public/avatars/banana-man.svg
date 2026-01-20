@@ -1,46 +1,65 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- Banana curved body -->
-  <path d="M75 10 Q95 30 85 55 Q75 80 50 95 Q25 95 15 75 Q10 60 20 50 Q30 40 45 35 Q60 25 75 10 Z" fill="#FFEB3B"/>
-  <path d="M75 10 Q95 30 85 55 Q75 80 50 95 Q25 95 15 75 Q10 60 20 50 Q30 40 45 35 Q60 25 75 10 Z" fill="url(#bananaGrad)"/>
+  <path d="M75 8 Q98 32 86 58 Q74 84 48 97 Q22 97 12 76 Q6 58 18 46 Q30 34 48 28 Q66 18 75 8 Z" fill="url(#bananaGrad)"/>
 
-  <!-- Banana tip (brown) -->
-  <ellipse cx="75" cy="12" rx="6" ry="8" fill="#8D6E63" transform="rotate(-45 75 12)"/>
+  <!-- Banana shadow -->
+  <path d="M70 20 Q90 45 75 75 Q55 97 48 97" fill="#F9A825" opacity="0.3"/>
+
+  <!-- Banana highlight -->
+  <path d="M65 18 Q55 30 50 45 Q45 55 42 60" stroke="white" stroke-width="8" fill="none" opacity="0.15" stroke-linecap="round"/>
+
+  <!-- Banana tip (brown) top -->
+  <ellipse cx="76" cy="10" rx="7" ry="9" fill="#6D4C41" transform="rotate(-50 76 10)"/>
+  <ellipse cx="76" cy="10" rx="5" ry="6" fill="#8D6E63" transform="rotate(-50 76 10)" opacity="0.5"/>
 
   <!-- Bottom tip -->
-  <ellipse cx="17" cy="72" rx="5" ry="7" fill="#6D4C41" transform="rotate(30 17 72)"/>
+  <ellipse cx="14" cy="74" rx="6" ry="8" fill="#5D4037" transform="rotate(35 14 74)"/>
+  <ellipse cx="14" cy="74" rx="4" ry="5" fill="#6D4C41" transform="rotate(35 14 74)" opacity="0.5"/>
 
   <!-- Banana spots/freckles -->
-  <circle cx="55" cy="50" r="2" fill="#F9A825" opacity="0.5"/>
-  <circle cx="40" cy="60" r="1.5" fill="#F9A825" opacity="0.5"/>
-  <circle cx="65" cy="40" r="1.5" fill="#F9A825" opacity="0.5"/>
+  <circle cx="58" cy="48" r="2.5" fill="#F57F17" opacity="0.4"/>
+  <circle cx="42" cy="62" r="2" fill="#F57F17" opacity="0.35"/>
+  <circle cx="68" cy="38" r="1.8" fill="#F57F17" opacity="0.35"/>
+  <circle cx="32" cy="72" r="1.5" fill="#F57F17" opacity="0.3"/>
 
   <!-- Face - Eyes -->
-  <ellipse cx="45" cy="52" rx="6" ry="7" fill="white"/>
-  <ellipse cx="62" cy="45" rx="6" ry="7" fill="white"/>
-  <circle cx="46" cy="53" r="3.5" fill="#2C1810"/>
-  <circle cx="63" cy="46" r="3.5" fill="#2C1810"/>
-  <circle cx="47" cy="52" r="1.2" fill="white"/>
-  <circle cx="64" cy="45" r="1.2" fill="white"/>
+  <ellipse cx="45" cy="52" rx="7" ry="8" fill="white"/>
+  <ellipse cx="64" cy="44" rx="7" ry="8" fill="white"/>
+  <ellipse cx="45" cy="52" rx="6" ry="7" fill="#FAFAFA"/>
+  <ellipse cx="64" cy="44" rx="6" ry="7" fill="#FAFAFA"/>
+  <circle cx="46" cy="53" r="4" fill="#2C1810"/>
+  <circle cx="65" cy="45" r="4" fill="#2C1810"/>
+  <circle cx="47" cy="52" r="1.5" fill="white"/>
+  <circle cx="66" cy="44" r="1.5" fill="white"/>
+  <circle cx="45" cy="54" r="0.7" fill="white" opacity="0.5"/>
+  <circle cx="64" cy="46" r="0.7" fill="white" opacity="0.5"/>
 
   <!-- Raised eyebrow (playful expression) -->
-  <path d="M37 44 Q45 40 53 45" stroke="#F57F17" stroke-width="2" fill="none"/>
-  <path d="M55 36 Q63 30 71 38" stroke="#F57F17" stroke-width="2.5" fill="none"/>
+  <path d="M36 44 Q45 39 54 45" stroke="#F57F17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M56 34 Q65 28 74 36" stroke="#F57F17" stroke-width="3" fill="none" stroke-linecap="round"/>
 
   <!-- Nose -->
-  <ellipse cx="55" cy="58" rx="3" ry="3.5" fill="#FBC02D"/>
+  <ellipse cx="56" cy="58" rx="3.5" ry="4" fill="#FBC02D"/>
+  <ellipse cx="56" cy="59" rx="2" ry="2" fill="#F9A825" opacity="0.4"/>
 
   <!-- Cheeky grin -->
-  <path d="M40 70 Q55 82 65 65" stroke="#F57F17" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M40 72 Q55 85 68 66" stroke="#F57F17" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M42 73 Q54 82 66 67" stroke="#FFEB3B" stroke-width="1.5" fill="none" opacity="0.3"/>
 
   <!-- Cheeks -->
-  <circle cx="35" cy="62" r="5" fill="#FFCC80" opacity="0.6"/>
-  <circle cx="72" cy="55" r="5" fill="#FFCC80" opacity="0.6"/>
+  <circle cx="34" cy="64" r="6" fill="url(#bananaCheek)"/>
+  <circle cx="74" cy="54" r="6" fill="url(#bananaCheek)"/>
 
   <defs>
     <linearGradient id="bananaGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FFF176"/>
-      <stop offset="50%" stop-color="#FFEB3B"/>
+      <stop offset="0%" stop-color="#FFF59D"/>
+      <stop offset="30%" stop-color="#FFEE58"/>
+      <stop offset="70%" stop-color="#FFEB3B"/>
       <stop offset="100%" stop-color="#FDD835"/>
     </linearGradient>
+    <radialGradient id="bananaCheek" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#FFCC80" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#FFCC80" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 </svg>

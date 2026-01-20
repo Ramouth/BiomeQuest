@@ -1,43 +1,62 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- Apple body/head -->
-  <ellipse cx="50" cy="55" rx="38" ry="40" fill="#E53935"/>
   <ellipse cx="50" cy="55" rx="38" ry="40" fill="url(#appleGrad)"/>
 
+  <!-- Apple shadow/depth -->
+  <ellipse cx="60" cy="70" rx="25" ry="20" fill="#B71C1C" opacity="0.3"/>
+
+  <!-- Apple highlight -->
+  <ellipse cx="32" cy="38" rx="12" ry="16" fill="white" opacity="0.25"/>
+
   <!-- Apple indent at top -->
-  <path d="M45 18 Q50 25 55 18" stroke="#C62828" stroke-width="3" fill="none"/>
+  <path d="M42 18 Q50 28 58 18" stroke="#8B0000" stroke-width="4" fill="none" stroke-linecap="round"/>
 
-  <!-- Stem -->
-  <rect x="48" y="8" width="4" height="12" rx="2" fill="#5D4037"/>
+  <!-- Stem with detail -->
+  <rect x="47" y="6" width="6" height="14" rx="3" fill="#5D4037"/>
+  <rect x="48" y="7" width="2" height="12" rx="1" fill="#8D6E63" opacity="0.5"/>
 
-  <!-- Leaf -->
-  <ellipse cx="60" cy="12" rx="10" ry="5" fill="#43A047" transform="rotate(25 60 12)"/>
+  <!-- Leaf with vein -->
+  <ellipse cx="62" cy="11" rx="12" ry="6" fill="#43A047" transform="rotate(30 62 11)"/>
+  <ellipse cx="62" cy="11" rx="10" ry="4" fill="#66BB6A" transform="rotate(30 62 11)"/>
+  <path d="M56 11 Q62 11 68 11" stroke="#2E7D32" stroke-width="0.8" fill="none" transform="rotate(30 62 11)"/>
 
-  <!-- Face - Eyes -->
-  <ellipse cx="35" cy="50" rx="6" ry="7" fill="white"/>
-  <ellipse cx="65" cy="50" rx="6" ry="7" fill="white"/>
-  <circle cx="36" cy="51" r="3" fill="#2C1810"/>
-  <circle cx="66" cy="51" r="3" fill="#2C1810"/>
-  <circle cx="37" cy="50" r="1" fill="white"/>
-  <circle cx="67" cy="50" r="1" fill="white"/>
+  <!-- Face - Eyes with more detail -->
+  <ellipse cx="35" cy="50" rx="7" ry="8" fill="white"/>
+  <ellipse cx="65" cy="50" rx="7" ry="8" fill="white"/>
+  <ellipse cx="35" cy="50" rx="6" ry="7" fill="#FAFAFA"/>
+  <ellipse cx="65" cy="50" rx="6" ry="7" fill="#FAFAFA"/>
+  <circle cx="36" cy="51" r="4" fill="#2C1810"/>
+  <circle cx="66" cy="51" r="4" fill="#2C1810"/>
+  <circle cx="37" cy="50" r="1.5" fill="white"/>
+  <circle cx="67" cy="50" r="1.5" fill="white"/>
+  <circle cx="35" cy="52" r="0.8" fill="white" opacity="0.5"/>
+  <circle cx="65" cy="52" r="0.8" fill="white" opacity="0.5"/>
 
-  <!-- Eyebrows -->
-  <path d="M28 42 Q35 38 42 42" stroke="#5D4037" stroke-width="2" fill="none"/>
-  <path d="M58 42 Q65 38 72 42" stroke="#5D4037" stroke-width="2" fill="none"/>
+  <!-- Eyebrows with thickness variation -->
+  <path d="M26 41 Q35 36 44 41" stroke="#5D4037" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M56 41 Q65 36 74 41" stroke="#5D4037" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
-  <!-- Nose -->
-  <ellipse cx="50" cy="62" rx="3" ry="4" fill="#C62828"/>
+  <!-- Nose with nostril hint -->
+  <ellipse cx="50" cy="62" rx="4" ry="5" fill="#C62828"/>
+  <ellipse cx="50" cy="63" rx="2.5" ry="2" fill="#B71C1C" opacity="0.4"/>
 
-  <!-- Smile -->
-  <path d="M35 72 Q50 85 65 72" stroke="#2C1810" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Smile with lip detail -->
+  <path d="M35 72 Q50 87 65 72" stroke="#2C1810" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M38 74 Q50 83 62 74" stroke="#D32F2F" stroke-width="1.5" fill="none" opacity="0.4"/>
 
-  <!-- Cheeks -->
-  <circle cx="28" cy="65" r="6" fill="#FF8A80" opacity="0.6"/>
-  <circle cx="72" cy="65" r="6" fill="#FF8A80" opacity="0.6"/>
+  <!-- Cheeks with gradient -->
+  <circle cx="26" cy="64" r="7" fill="url(#cheekGrad)"/>
+  <circle cx="74" cy="64" r="7" fill="url(#cheekGrad)"/>
 
   <defs>
     <radialGradient id="appleGrad" cx="30%" cy="30%">
       <stop offset="0%" stop-color="#EF5350"/>
+      <stop offset="60%" stop-color="#E53935"/>
       <stop offset="100%" stop-color="#C62828"/>
+    </radialGradient>
+    <radialGradient id="cheekGrad" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#FF8A80" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#FF8A80" stop-opacity="0"/>
     </radialGradient>
   </defs>
 </svg>

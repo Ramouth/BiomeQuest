@@ -1,49 +1,71 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- Avocado body (pear shape) -->
-  <path d="M50 5 Q20 25 15 55 Q10 80 30 92 Q50 100 70 92 Q90 80 85 55 Q80 25 50 5 Z" fill="#5D4037"/>
-  <path d="M50 8 Q23 27 18 55 Q14 78 32 89 Q50 96 68 89 Q86 78 82 55 Q77 27 50 8 Z" fill="#8BC34A"/>
-  <path d="M50 8 Q23 27 18 55 Q14 78 32 89 Q50 96 68 89 Q86 78 82 55 Q77 27 50 8 Z" fill="url(#avoGrad)"/>
+  <!-- Avocado skin (outer dark) -->
+  <path d="M50 5 Q18 28 13 58 Q8 85 32 94 Q50 100 68 94 Q92 85 87 58 Q82 28 50 5 Z" fill="#4E342E"/>
 
-  <!-- Inner lighter flesh -->
-  <ellipse cx="50" cy="62" rx="28" ry="30" fill="#C5E1A5"/>
+  <!-- Avocado flesh (green) -->
+  <path d="M50 10 Q22 32 18 58 Q14 82 35 90 Q50 95 65 90 Q86 82 82 58 Q78 32 50 10 Z" fill="url(#avoGrad)"/>
+
+  <!-- Inner lighter flesh ring -->
+  <ellipse cx="50" cy="60" rx="30" ry="32" fill="#C5E1A5"/>
+  <ellipse cx="50" cy="60" rx="28" ry="30" fill="url(#avoInner)"/>
+
+  <!-- Flesh highlight -->
+  <ellipse cx="28" cy="42" rx="10" ry="15" fill="white" opacity="0.15"/>
 
   <!-- Pit (forms face area) -->
-  <ellipse cx="50" cy="60" rx="18" ry="20" fill="#8D6E63"/>
-  <ellipse cx="50" cy="60" rx="18" ry="20" fill="url(#pitGrad)"/>
+  <ellipse cx="50" cy="60" rx="20" ry="22" fill="url(#pitGrad)"/>
+
+  <!-- Pit highlight -->
+  <ellipse cx="42" cy="52" rx="8" ry="10" fill="#A1887F" opacity="0.4"/>
+
+  <!-- Pit shadow -->
+  <ellipse cx="56" cy="68" rx="10" ry="8" fill="#4E342E" opacity="0.2"/>
 
   <!-- Face on pit - Eyes -->
-  <ellipse cx="43" cy="55" rx="4" ry="5" fill="white"/>
-  <ellipse cx="57" cy="55" rx="4" ry="5" fill="white"/>
-  <circle cx="44" cy="56" r="2.5" fill="#2C1810"/>
-  <circle cx="58" cy="56" r="2.5" fill="#2C1810"/>
-  <circle cx="45" cy="55" r="1" fill="white"/>
-  <circle cx="59" cy="55" r="1" fill="white"/>
+  <ellipse cx="43" cy="54" rx="5" ry="6" fill="white"/>
+  <ellipse cx="57" cy="54" rx="5" ry="6" fill="white"/>
+  <ellipse cx="43" cy="54" rx="4" ry="5" fill="#FAFAFA"/>
+  <ellipse cx="57" cy="54" rx="4" ry="5" fill="#FAFAFA"/>
+  <circle cx="44" cy="55" r="3" fill="#2C1810"/>
+  <circle cx="58" cy="55" r="3" fill="#2C1810"/>
+  <circle cx="45" cy="54" r="1.2" fill="white"/>
+  <circle cx="59" cy="54" r="1.2" fill="white"/>
+  <circle cx="43" cy="56" r="0.5" fill="white" opacity="0.5"/>
+  <circle cx="57" cy="56" r="0.5" fill="white" opacity="0.5"/>
 
   <!-- Eyebrows -->
-  <path d="M37 50 Q43 47 49 50" stroke="#5D4037" stroke-width="1.5" fill="none"/>
-  <path d="M51 50 Q57 47 63 50" stroke="#5D4037" stroke-width="1.5" fill="none"/>
+  <path d="M36 48 Q43 45 50 49" stroke="#5D4037" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M50 49 Q57 45 64 48" stroke="#5D4037" stroke-width="1.8" fill="none" stroke-linecap="round"/>
 
   <!-- Nose -->
-  <ellipse cx="50" cy="62" rx="2" ry="3" fill="#6D4C41"/>
+  <ellipse cx="50" cy="62" rx="2.5" ry="3.5" fill="#6D4C41"/>
+  <ellipse cx="50" cy="63" rx="1.5" ry="1.5" fill="#5D4037" opacity="0.4"/>
 
   <!-- Smile -->
-  <path d="M43 70 Q50 77 57 70" stroke="#4E342E" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M43 71 Q50 79 57 71" stroke="#4E342E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M45 72 Q50 77 55 72" stroke="#8D6E63" stroke-width="1" fill="none" opacity="0.3"/>
 
   <!-- Cheeks on pit -->
-  <circle cx="38" cy="65" r="3" fill="#A1887F" opacity="0.5"/>
-  <circle cx="62" cy="65" r="3" fill="#A1887F" opacity="0.5"/>
-
-  <!-- Highlight on flesh -->
-  <ellipse cx="30" cy="45" rx="8" ry="12" fill="white" opacity="0.2"/>
+  <circle cx="37" cy="65" r="4" fill="url(#avoCheek)"/>
+  <circle cx="63" cy="65" r="4" fill="url(#avoCheek)"/>
 
   <defs>
     <linearGradient id="avoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#9CCC65"/>
       <stop offset="100%" stop-color="#7CB342"/>
     </linearGradient>
-    <radialGradient id="pitGrad" cx="40%" cy="40%">
+    <radialGradient id="avoInner" cx="50%" cy="40%">
+      <stop offset="0%" stop-color="#DCEDC8"/>
+      <stop offset="100%" stop-color="#AED581"/>
+    </radialGradient>
+    <radialGradient id="pitGrad" cx="35%" cy="35%">
       <stop offset="0%" stop-color="#A1887F"/>
+      <stop offset="60%" stop-color="#8D6E63"/>
       <stop offset="100%" stop-color="#6D4C41"/>
+    </radialGradient>
+    <radialGradient id="avoCheek" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#BCAAA4" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#BCAAA4" stop-opacity="0"/>
     </radialGradient>
   </defs>
 </svg>
