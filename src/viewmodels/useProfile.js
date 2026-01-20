@@ -36,7 +36,7 @@ export const useProfile = () => {
       setError(null);
 
       const [topPlantsData, weeklyDataRes, badgesData] = await Promise.all([
-        logsAPI.getTopPlants(5),
+        logsAPI.getTopPlants(50), // Fetch more plants for "View All" feature
         logsAPI.getWeekly(),
         badgesAPI.getUserBadges().catch(() => ({ badges: [] }))
       ]);
