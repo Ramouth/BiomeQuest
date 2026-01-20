@@ -8,8 +8,9 @@ import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles } from 'lucide-re
 import { useProfile } from '../viewmodels/useProfile';
 import { useBadges } from '../viewmodels/useBadges';
 import { useAuth } from '../context/AuthContext';
+import { getAvatarUrl } from '../constants/avatars';
 
-const ProfilePage = ({ onBack, userName, userId, score, animationsEnabled, onToggleAnimations }) => {
+const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnabled, onToggleAnimations }) => {
   // Use ViewModels for business logic
   const {
     topPlants,
@@ -164,9 +165,9 @@ const ProfilePage = ({ onBack, userName, userId, score, animationsEnabled, onTog
       <div className="flex-1 overflow-y-auto px-5 pt-2 pb-32 relative z-0">
         {/* Header with Avatar */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-24 h-24 rounded-full overflow-hidden shadow-xl border-4 border-white mb-4 ring-4 ring-green-500/20">
+          <div className="w-24 h-24 rounded-full overflow-hidden shadow-xl border-4 border-white mb-4 ring-4 ring-green-500/20 bg-gradient-to-br from-green-100 to-green-200">
             <img
-              src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${userId}`}
+              src={getAvatarUrl(avatarId)}
               alt="Profile Avatar"
               className="w-full h-full object-cover"
             />

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Apple body/head -->
+  <ellipse cx="50" cy="55" rx="38" ry="40" fill="#E53935"/>
+  <ellipse cx="50" cy="55" rx="38" ry="40" fill="url(#appleGrad)"/>
+
+  <!-- Apple indent at top -->
+  <path d="M45 18 Q50 25 55 18" stroke="#C62828" stroke-width="3" fill="none"/>
+
+  <!-- Stem -->
+  <rect x="48" y="8" width="4" height="12" rx="2" fill="#5D4037"/>
+
+  <!-- Leaf -->
+  <ellipse cx="60" cy="12" rx="10" ry="5" fill="#43A047" transform="rotate(25 60 12)"/>
+
+  <!-- Face - Eyes -->
+  <ellipse cx="35" cy="50" rx="6" ry="7" fill="white"/>
+  <ellipse cx="65" cy="50" rx="6" ry="7" fill="white"/>
+  <circle cx="36" cy="51" r="3" fill="#2C1810"/>
+  <circle cx="66" cy="51" r="3" fill="#2C1810"/>
+  <circle cx="37" cy="50" r="1" fill="white"/>
+  <circle cx="67" cy="50" r="1" fill="white"/>
+
+  <!-- Eyebrows -->
+  <path d="M28 42 Q35 38 42 42" stroke="#5D4037" stroke-width="2" fill="none"/>
+  <path d="M58 42 Q65 38 72 42" stroke="#5D4037" stroke-width="2" fill="none"/>
+
+  <!-- Nose -->
+  <ellipse cx="50" cy="62" rx="3" ry="4" fill="#C62828"/>
+
+  <!-- Smile -->
+  <path d="M35 72 Q50 85 65 72" stroke="#2C1810" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Cheeks -->
+  <circle cx="28" cy="65" r="6" fill="#FF8A80" opacity="0.6"/>
+  <circle cx="72" cy="65" r="6" fill="#FF8A80" opacity="0.6"/>
+
+  <defs>
+    <radialGradient id="appleGrad" cx="30%" cy="30%">
+      <stop offset="0%" stop-color="#EF5350"/>
+      <stop offset="100%" stop-color="#C62828"/>
+    </radialGradient>
+  </defs>
+</svg>

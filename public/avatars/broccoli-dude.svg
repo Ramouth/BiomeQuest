@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Broccoli florets (hair) -->
+  <circle cx="30" cy="20" r="12" fill="#2E7D32"/>
+  <circle cx="50" cy="15" r="14" fill="#388E3C"/>
+  <circle cx="70" cy="20" r="12" fill="#2E7D32"/>
+  <circle cx="40" cy="12" r="10" fill="#43A047"/>
+  <circle cx="60" cy="12" r="10" fill="#43A047"/>
+  <circle cx="35" cy="28" r="10" fill="#388E3C"/>
+  <circle cx="65" cy="28" r="10" fill="#388E3C"/>
+  <circle cx="50" cy="25" r="12" fill="#4CAF50"/>
+
+  <!-- Stem/Face base -->
+  <path d="M30 35 Q25 50 30 95 L70 95 Q75 50 70 35 Z" fill="#8BC34A"/>
+  <path d="M30 35 Q25 50 30 95 L70 95 Q75 50 70 35 Z" fill="url(#brocGrad)"/>
+
+  <!-- Face - Eyes -->
+  <ellipse cx="38" cy="55" rx="7" ry="8" fill="white"/>
+  <ellipse cx="62" cy="55" rx="7" ry="8" fill="white"/>
+  <circle cx="39" cy="56" r="4" fill="#2C1810"/>
+  <circle cx="63" cy="56" r="4" fill="#2C1810"/>
+  <circle cx="40" cy="55" r="1.5" fill="white"/>
+  <circle cx="64" cy="55" r="1.5" fill="white"/>
+
+  <!-- Eyebrows -->
+  <path d="M30 46 Q38 42 46 46" stroke="#1B5E20" stroke-width="2.5" fill="none"/>
+  <path d="M54 46 Q62 42 70 46" stroke="#1B5E20" stroke-width="2.5" fill="none"/>
+
+  <!-- Nose -->
+  <ellipse cx="50" cy="67" rx="4" ry="5" fill="#7CB342"/>
+
+  <!-- Big friendly smile -->
+  <path d="M35 78 Q50 92 65 78" stroke="#1B5E20" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Cheeks -->
+  <circle cx="28" cy="70" r="6" fill="#C5E1A5" opacity="0.7"/>
+  <circle cx="72" cy="70" r="6" fill="#C5E1A5" opacity="0.7"/>
+
+  <defs>
+    <linearGradient id="brocGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9CCC65"/>
+      <stop offset="100%" stop-color="#7CB342"/>
+    </linearGradient>
+  </defs>
+</svg>

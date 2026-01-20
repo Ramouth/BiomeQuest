@@ -1,7 +1,8 @@
 import React from 'react';
 import { Home, PlusCircle, BarChart3 } from 'lucide-react';
+import { getAvatarUrl } from '../constants/avatars';
 
-const Navbar = ({ activeTab, onTabChange, score, userId }) => {
+const Navbar = ({ activeTab, onTabChange, score, userId, avatarId }) => {
   return (
     <>
       
@@ -37,10 +38,10 @@ const Navbar = ({ activeTab, onTabChange, score, userId }) => {
           <div
             className={`w-14 h-14 rounded-full flex items-center justify-center -mt-6 transition-all overflow-hidden border-2 ${
               activeTab === 'profile' ? 'bg-green-600 scale-105 border-green-700' : 'bg-white border-green-500'
-            }`}
+            } bg-gradient-to-br from-green-100 to-green-200`}
           >
             <img
-              src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${userId}`}
+              src={getAvatarUrl(avatarId)}
               alt="Profile"
               className="w-full h-full object-cover"
             />

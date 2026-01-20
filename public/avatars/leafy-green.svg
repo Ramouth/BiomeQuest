@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Outer lettuce leaves -->
+  <path d="M50 5 Q80 15 90 50 Q85 85 50 95 Q15 85 10 50 Q20 15 50 5 Z" fill="#81C784"/>
+  <path d="M50 5 Q80 15 90 50 Q85 85 50 95 Q15 85 10 50 Q20 15 50 5 Z" fill="url(#leafGrad1)"/>
+
+  <!-- Wavy leaf edges -->
+  <path d="M50 5 Q60 10 65 5 Q75 15 80 12 Q88 25 90 50" stroke="#66BB6A" stroke-width="2" fill="none"/>
+  <path d="M50 5 Q40 10 35 5 Q25 15 20 12 Q12 25 10 50" stroke="#66BB6A" stroke-width="2" fill="none"/>
+
+  <!-- Inner leaves layer -->
+  <path d="M50 15 Q72 25 78 50 Q72 75 50 85 Q28 75 22 50 Q28 25 50 15 Z" fill="#A5D6A7"/>
+
+  <!-- Center light area (the heart) -->
+  <ellipse cx="50" cy="55" rx="25" ry="30" fill="#C8E6C9"/>
+
+  <!-- Leaf veins -->
+  <path d="M50 25 Q50 50 50 80" stroke="#81C784" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M50 40 Q35 50 25 55" stroke="#81C784" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M50 40 Q65 50 75 55" stroke="#81C784" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M50 55 Q38 65 30 72" stroke="#81C784" stroke-width="1" fill="none" opacity="0.4"/>
+  <path d="M50 55 Q62 65 70 72" stroke="#81C784" stroke-width="1" fill="none" opacity="0.4"/>
+
+  <!-- Face - Gentle eyes -->
+  <ellipse cx="38" cy="48" rx="7" ry="8" fill="white"/>
+  <ellipse cx="62" cy="48" rx="7" ry="8" fill="white"/>
+  <circle cx="39" cy="49" r="4" fill="#2E7D32"/>
+  <circle cx="63" cy="49" r="4" fill="#2E7D32"/>
+  <circle cx="40" cy="48" r="1.5" fill="white"/>
+  <circle cx="64" cy="48" r="1.5" fill="white"/>
+
+  <!-- Soft eyebrows -->
+  <path d="M29 40 Q38 36 47 41" stroke="#43A047" stroke-width="2" fill="none"/>
+  <path d="M53 41 Q62 36 71 40" stroke="#43A047" stroke-width="2" fill="none"/>
+
+  <!-- Small nose -->
+  <ellipse cx="50" cy="60" rx="3" ry="4" fill="#81C784"/>
+
+  <!-- Peaceful smile -->
+  <path d="M38 72 Q50 82 62 72" stroke="#2E7D32" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Soft cheeks -->
+  <circle cx="28" cy="60" r="6" fill="#A5D6A7" opacity="0.6"/>
+  <circle cx="72" cy="60" r="6" fill="#A5D6A7" opacity="0.6"/>
+
+  <defs>
+    <radialGradient id="leafGrad1" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="#A5D6A7"/>
+      <stop offset="100%" stop-color="#66BB6A"/>
+    </radialGradient>
+  </defs>
+</svg>

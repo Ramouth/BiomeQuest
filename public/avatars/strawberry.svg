@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Strawberry body -->
+  <path d="M50 10 Q15 35 20 60 Q25 90 50 95 Q75 90 80 60 Q85 35 50 10 Z" fill="#E91E63"/>
+  <path d="M50 10 Q15 35 20 60 Q25 90 50 95 Q75 90 80 60 Q85 35 50 10 Z" fill="url(#strawGrad)"/>
+
+  <!-- Leaves/crown -->
+  <ellipse cx="35" cy="15" rx="10" ry="6" fill="#4CAF50" transform="rotate(-40 35 15)"/>
+  <ellipse cx="50" cy="8" rx="10" ry="6" fill="#43A047"/>
+  <ellipse cx="65" cy="15" rx="10" ry="6" fill="#4CAF50" transform="rotate(40 65 15)"/>
+  <ellipse cx="42" cy="12" rx="8" ry="5" fill="#66BB6A" transform="rotate(-20 42 12)"/>
+  <ellipse cx="58" cy="12" rx="8" ry="5" fill="#66BB6A" transform="rotate(20 58 12)"/>
+
+  <!-- Seeds -->
+  <ellipse cx="30" cy="40" rx="2" ry="3" fill="#FFEB3B" transform="rotate(-20 30 40)"/>
+  <ellipse cx="45" cy="35" rx="2" ry="3" fill="#FFEB3B" transform="rotate(10 45 35)"/>
+  <ellipse cx="60" cy="38" rx="2" ry="3" fill="#FFEB3B" transform="rotate(-15 60 38)"/>
+  <ellipse cx="70" cy="50" rx="2" ry="3" fill="#FFEB3B" transform="rotate(25 70 50)"/>
+  <ellipse cx="35" cy="70" rx="2" ry="3" fill="#FFEB3B" transform="rotate(-10 35 70)"/>
+  <ellipse cx="55" cy="75" rx="2" ry="3" fill="#FFEB3B" transform="rotate(15 55 75)"/>
+  <ellipse cx="68" cy="68" rx="2" ry="3" fill="#FFEB3B" transform="rotate(-25 68 68)"/>
+  <ellipse cx="25" cy="55" rx="2" ry="3" fill="#FFEB3B" transform="rotate(5 25 55)"/>
+
+  <!-- Face - Eyes -->
+  <ellipse cx="38" cy="48" rx="6" ry="7" fill="white"/>
+  <ellipse cx="62" cy="48" rx="6" ry="7" fill="white"/>
+  <circle cx="39" cy="49" r="3.5" fill="#2C1810"/>
+  <circle cx="63" cy="49" r="3.5" fill="#2C1810"/>
+  <circle cx="40" cy="48" r="1.2" fill="white"/>
+  <circle cx="64" cy="48" r="1.2" fill="white"/>
+
+  <!-- Eyelashes -->
+  <path d="M32 44 L34 42 M35 43 L36 40 M38 42 L38 39" stroke="#880E4F" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M62 42 L62 39 M65 43 L64 40 M68 44 L66 42" stroke="#880E4F" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Nose -->
+  <ellipse cx="50" cy="58" rx="3" ry="4" fill="#C2185B"/>
+
+  <!-- Cute smile -->
+  <path d="M40 68 Q50 80 60 68" stroke="#880E4F" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Cheeks -->
+  <circle cx="28" cy="58" r="6" fill="#F48FB1" opacity="0.6"/>
+  <circle cx="72" cy="58" r="6" fill="#F48FB1" opacity="0.6"/>
+
+  <defs>
+    <radialGradient id="strawGrad" cx="35%" cy="30%">
+      <stop offset="0%" stop-color="#F06292"/>
+      <stop offset="100%" stop-color="#C2185B"/>
+    </radialGradient>
+  </defs>
+</svg>

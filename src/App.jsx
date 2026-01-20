@@ -114,6 +114,7 @@ const AppContent = () => {
   // User profile data from auth
   const userId = user?.id || 'GUEST';
   const userName = user?.username || 'Plant Lover';
+  const avatarId = user?.avatarSeed || 'apple-man';
 
   /**
    * Handle onboarding completion
@@ -197,13 +198,14 @@ const AppContent = () => {
               onBack={() => setActiveTab('home')}
               userName={userName}
               userId={userId}
+              avatarId={avatarId}
               score={score}
               animationsEnabled={animationsEnabled}
               onToggleAnimations={handleToggleAnimations}
             />
           )}
 
-          <Navbar activeTab={activeTab} onTabChange={handleTabChange} score={score} userId={userId} />
+          <Navbar activeTab={activeTab} onTabChange={handleTabChange} score={score} userId={userId} avatarId={avatarId} />
         </>
       )}
 

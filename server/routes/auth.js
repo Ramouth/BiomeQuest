@@ -3,15 +3,11 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { query, queryOne, run } from '../db.js';
 import { createError, validateUser, validateRequiredFields } from '../utils/errors.js';
+import { getRandomAvatarId } from '../constants/avatars.js';
 
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'biomequest-secret-key-change-in-production';
-
-// Generate random avatar seed
-function generateAvatarSeed() {
-  return Math.random().toString(36).substring(2, 15);
-}
 
 // Register new user
 router.post('/register', async (req, res, next) => {
@@ -33,7 +29,7 @@ router.post('/register', async (req, res, next) => {
 
     // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
-    const avatarSeed = generateAvatarSeed();
+    const avatarSeed = getRandomAvatarId();
 
     // Insert user
     const result = run(

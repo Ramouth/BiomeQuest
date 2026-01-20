@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Carrot greens (hair) -->
+  <path d="M40 20 Q35 5 30 2" stroke="#43A047" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M50 18 Q50 3 50 0" stroke="#66BB6A" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M60 20 Q65 5 70 2" stroke="#43A047" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M45 19 Q42 8 38 5" stroke="#4CAF50" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M55 19 Q58 8 62 5" stroke="#4CAF50" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Carrot body/head -->
+  <path d="M25 20 Q20 45 35 75 Q50 98 50 98 Q50 98 65 75 Q80 45 75 20 Z" fill="#FF9800"/>
+  <path d="M25 20 Q20 45 35 75 Q50 98 50 98 Q50 98 65 75 Q80 45 75 20 Z" fill="url(#carrotGrad)"/>
+
+  <!-- Carrot lines -->
+  <path d="M30 35 Q50 38 70 35" stroke="#F57C00" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M32 50 Q50 53 68 50" stroke="#F57C00" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M38 65 Q50 68 62 65" stroke="#F57C00" stroke-width="1.5" fill="none" opacity="0.5"/>
+
+  <!-- Face - Eyes -->
+  <ellipse cx="38" cy="40" rx="6" ry="7" fill="white"/>
+  <ellipse cx="62" cy="40" rx="6" ry="7" fill="white"/>
+  <circle cx="39" cy="41" r="3.5" fill="#2C1810"/>
+  <circle cx="63" cy="41" r="3.5" fill="#2C1810"/>
+  <circle cx="40" cy="40" r="1.2" fill="white"/>
+  <circle cx="64" cy="40" r="1.2" fill="white"/>
+
+  <!-- Eyebrows -->
+  <path d="M30 32 Q38 28 46 32" stroke="#E65100" stroke-width="2" fill="none"/>
+  <path d="M54 32 Q62 28 70 32" stroke="#E65100" stroke-width="2" fill="none"/>
+
+  <!-- Nose -->
+  <ellipse cx="50" cy="52" rx="3" ry="4" fill="#F57C00"/>
+
+  <!-- Smile -->
+  <path d="M38 62 Q50 74 62 62" stroke="#BF360C" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Cheeks -->
+  <circle cx="30" cy="52" r="5" fill="#FFCC80" opacity="0.7"/>
+  <circle cx="70" cy="52" r="5" fill="#FFCC80" opacity="0.7"/>
+
+  <defs>
+    <linearGradient id="carrotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB74D"/>
+      <stop offset="100%" stop-color="#F57C00"/>
+    </linearGradient>
+  </defs>
+</svg>
