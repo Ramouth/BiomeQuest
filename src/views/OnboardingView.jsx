@@ -73,9 +73,20 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
           <div className="text-center w-full max-w-sm animate-fadeIn">
             {/* Animated BiomeDude */}
             <div className="relative mb-8">
-              <div className="w-56 h-56 mx-auto rounded-[3rem] bg-gradient-to-br from-orange-400 via-amber-400 to-yellow-400 flex items-center justify-center shadow-2xl relative overflow-hidden animate-containerFloat">
-                {/* Inner glow */}
-                <div className="absolute inset-2 bg-gradient-to-br from-white/40 to-transparent rounded-[2.5rem]" />
+              <div className="w-56 h-56 mx-auto rounded-[3rem] bg-gradient-to-br from-orange-400 via-amber-400 to-yellow-400 flex items-center justify-center shadow-2xl relative overflow-hidden animate-organic-breathe">
+                {/* Organic flowing blobs */}
+                <div className="absolute w-24 h-24 bg-white/30 rounded-full blur-md animate-organic-blob-1" style={{ top: '-5%', left: '-5%' }} />
+                <div className="absolute w-20 h-20 bg-yellow-200/35 rounded-full blur-md animate-organic-blob-2" style={{ bottom: '0%', right: '-5%' }} />
+                <div className="absolute w-16 h-16 bg-orange-200/25 rounded-full blur-md animate-organic-blob-3" style={{ top: '40%', left: '60%' }} />
+
+                {/* Inner glow that breathes */}
+                <div className="absolute inset-2 bg-gradient-to-br from-white/40 to-transparent rounded-[2.5rem] animate-glow-pulse" />
+
+                {/* Floating spores */}
+                <div className="absolute w-3 h-3 bg-white/70 rounded-full animate-spore-drift-1" style={{ top: '15%', right: '20%' }} />
+                <div className="absolute w-2 h-2 bg-white/50 rounded-full animate-spore-drift-2" style={{ bottom: '20%', left: '15%' }} />
+                <div className="absolute w-2 h-2 bg-yellow-100/60 rounded-full animate-spore-drift-3" style={{ top: '50%', right: '12%' }} />
+                <div className="absolute w-1.5 h-1.5 bg-white/40 rounded-full animate-spore-drift-4" style={{ top: '30%', left: '20%' }} />
 
                 {/* Dancing BiomeDude */}
                 <img
@@ -90,8 +101,8 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
                 <span className="absolute top-1/2 right-2 text-lg animate-floatEmoji3">💫</span>
               </div>
 
-              {/* Decorative rings */}
-              <div className="absolute inset-0 w-56 h-56 mx-auto rounded-[3rem] border-4 border-orange-300/30 animate-ping-slow" />
+              {/* Organic pulsing ring */}
+              <div className="absolute inset-0 w-56 h-56 mx-auto rounded-[3rem] border-4 border-orange-300/30 animate-organic-ring" />
             </div>
 
             <h1 className="text-4xl font-black text-gray-800 mb-3 tracking-tight">
@@ -253,8 +264,20 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
           <div className="text-center w-full max-w-sm animate-fadeIn">
             {/* Celebration visual */}
             <div className="relative mb-6">
-              <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-orange-400 via-rose-400 to-pink-500 flex items-center justify-center shadow-2xl animate-containerFloat">
-                <div className="absolute inset-2 bg-gradient-to-br from-white/30 to-transparent rounded-full" />
+              <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-br from-orange-400 via-rose-400 to-pink-500 flex items-center justify-center shadow-2xl overflow-hidden animate-organic-breathe">
+                {/* Organic flowing blobs */}
+                <div className="absolute w-20 h-20 bg-white/30 rounded-full blur-md animate-organic-blob-1" style={{ top: '-10%', left: '-10%' }} />
+                <div className="absolute w-16 h-16 bg-pink-200/35 rounded-full blur-md animate-organic-blob-2" style={{ bottom: '-5%', right: '-5%' }} />
+                <div className="absolute w-14 h-14 bg-rose-200/25 rounded-full blur-md animate-organic-blob-3" style={{ top: '45%', left: '55%' }} />
+
+                {/* Breathing inner glow */}
+                <div className="absolute inset-2 bg-gradient-to-br from-white/30 to-transparent rounded-full animate-glow-pulse" />
+
+                {/* Floating spores */}
+                <div className="absolute w-2.5 h-2.5 bg-white/70 rounded-full animate-spore-drift-1" style={{ top: '18%', right: '18%' }} />
+                <div className="absolute w-1.5 h-1.5 bg-white/50 rounded-full animate-spore-drift-2" style={{ bottom: '22%', left: '18%' }} />
+                <div className="absolute w-1.5 h-1.5 bg-pink-100/60 rounded-full animate-spore-drift-3" style={{ top: '55%', right: '15%' }} />
+
                 <img
                   src="/BiomeDude.png"
                   alt="BiomeDude"
@@ -451,6 +474,85 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
         .animate-celebrateFloat3 { animation: celebrateFloat3 1.9s ease-in-out infinite 0.4s; }
         .animate-celebrateFloat4 { animation: celebrateFloat4 2.1s ease-in-out infinite 0.6s; }
         .animate-ping-slow { animation: ping-slow 2s ease-in-out infinite; }
+
+        /* Organic living animations */
+        @keyframes organic-breathe {
+          0%, 100% { transform: scale(1); }
+          30% { transform: scale(1.02); }
+          60% { transform: scale(0.99); }
+        }
+
+        @keyframes organic-blob-1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          25% { transform: translate(15px, 8px) scale(1.15); }
+          50% { transform: translate(8px, 18px) scale(0.95); }
+          75% { transform: translate(-4px, 10px) scale(1.08); }
+        }
+
+        @keyframes organic-blob-2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(-12px, -15px) scale(1.2); }
+          66% { transform: translate(-18px, 5px) scale(0.9); }
+        }
+
+        @keyframes organic-blob-3 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.25; }
+          20% { transform: translate(-15px, -8px) scale(1.25); opacity: 0.4; }
+          50% { transform: translate(-8px, 15px) scale(0.85); opacity: 0.2; }
+          80% { transform: translate(12px, 4px) scale(1.1); opacity: 0.35; }
+        }
+
+        @keyframes glow-pulse {
+          0%, 100% { opacity: 0.9; }
+          40% { opacity: 0.5; }
+          70% { opacity: 1; }
+        }
+
+        @keyframes spore-drift-1 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+          20% { transform: translate(-5px, -8px) scale(1.15); opacity: 0.5; }
+          40% { transform: translate(3px, -14px) scale(0.9); opacity: 0.9; }
+          60% { transform: translate(8px, -7px) scale(1.2); opacity: 0.4; }
+          80% { transform: translate(2px, -2px) scale(1); opacity: 0.8; }
+        }
+
+        @keyframes spore-drift-2 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+          15% { transform: translate(7px, 5px) scale(1.3); opacity: 0.8; }
+          35% { transform: translate(12px, -4px) scale(0.8); opacity: 0.4; }
+          55% { transform: translate(5px, -10px) scale(1.15); opacity: 0.9; }
+          75% { transform: translate(-3px, -5px) scale(1); opacity: 0.6; }
+        }
+
+        @keyframes spore-drift-3 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+          25% { transform: translate(-7px, 7px) scale(0.9); opacity: 0.4; }
+          50% { transform: translate(-10px, -4px) scale(1.25); opacity: 0.8; }
+          75% { transform: translate(-3px, 10px) scale(1); opacity: 0.5; }
+        }
+
+        @keyframes spore-drift-4 {
+          0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+          30% { transform: translate(8px, -6px); opacity: 0.7; }
+          60% { transform: translate(3px, 8px); opacity: 0.3; }
+        }
+
+        @keyframes organic-ring {
+          0%, 100% { transform: scale(1); opacity: 0.3; }
+          30% { transform: scale(1.03); opacity: 0.15; }
+          60% { transform: scale(0.98); opacity: 0.4; }
+        }
+
+        .animate-organic-breathe { animation: organic-breathe 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        .animate-organic-blob-1 { animation: organic-blob-1 7s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        .animate-organic-blob-2 { animation: organic-blob-2 9s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        .animate-organic-blob-3 { animation: organic-blob-3 11s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        .animate-glow-pulse { animation: glow-pulse 5s ease-in-out infinite; }
+        .animate-spore-drift-1 { animation: spore-drift-1 6s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        .animate-spore-drift-2 { animation: spore-drift-2 8s cubic-bezier(0.4, 0, 0.2, 1) infinite 0.5s; }
+        .animate-spore-drift-3 { animation: spore-drift-3 7s cubic-bezier(0.4, 0, 0.2, 1) infinite 1s; }
+        .animate-spore-drift-4 { animation: spore-drift-4 5s cubic-bezier(0.4, 0, 0.2, 1) infinite 1.5s; }
+        .animate-organic-ring { animation: organic-ring 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
       `}</style>
     </div>
   );
