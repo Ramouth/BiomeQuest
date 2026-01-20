@@ -1,15 +1,9 @@
 // Available avatar options for user profiles
 export const AVATARS = [
-  { id: 'apple-man', name: 'Apple Man', file: 'apple-man.svg' },
-  { id: 'broccoli-dude', name: 'Broccoli Dude', file: 'broccoli-dude.svg' },
-  { id: 'carrot-guy', name: 'Carrot Guy', file: 'carrot-guy.svg' },
-  { id: 'tomato-man', name: 'Tomato Man', file: 'tomato-man.svg' },
-  { id: 'avocado-person', name: 'Avocado Person', file: 'avocado-person.svg' },
-  { id: 'strawberry', name: 'Strawberry', file: 'strawberry.svg' },
-  { id: 'pineapple-dude', name: 'Pineapple Dude', file: 'pineapple-dude.svg' },
-  { id: 'blueberry-guy', name: 'Blueberry Guy', file: 'blueberry-guy.svg' },
-  { id: 'banana-man', name: 'Banana Man', file: 'banana-man.svg' },
-  { id: 'leafy-green', name: 'Leafy Green', file: 'leafy-green.svg' },
+  { id: 'apple-man', name: 'Apple Man', file: 'apple-man.png' },
+  { id: 'banana-man', name: 'Banana Man', file: 'banana-man.png' },
+  { id: 'avocado-person', name: 'Avocado Person', file: 'avocado-person.png' },
+  { id: 'blueberry-guy', name: 'Blueberry Guy', file: 'blueberry-guy.png' },
 ];
 
 // Get avatar URL from avatar ID
