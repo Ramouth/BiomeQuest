@@ -4,13 +4,14 @@
  */
 
 import React, { useState } from 'react';
-import { Calendar } from 'lucide-react';
+import { Calendar, ChevronRight } from 'lucide-react';
 import GoalModal from './shared/GoalModal';
 import { useProgress } from '../viewmodels/useProgress';
 import { useGrowth } from '../viewmodels/useGrowth';
 
 const ProgressPage = ({ score }) => {
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showAllPlants, setShowAllPlants] = useState(false);
 
   // Use ViewModels for business logic
   const {
@@ -99,19 +100,33 @@ const ProgressPage = ({ score }) => {
               </div>
             ) : (
               <div className="space-y-4">
-                {dailyLogs.map((log, index) => (
-                  <div key={log.id || index} className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
-                    <div className="flex items-center gap-4">
-                      <div className="flex-shrink-0 text-3xl">
-                        {log.emoji || '🌱'}
+                {/* Plant list - show 4 or all based on state */}
+                <div className="space-y-3">
+                  {(showAllPlants ? dailyLogs : dailyLogs.slice(0, 4)).map((log, index) => (
+                    <div key={log.id || index} className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
+                      <div className="flex items-center gap-4">
+                        <div className="flex-shrink-0 text-3xl">
+                          {log.emoji || '🌱'}
+                        </div>
+                        <span className="font-medium text-gray-800 dark:text-white text-base">{log.plant_name}</span>
                       </div>
-                      <span className="font-medium text-gray-800 dark:text-white text-base">{log.plant_name}</span>
+                      <span className="text-green-600 dark:text-green-400 font-bold text-lg">
+                        {log.points_earned} pt.
+                      </span>
                     </div>
-                    <span className="text-green-600 dark:text-green-400 font-bold text-lg">
-                      {log.points_earned} pt.
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
+
+                {/* View all button */}
+                {dailyLogs.length > 4 && (
+                  <button
+                    onClick={() => setShowAllPlants(!showAllPlants)}
+                    className="w-full py-3 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-700 text-green-700 dark:text-green-400 font-semibold text-sm hover:from-green-100 hover:to-green-200 dark:hover:from-green-900/30 dark:hover:to-green-800/30 transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>{showAllPlants ? 'Show less' : `View all ${dailyLogs.length} plants`}</span>
+                    <ChevronRight size={16} className={`transition-transform ${showAllPlants ? 'rotate-90' : ''}`} />
+                  </button>
+                )}
 
                 {/* Total Plants for Selected Day */}
                 <div className="pt-3 mt-2">
