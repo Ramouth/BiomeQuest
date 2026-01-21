@@ -17,8 +17,15 @@ import requestRoutes from './routes/requests.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
+// Middleware - CORS configured for mobile access
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://192.168.0.92:3000' // Mobile access via local network
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // Initialize database before starting server
@@ -58,8 +65,11 @@ async function startServer() {
     // Error handling middleware - provides user-friendly error messages
     app.use(errorHandler);
 
-    app.listen(PORT, () => {
-      console.log(`BiomeQuest server running on http://localhost:${PORT}`);
+    const HOST = '0.0.0.0'; // Listen on all network interfaces
+    app.listen(PORT, HOST, () => {
+      console.log(`✅ BiomeQuest server running on http://localhost:${PORT}`);
+      console.log(`📱 Mobile access: http://192.168.0.92:${PORT}`);
+      console.log(`🌐 Network: http://0.0.0.0:${PORT}`);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
