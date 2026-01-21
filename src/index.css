@@ -10,13 +10,13 @@
     height: 100%;
     width: 100%;
   }
-  
+
   body {
-    @apply bg-white;
+    @apply bg-white dark:bg-gray-900;
     font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    
+
     /* CRITICAL: Fixed positioning for mobile */
     position: fixed;
     overflow: hidden;
@@ -24,9 +24,17 @@
     height: 100%;
     margin: 0;
     padding: 0;
-    
+
     /* Prevent overscroll bounce */
     overscroll-behavior: none;
+
+    /* Smooth dark mode transition */
+    transition: background-color 0.3s ease;
+  }
+
+  /* Dark mode color scheme */
+  .dark {
+    color-scheme: dark;
   }
   
   /* Remove all tap highlights and selections (mobile specific) */

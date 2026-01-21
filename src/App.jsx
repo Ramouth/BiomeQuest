@@ -10,6 +10,7 @@
 
 import React, { useState, Component } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 
 // Views
 import PickScreen from './views/PickScreen';
@@ -67,6 +68,7 @@ class ErrorBoundary extends Component {
  */
 const AppContent = () => {
   const { isAuthenticated, user, loading } = useAuth();
+  const { isDarkMode, toggleDarkMode } = useTheme();
 
   // Check if user has completed onboarding before
   const hasCompletedOnboarding = localStorage.getItem('onboardingComplete') === 'true';
@@ -202,6 +204,8 @@ const AppContent = () => {
               score={score}
               animationsEnabled={animationsEnabled}
               onToggleAnimations={handleToggleAnimations}
+              isDarkMode={isDarkMode}
+              onToggleDarkMode={toggleDarkMode}
             />
           )}
 
@@ -224,7 +228,9 @@ const App = () => {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <AppContent />
+        <ThemeProvider>
+          <AppContent />
+        </ThemeProvider>
       </AuthProvider>
     </ErrorBoundary>
   );

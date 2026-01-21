@@ -35,9 +35,9 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   const showSearchResults = searchQuery.trim().length > 0;
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-b from-green-50 to-white flex flex-col fixed inset-0">
+    <div className="h-screen w-screen bg-gradient-to-b from-green-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col fixed inset-0">
       {/* Header with improved visual hierarchy */}
-      <div className="bg-white shadow-sm px-5 pt-6 pb-5">
+      <div className="bg-white dark:bg-gray-800 shadow-sm px-5 pt-6 pb-5">
         <div className="flex items-center gap-4 mb-5">
           <div className="relative w-16 h-16 rounded-3xl flex items-center justify-center shadow-lg overflow-hidden animate-breathe">
             {/* Living gradient background */}
@@ -60,32 +60,32 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
             {/* BiomeDude with subtle float */}
             <img src="/BiomeDude.png" alt="" className="w-12 h-12 relative z-10 drop-shadow-lg animate-gentle-float" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">BiomeQuest</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">BiomeQuest</h1>
         </div>
 
         {/* Search with immediate feedback */}
         <div className="relative">
           <div className={`absolute inset-0 rounded-2xl transition-all ${
-            searchQuery ? 'bg-green-100 scale-105' : 'bg-gray-100'
+            searchQuery ? 'bg-green-100 dark:bg-green-900/30 scale-105' : 'bg-gray-100 dark:bg-gray-700'
           }`} style={{ zIndex: 0 }} />
-          
+
           <div className="relative z-10 flex items-center">
             <Search className={`absolute left-4 w-5 h-5 transition-colors ${
-              searchQuery ? 'text-green-600' : 'text-gray-400'
+              searchQuery ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'
             }`} />
             <input
               type="text"
               placeholder="Search for any plant..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-transparent border-0 focus:outline-none text-gray-900 placeholder-gray-500 font-medium"
+              className="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-transparent border-0 focus:outline-none text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-medium"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 p-1 hover:bg-white rounded-full transition-all active:scale-90"
+                className="absolute right-4 p-1 hover:bg-white dark:hover:bg-gray-600 rounded-full transition-all active:scale-90"
               >
-                <X className="w-4 h-4 text-gray-600" />
+                <X className="w-4 h-4 text-gray-600 dark:text-gray-300" />
               </button>
             )}
           </div>
@@ -102,7 +102,7 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-yellow-500" />
-                    <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
+                    <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wide">
                       Plants ({foods.length})
                     </h2>
                   </div>
@@ -140,8 +140,8 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                       disabled={currentPage === 1}
                       className={`p-2 rounded-xl transition-all ${
                         currentPage === 1
-                          ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 active:scale-95'
+                          ? 'bg-gray-100 dark:bg-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                          : 'bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-300 active:scale-95'
                       }`}
                     >
                       <ChevronLeft className="w-5 h-5" />
@@ -155,7 +155,7 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                           className={`w-10 h-10 rounded-xl font-semibold text-sm transition-all ${
                             currentPage === page
                               ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg'
-                              : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 active:scale-95'
+                              : 'bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-300 active:scale-95'
                           }`}
                         >
                           {page}
@@ -168,8 +168,8 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                       disabled={currentPage === totalPages}
                       className={`p-2 rounded-xl transition-all ${
                         currentPage === totalPages
-                          ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                          : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 active:scale-95'
+                          ? 'bg-gray-100 dark:bg-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                          : 'bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 hover:border-gray-300 active:scale-95'
                       }`}
                     >
                       <ChevronRight className="w-5 h-5" />
@@ -182,7 +182,7 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
         ) : (
           // Search Results with instant feedback
           <div className="space-y-2">
-            <p className="text-xs text-gray-500 mb-3">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
               {filteredFoods.length} {filteredFoods.length === 1 ? 'result' : 'results'} for "{searchQuery}"
             </p>
             
@@ -195,28 +195,28 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                   <button
                     key={food.id}
                     onClick={() => handleFoodSelect(food)}
-                    className="w-full bg-white rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all border-2 border-transparent hover:border-green-200"
+                    className="w-full bg-white dark:bg-gray-800 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all border-2 border-transparent hover:border-green-200 dark:hover:border-green-700"
                   >
-                    <div className="w-14 h-14 bg-gradient-to-br from-green-50 to-green-100 rounded-xl flex items-center justify-center text-4xl flex-shrink-0">
+                    <div className="w-14 h-14 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-xl flex items-center justify-center text-4xl flex-shrink-0">
                       {food.emoji || '🌱'}
                     </div>
-                    
+
                     <div className="flex-1 text-left min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <p className="font-semibold text-gray-900 truncate">
+                        <p className="font-semibold text-gray-900 dark:text-white truncate">
                           {food.name}
                         </p>
                         {isNew && (
-                          <span className="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                          <span className="bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 text-xs font-bold px-2 py-0.5 rounded-full">
                             NEW
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-green-600 font-semibold">
+                      <p className="text-sm text-green-600 dark:text-green-400 font-semibold">
                         +{points} {points === 1 ? 'point' : 'points'}
                       </p>
                     </div>
-                    
+
                     <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
                       <Plus className="w-5 h-5 text-white" strokeWidth={3} />
                     </div>
@@ -226,10 +226,10 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
             ) : (
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🔍</div>
-                <p className="text-gray-600 font-medium mb-1">
+                <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">
                   No plants found
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Try a different search term
                 </p>
               </div>
@@ -369,15 +369,15 @@ const FoodCard = ({ food, isNew, points, onSelect, isRecentlyAdded }) => {
     <button
       onClick={() => onSelect(food)}
       className={`
-        relative bg-white rounded-2xl p-3 
+        relative bg-white dark:bg-gray-800 rounded-2xl p-3
         transition-all duration-200
-        ${isRecentlyAdded 
-          ? 'scale-110 shadow-2xl ring-4 ring-green-400' 
+        ${isRecentlyAdded
+          ? 'scale-110 shadow-2xl ring-4 ring-green-400'
           : 'hover:shadow-lg hover:scale-105 active:scale-95'
         }
-        ${isNew 
-          ? 'border-2 border-green-200 shadow-md' 
-          : 'border border-gray-200'
+        ${isNew
+          ? 'border-2 border-green-200 dark:border-green-700 shadow-md'
+          : 'border border-gray-200 dark:border-gray-700'
         }
       `}
     >
@@ -388,36 +388,36 @@ const FoodCard = ({ food, isNew, points, onSelect, isRecentlyAdded }) => {
           NEW
         </div>
       )}
-      
+
       {/* Large emoji for recognition */}
       <div className="text-4xl mb-2 flex justify-center h-12 items-center">
         {food.emoji || '🌱'}
       </div>
-      
+
       {/* Clear text hierarchy */}
       <div className="text-center mb-2">
-        <h3 className="font-bold text-gray-900 text-xs mb-0.5 leading-tight">
+        <h3 className="font-bold text-gray-900 dark:text-white text-xs mb-0.5 leading-tight">
           {food.name}
         </h3>
         <p className={`text-xs font-semibold ${
-          isNew ? 'text-green-600' : 'text-gray-500'
+          isNew ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
         }`}>
           +{points} {points === 1 ? 'pt' : 'pts'}
           {isNew && ' 🌟'}
         </p>
       </div>
-      
+
       {/* Action button - clear affordance */}
       <div className={`
         w-full py-2 rounded-xl flex items-center justify-center gap-1
         transition-all
-        ${isNew 
-          ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700' 
-          : 'bg-gray-100 hover:bg-gray-200'
+        ${isNew
+          ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+          : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
         }
       `}>
-        <Plus className={`w-4 h-4 ${isNew ? 'text-white' : 'text-gray-600'}`} strokeWidth={3} />
-        {!isNew && <span className="text-xs font-semibold text-gray-600">Add Again</span>}
+        <Plus className={`w-4 h-4 ${isNew ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`} strokeWidth={3} />
+        {!isNew && <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">Add Again</span>}
       </div>
     </button>
   );

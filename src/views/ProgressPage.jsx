@@ -46,23 +46,23 @@ const ProgressPage = ({ score }) => {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white">
-        <p className="text-gray-500">Loading progress...</p>
+      <div className="fixed inset-0 flex items-center justify-center bg-white dark:bg-gray-900">
+        <p className="text-gray-500 dark:text-gray-400">Loading progress...</p>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-white overflow-hidden">
+    <div className="fixed inset-0 flex flex-col bg-white dark:bg-gray-900 overflow-hidden">
       {/* Scrollable content area */}
       <div className="flex-1 overflow-y-auto px-6 pt-6 pb-24" style={{ WebkitOverflowScrolling: 'touch' }}>
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">My Progress</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">My Progress</h1>
         </div>
 
         {/* Days of Week Selector */}
-        <div className="flex items-center justify-between mb-5 bg-white/50 rounded-2xl p-1">
+        <div className="flex items-center justify-between mb-5 bg-white/50 dark:bg-gray-800/50 rounded-2xl p-1">
           {daysOfWeek.map((day, index) => (
             <button
               key={day}
@@ -70,10 +70,10 @@ const ProgressPage = ({ score }) => {
               disabled={index > currentDayIndex}
               className={`flex-1 py-2 px-1 rounded-xl text-sm font-medium transition-colors ${
                 index > currentDayIndex
-                  ? 'text-gray-300 cursor-not-allowed opacity-50'
+                  ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50'
                   : displayDayIndex === index
                   ? 'bg-green-500 text-white'
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
               title={index > currentDayIndex ? 'Future days are locked' : ''}
             >
@@ -85,29 +85,29 @@ const ProgressPage = ({ score }) => {
         {/* Today's Points Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
               <span>🌱</span>
               {displayDayIndex === currentDayIndex ? "Today's Points" : `${daysOfWeek[displayDayIndex]}'s Points`}
             </h2>
-            <span className="text-green-600 font-bold">{dailyPoints} pts</span>
+            <span className="text-green-600 dark:text-green-400 font-bold">{dailyPoints} pts</span>
           </div>
 
-          <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
             {dailyLogs.length === 0 ? (
               <div className="text-center py-6">
-                <p className="text-gray-500">No plants registered on this day.</p>
+                <p className="text-gray-500 dark:text-gray-400">No plants registered on this day.</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {dailyLogs.map((log, index) => (
-                  <div key={log.id || index} className="flex items-center justify-between py-3 border-b last:border-b-0">
+                  <div key={log.id || index} className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
                     <div className="flex items-center gap-4">
                       <div className="flex-shrink-0 text-3xl">
                         {log.emoji || '🌱'}
                       </div>
-                      <span className="font-medium text-gray-800 text-base">{log.plant_name}</span>
+                      <span className="font-medium text-gray-800 dark:text-white text-base">{log.plant_name}</span>
                     </div>
-                    <span className="text-green-600 font-bold text-lg">
+                    <span className="text-green-600 dark:text-green-400 font-bold text-lg">
                       {log.points_earned} pt.
                     </span>
                   </div>
@@ -115,9 +115,9 @@ const ProgressPage = ({ score }) => {
 
                 {/* Total Plants for Selected Day */}
                 <div className="pt-3 mt-2">
-                  <p className="text-center text-sm text-gray-600">
+                  <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                     <span>Total plants {displayDayIndex === currentDayIndex ? 'today' : `on ${daysOfWeek[displayDayIndex]}`}: </span>
-                    <span className="font-bold text-gray-800">{dailyLogs.length}</span>
+                    <span className="font-bold text-gray-800 dark:text-white">{dailyLogs.length}</span>
                     <span className="ml-1">🌿</span>
                   </p>
                 </div>
@@ -128,18 +128,18 @@ const ProgressPage = ({ score }) => {
 
         {/* This Week Section */}
         <div className="mb-8">
-          <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-4">
-            <Calendar className="w-6 h-6 text-green-600" />
+          <h2 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2 mb-4">
+            <Calendar className="w-6 h-6 text-green-600 dark:text-green-400" />
             This Week
-            <span className="ml-auto text-sm font-semibold text-gray-600">
+            <span className="ml-auto text-sm font-semibold text-gray-600 dark:text-gray-400">
               {weeklyProgress} / {weeklyGoal} points
             </span>
           </h2>
 
-          <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm space-y-4">
             {/* Progress Bar */}
             <div>
-              <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-4 overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
@@ -149,14 +149,14 @@ const ProgressPage = ({ score }) => {
 
             {/* Weekly Goal Info */}
             {weeklyGoal ? (
-              <div className="flex items-center justify-between py-3 px-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-center justify-between py-3 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
                 <div className="flex items-center gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm font-medium text-gray-700">Weekly goal: {weeklyGoal} points</span>
+                  <span className="text-green-600 dark:text-green-400">✓</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Weekly goal: {weeklyGoal} points</span>
                 </div>
                 <button
                   onClick={() => setShowGoalModal(true)}
-                  className="text-green-600 hover:text-green-700 font-medium text-sm"
+                  className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium text-sm"
                 >
                   Edit
                 </button>
@@ -172,11 +172,11 @@ const ProgressPage = ({ score }) => {
 
             {/* Goal Achieved Message */}
             {weeklyProgress >= weeklyGoal && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center gap-2">
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-3 flex items-center gap-2">
                 <span className="text-xl">🎉</span>
                 <div>
-                  <p className="font-semibold text-green-600">Goal achieved!</p>
-                  <p className="text-sm text-green-600">You've reached your weekly goal of {weeklyGoal} points!</p>
+                  <p className="font-semibold text-green-600 dark:text-green-400">Goal achieved!</p>
+                  <p className="text-sm text-green-600 dark:text-green-400">You've reached your weekly goal of {weeklyGoal} points!</p>
                 </div>
               </div>
             )}
@@ -191,17 +191,17 @@ const ProgressPage = ({ score }) => {
           >
             {plantEmoji}
           </div>
-          <p className="text-gray-600 font-medium text-lg">Your biome is growing!</p>
-          <p className="text-sm text-gray-500">{stageName} • {totalScore || score} pts</p>
+          <p className="text-gray-600 dark:text-gray-300 font-medium text-lg">Your biome is growing!</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{stageName} • {totalScore || score} pts</p>
           {/* Growth progress bar */}
           <div className="max-w-[200px] mx-auto mt-2">
-            <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-700"
                 style={{ width: `${growthPercent * 100}%` }}
               />
             </div>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
               {isMaxGrowth ? 'Max growth reached!' : `${pointsToMaxGrowth} pts to full growth`}
             </p>
           </div>
