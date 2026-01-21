@@ -2,6 +2,14 @@
 -- Initial plants and badges
 
 -- ============================================
+-- DEFAULT ADMIN USER
+-- Email: admin@biomequest.com
+-- Password: admin123
+-- ============================================
+INSERT INTO users (username, email, password_hash, avatar_seed, is_admin) VALUES
+    ('admin', 'admin@biomequest.com', '$2b$10$G0fhyy50/QAGu8LW8D1hw.kNZDz7aWTwPvoikNe46n.iwmytLqKI2', 'admin-user', 1);
+
+-- ============================================
 -- DEFAULT PLANTS (from current app)
 -- ============================================
 INSERT INTO plants (name, emoji, points, repeat_points, first_time_message, repeat_message) VALUES

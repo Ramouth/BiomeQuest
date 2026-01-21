@@ -1,6 +1,6 @@
 import express from 'express';
 import { query, queryOne, run } from '../db.js';
-import { authenticateToken } from './auth.js';
+import { authenticateToken, requireAdmin } from './auth.js';
 import { createError, validateRequiredFields } from '../utils/errors.js';
 
 const router = express.Router();
@@ -73,8 +73,8 @@ router.get('/my-requests', authenticateToken, (req, res, next) => {
   }
 });
 
-// Get all pending requests (admin only - for now, anyone can view)
-router.get('/pending', authenticateToken, (req, res, next) => {
+// Get all pending requests (admin only)
+router.get('/pending', authenticateToken, requireAdmin, (req, res, next) => {
   try {
     const requests = query(`
       SELECT
@@ -97,8 +97,8 @@ router.get('/pending', authenticateToken, (req, res, next) => {
   }
 });
 
-// Approve a plant request (admin only - simplified, no admin check for now)
-router.post('/:id/approve', authenticateToken, (req, res, next) => {
+// Approve a plant request (admin only)
+router.post('/:id/approve', authenticateToken, requireAdmin, (req, res, next) => {
   try {
     const { emoji, points, repeatPoints } = req.body;
     const requestId = req.params.id;
@@ -149,7 +149,7 @@ router.post('/:id/approve', authenticateToken, (req, res, next) => {
 });
 
 // Reject a plant request (admin only)
-router.post('/:id/reject', authenticateToken, (req, res, next) => {
+router.post('/:id/reject', authenticateToken, requireAdmin, (req, res, next) => {
   try {
     const { adminNotes } = req.body;
     const requestId = req.params.id;

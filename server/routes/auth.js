@@ -43,8 +43,8 @@ router.post('/register', async (req, res, next) => {
       throw createError.database('save');
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ userId, username }, JWT_SECRET, { expiresIn: '7d' });
+    // Generate JWT token (new users are never admin)
+    const token = jwt.sign({ userId, username, isAdmin: false }, JWT_SECRET, { expiresIn: '7d' });
 
     res.status(201).json({
       message: 'User registered successfully',
@@ -52,7 +52,8 @@ router.post('/register', async (req, res, next) => {
         id: userId,
         username,
         email,
-        avatarSeed
+        avatarSeed,
+        isAdmin: false
       },
       token
     });
@@ -84,9 +85,10 @@ router.post('/login', async (req, res, next) => {
       throw createError.invalidCredentials();
     }
 
-    // Generate JWT token
+    // Generate JWT token with admin flag
+    const isAdmin = Boolean(user.is_admin);
     const token = jwt.sign(
-      { userId: user.id, username: user.username },
+      { userId: user.id, username: user.username, isAdmin },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -102,7 +104,8 @@ router.post('/login', async (req, res, next) => {
         monthlyGoal: user.monthly_goal,
         currentStreak: user.current_streak,
         longestStreak: user.longest_streak,
-        createdAt: user.created_at
+        createdAt: user.created_at,
+        isAdmin
       },
       token
     });
@@ -129,6 +132,17 @@ export function authenticateToken(req, res, next) {
     req.user = user;
     next();
   });
+}
+
+// Middleware to require admin access
+export function requireAdmin(req, res, next) {
+  if (!req.user || !req.user.isAdmin) {
+    return res.status(403).json({
+      error: 'Forbidden',
+      message: 'Admin access required'
+    });
+  }
+  next();
 }
 
 // Get current user profile
@@ -169,6 +183,7 @@ router.get('/me', authenticateToken, (req, res, next) => {
       currentStreak: user.current_streak,
       longestStreak: user.longest_streak,
       createdAt: user.created_at,
+      isAdmin: Boolean(user.is_admin),
       stats: {
         totalPoints: points?.total || 0,
         uniquePlants: uniquePlants?.count || 0,
@@ -198,6 +213,82 @@ router.patch('/goals', authenticateToken, (req, res, next) => {
     }
 
     res.json({ message: 'Goals updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get all users (admin only)
+router.get('/users', authenticateToken, requireAdmin, (req, res, next) => {
+  try {
+    const users = query(`
+      SELECT
+        u.id,
+        u.username,
+        u.email,
+        u.avatar_seed,
+        u.is_admin,
+        u.created_at,
+        COALESCE(p.total_points, 0) as total_points,
+        COALESCE(up.unique_plants, 0) as unique_plants
+      FROM users u
+      LEFT JOIN (
+        SELECT user_id, SUM(points_earned) as total_points
+        FROM plant_logs
+        GROUP BY user_id
+      ) p ON u.id = p.user_id
+      LEFT JOIN (
+        SELECT user_id, COUNT(*) as unique_plants
+        FROM user_plants
+        GROUP BY user_id
+      ) up ON u.id = up.user_id
+      ORDER BY u.created_at DESC
+    `);
+
+    res.json(users.map(user => ({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      avatarSeed: user.avatar_seed,
+      isAdmin: Boolean(user.is_admin),
+      createdAt: user.created_at,
+      totalPoints: user.total_points,
+      uniquePlants: user.unique_plants
+    })));
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Delete a user (admin only)
+router.delete('/users/:id', authenticateToken, requireAdmin, (req, res, next) => {
+  try {
+    const userId = parseInt(req.params.id, 10);
+
+    if (isNaN(userId)) {
+      throw createError.badRequest('Invalid user ID');
+    }
+
+    // Prevent admin from deleting themselves
+    if (userId === req.user.userId) {
+      throw createError.badRequest('Cannot delete your own account');
+    }
+
+    // Check if user exists
+    const user = queryOne('SELECT id, is_admin FROM users WHERE id = ?', [userId]);
+    if (!user) {
+      throw createError.notFound('User');
+    }
+
+    // Prevent deleting other admins
+    if (user.is_admin) {
+      throw createError.badRequest('Cannot delete admin users');
+    }
+
+    // Delete user (cascades to related tables due to foreign keys)
+    run('DELETE FROM users WHERE id = ?', [userId]);
+
+    res.json({ message: 'User deleted successfully' });
   } catch (error) {
     next(error);
   }

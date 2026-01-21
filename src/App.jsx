@@ -17,6 +17,7 @@ import PickScreen from './views/PickScreen';
 import CelebrationScreen from './views/CelebrationScreen';
 import ProgressPage from './views/ProgressPage';
 import ProfilePage from './views/ProfilePage';
+import AdminPage from './views/AdminPage';
 import Navbar from './views/Navbar';
 import OnboardingView from './views/OnboardingView';
 import AuthScreen from './views/AuthScreen';
@@ -67,7 +68,7 @@ class ErrorBoundary extends Component {
  * AppContent - Main application content with MVVM pattern
  */
 const AppContent = () => {
-  const { isAuthenticated, user, loading } = useAuth();
+  const { isAuthenticated, user, loading, isAdmin } = useAuth();
   const { isDarkMode, toggleDarkMode } = useTheme();
 
   // Check if user has completed onboarding before
@@ -206,7 +207,13 @@ const AppContent = () => {
               onToggleAnimations={handleToggleAnimations}
               isDarkMode={isDarkMode}
               onToggleDarkMode={toggleDarkMode}
+              isAdmin={isAdmin}
+              onOpenAdmin={() => setActiveTab('admin')}
             />
+          )}
+
+          {activeTab === 'admin' && isAdmin && (
+            <AdminPage onBack={() => setActiveTab('profile')} />
           )}
 
           <Navbar activeTab={activeTab} onTabChange={handleTabChange} score={score} userId={userId} avatarId={avatarId} />

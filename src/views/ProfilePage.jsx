@@ -4,13 +4,13 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles, Calendar, Check, ChevronRight, Moon } from 'lucide-react';
+import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles, Calendar, Check, ChevronRight, Moon, Shield } from 'lucide-react';
 import { useProfile } from '../viewmodels/useProfile';
 import { useBadges } from '../viewmodels/useBadges';
 import { useAuth } from '../context/AuthContext';
 import { getAvatarUrl } from '../constants/avatars';
 
-const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnabled, onToggleAnimations, isDarkMode, onToggleDarkMode }) => {
+const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnabled, onToggleAnimations, isDarkMode, onToggleDarkMode, isAdmin, onOpenAdmin }) => {
   // Use ViewModels for business logic
   const {
     topPlants,
@@ -242,6 +242,21 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
                     </div>
                   </button>
                 </div>
+
+                {isAdmin && (
+                  <div className="border-t border-gray-100 dark:border-gray-600">
+                    <button
+                      onClick={() => {
+                        setShowSettingsMenu(false);
+                        onOpenAdmin();
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                    >
+                      <Shield size={18} />
+                      <span className="font-medium">Admin Panel</span>
+                    </button>
+                  </div>
+                )}
 
                 <div className="border-t border-gray-100 dark:border-gray-600">
                   <button

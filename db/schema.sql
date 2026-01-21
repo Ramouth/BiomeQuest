@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
     current_streak INTEGER DEFAULT 0,       -- Current consecutive days logged
     longest_streak INTEGER DEFAULT 0,       -- Best streak achieved
     last_log_date DATE,                     -- Last date user logged a plant
+    is_admin BOOLEAN DEFAULT 0,             -- Admin flag for privileged access
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

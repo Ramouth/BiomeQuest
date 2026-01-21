@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Plus, X, Sparkles, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Plus, X, Sparkles, TrendingUp, ChevronLeft, ChevronRight, Send } from 'lucide-react';
+import { requestsAPI } from '../models/api/requestsApi';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -7,6 +8,14 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [recentlyAdded, setRecentlyAdded] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Plant request state
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [requestEmoji, setRequestEmoji] = useState('');
+  const [requestDescription, setRequestDescription] = useState('');
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [requestSuccess, setRequestSuccess] = useState(false);
+  const [requestError, setRequestError] = useState(null);
 
   const filteredFoods = useMemo(() => {
     if (!searchQuery.trim()) return [];
@@ -30,6 +39,43 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleRequestPlant = async () => {
+    if (!searchQuery.trim()) return;
+
+    setRequestLoading(true);
+    setRequestError(null);
+
+    try {
+      await requestsAPI.submit(searchQuery.trim(), requestEmoji || null, requestDescription || null);
+      setRequestSuccess(true);
+      setShowRequestModal(false);
+      setRequestEmoji('');
+      setRequestDescription('');
+
+      // Auto-hide success message after 3 seconds
+      setTimeout(() => {
+        setRequestSuccess(false);
+        setSearchQuery('');
+      }, 3000);
+    } catch (err) {
+      setRequestError(err.userMessage || 'Failed to submit request');
+    } finally {
+      setRequestLoading(false);
+    }
+  };
+
+  const openRequestModal = () => {
+    setShowRequestModal(true);
+    setRequestError(null);
+  };
+
+  const closeRequestModal = () => {
+    setShowRequestModal(false);
+    setRequestEmoji('');
+    setRequestDescription('');
+    setRequestError(null);
   };
 
   const showSearchResults = searchQuery.trim().length > 0;
@@ -224,14 +270,21 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
                 );
               })
             ) : (
-              <div className="text-center py-16">
+              <div className="text-center py-12">
                 <div className="text-6xl mb-4">🔍</div>
                 <p className="text-gray-600 dark:text-gray-300 font-medium mb-1">
-                  No plants found
+                  No plants found for "{searchQuery}"
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Try a different search term
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  Can't find what you're looking for?
                 </p>
+                <button
+                  onClick={openRequestModal}
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-2xl shadow-lg transition-all hover:scale-105 active:scale-95"
+                >
+                  <Send size={18} />
+                  Request "{searchQuery}"
+                </button>
               </div>
             )}
           </div>
@@ -242,6 +295,97 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
       {recentlyAdded && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-2xl shadow-2xl z-50 animate-bounce">
           <p className="font-bold text-sm">Plant added! 🎉</p>
+        </div>
+      )}
+
+      {/* Request success toast */}
+      {requestSuccess && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-2xl shadow-2xl z-50 animate-bounce">
+          <p className="font-bold text-sm">Request sent to admin! 🌱</p>
+        </div>
+      )}
+
+      {/* Plant Request Modal */}
+      {showRequestModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 max-w-sm w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">Request Plant</h3>
+              <button
+                onClick={closeRequestModal}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+              >
+                <X size={20} className="text-gray-500 dark:text-gray-400" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Plant name (from search query) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Plant Name
+                </label>
+                <div className="bg-gray-100 dark:bg-gray-700 rounded-xl px-4 py-3 text-gray-800 dark:text-white font-medium">
+                  {searchQuery}
+                </div>
+              </div>
+
+              {/* Suggested emoji */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Suggested Emoji (optional)
+                </label>
+                <input
+                  type="text"
+                  value={requestEmoji}
+                  onChange={(e) => setRequestEmoji(e.target.value)}
+                  placeholder="🥬"
+                  maxLength={4}
+                  className="w-full bg-gray-100 dark:bg-gray-700 rounded-xl px-4 py-3 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Description (optional)
+                </label>
+                <textarea
+                  value={requestDescription}
+                  onChange={(e) => setRequestDescription(e.target.value)}
+                  placeholder="Why should we add this plant?"
+                  rows={3}
+                  className="w-full bg-gray-100 dark:bg-gray-700 rounded-xl px-4 py-3 text-gray-800 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+                />
+              </div>
+
+              {/* Error message */}
+              {requestError && (
+                <div className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm px-4 py-3 rounded-xl">
+                  {requestError}
+                </div>
+              )}
+
+              {/* Submit button */}
+              <button
+                onClick={handleRequestPlant}
+                disabled={requestLoading}
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-green-300 disabled:to-green-400 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+              >
+                {requestLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={18} />
+                    Send Request
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

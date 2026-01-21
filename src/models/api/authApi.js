@@ -44,4 +44,18 @@ export const authAPI = {
       method: 'PATCH',
       body: JSON.stringify({ weeklyGoal, monthlyGoal }),
     }),
+
+  /**
+   * Get all users (admin only)
+   */
+  getAllUsers: () => fetchAPI('/auth/users'),
+
+  /**
+   * Delete a user (admin only)
+   * @param {number} id - User ID to delete
+   */
+  deleteUser: (id) =>
+    fetchAPI(`/auth/users/${id}`, {
+      method: 'DELETE',
+    }),
 };
