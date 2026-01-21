@@ -3,8 +3,8 @@
  * Pure presentational component using ViewModels
  */
 
-import React, { useState, useEffect } from 'react';
-import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles, Moon } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles, Calendar, Check, ChevronRight, Moon } from 'lucide-react';
 import { useProfile } from '../viewmodels/useProfile';
 import { useBadges } from '../viewmodels/useBadges';
 import { useAuth } from '../context/AuthContext';
@@ -18,8 +18,54 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
     totalPoints,
     weeklyPoints,
     weeklyGoal,
-    uniquePlantsThisWeek
+    uniquePlantsThisWeek,
+    weeklyData
   } = useProfile();
+
+  // Calculate weekly progress data for the bar chart
+  const weeklyProgressData = useMemo(() => {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const today = new Date();
+    const currentDayIndex = (today.getDay() + 6) % 7; // Convert to Mon=0 format
+
+    // Create a map of dates to points from the API data
+    const dailyPointsMap = {};
+    if (weeklyData?.dailyBreakdown) {
+      weeklyData.dailyBreakdown.forEach(day => {
+        dailyPointsMap[day.date] = day.points_earned || 0;
+      });
+    }
+
+    // Generate data for each day of the current week
+    const result = days.map((dayName, index) => {
+      // Calculate the date for this day of the week (Monday = index 0)
+      const dayDiff = index - currentDayIndex;
+      const date = new Date(today);
+      date.setDate(today.getDate() + dayDiff);
+      const dateStr = date.toISOString().split('T')[0];
+
+      const points = dailyPointsMap[dateStr] || 0;
+      const isActive = points > 0;
+      const isPast = index <= currentDayIndex;
+      const isToday = index === currentDayIndex;
+
+      return {
+        day: dayName,
+        points,
+        isActive,
+        isPast,
+        isToday
+      };
+    });
+
+    return result;
+  }, [weeklyData]);
+
+  // Calculate stats
+  const daysActive = weeklyProgressData.filter(d => d.isActive).length;
+  const maxPoints = Math.max(...weeklyProgressData.map(d => d.points), 10); // Minimum of 10 for scaling
+  // Avg score = percentage of weekly goal achieved (capped at 100%)
+  const avgScore = Math.min(100, Math.round((weeklyPoints / weeklyGoal) * 100));
 
   // Use badges ViewModel
   const {
@@ -37,6 +83,7 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
 
   // Settings menu state
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+  const [showAllPlantsModal, setShowAllPlantsModal] = useState(false);
   const { logout } = useAuth();
 
   const handleSignOut = () => {
@@ -252,7 +299,7 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
 
         {/* Motivation Message */}
         {motivationMessage.message && (
-          <div className={`${motivationMessage.bgColor} border border-green-200 rounded-2xl p-4 mb-6`}>
+          <div className={`${motivationMessage.bgColor} border border-green-200 dark:border-green-700 rounded-2xl p-4 mb-6`}>
             <p className={`${motivationMessage.color} font-semibold text-center text-sm`}>
               {motivationMessage.emoji} {motivationMessage.message}
             </p>
@@ -320,58 +367,169 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
           )}
         </div>
 
-        {/* Weekly Summary Section */}
-        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-3xl p-5 mb-6 shadow-lg border border-white/50 dark:border-gray-700/50">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-            <span className="text-2xl">📅</span>
-            This Week's Progress
-          </h3>
+        {/* Weekly Progress Section - Polished Design */}
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-3xl p-5 mb-6 shadow-lg border border-white/50 dark:border-gray-700/50">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-md">
+              <Calendar size={20} className="text-white" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-white">Weekly Progress</h2>
+          </div>
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border border-green-200 dark:border-green-700">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Weekly Points</span>
-              <span className="text-lg font-bold text-green-600 dark:text-green-400">{weeklyPoints}/{weeklyGoal}</span>
+          {/* Weekly Goal Progress Bar */}
+          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-4 mb-5">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Weekly Goal</span>
+              <span className="text-sm font-bold text-green-600 dark:text-green-400">{daysActive}/7 days</span>
             </div>
-            <div>
-              <div className="w-full bg-gray-300 dark:bg-gray-600 rounded-full h-3 overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-500"
-                  style={{ width: `${Math.min((weeklyPoints / weeklyGoal) * 100, 100)}%` }}
-                />
+            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3 overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-green-400 to-green-500 h-full transition-all duration-500 rounded-full"
+                style={{ width: `${Math.min((daysActive / 7) * 100, 100)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Bar Chart */}
+          <div className="flex items-end justify-between gap-2 mb-2 px-2" style={{ height: '140px' }}>
+            {weeklyProgressData.map((day, index) => {
+              const heightPercent = day.points > 0 ? Math.max((day.points / maxPoints) * 100, 20) : 20;
+              return (
+                <div key={day.day} className="flex-1 flex flex-col items-center h-full justify-end">
+                  <div
+                    className={`w-full rounded-xl transition-all duration-300 ${
+                      day.isActive
+                        ? 'bg-gradient-to-t from-green-400 to-green-300 shadow-md'
+                        : 'bg-gray-200 dark:bg-gray-600'
+                    }`}
+                    style={{ height: `${heightPercent}%`, minHeight: '20px' }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Day Labels */}
+          <div className="flex justify-between gap-2 px-2 mb-3">
+            {weeklyProgressData.map((day) => (
+              <div key={day.day} className="flex-1 flex flex-col items-center">
+                <span className={`text-xs font-medium ${
+                  day.isToday ? 'text-green-600 dark:text-green-400 font-bold' : 'text-gray-500 dark:text-gray-400'
+                }`}>
+                  {day.day}
+                </span>
               </div>
+            ))}
+          </div>
+
+          {/* Checkmarks */}
+          <div className="flex justify-between gap-2 px-2 mb-5">
+            {weeklyProgressData.map((day) => (
+              <div key={`check-${day.day}`} className="flex-1 flex justify-center">
+                {day.isActive ? (
+                  <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shadow-sm">
+                    <Check size={12} className="text-white" strokeWidth={3} />
+                  </div>
+                ) : day.isPast ? (
+                  <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-600" />
+                ) : null}
+              </div>
+            ))}
+          </div>
+
+          {/* Stats Row */}
+          <div className="flex items-center justify-around pt-4 border-t border-gray-100 dark:border-gray-600">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-800 dark:text-white">{daysActive}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">Days Active</div>
             </div>
-            <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-lg border border-green-200 dark:border-green-700">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Unique Plants This Week</span>
-              <span className="text-lg font-bold text-green-600 dark:text-green-400">{uniquePlantsThisWeek}</span>
+            <div className="w-px h-10 bg-gray-200 dark:bg-gray-600" />
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-800 dark:text-white">{weeklyPoints}</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">Total Points</div>
+            </div>
+            <div className="w-px h-10 bg-gray-200 dark:bg-gray-600" />
+            <div className="text-center">
+              <div className="text-2xl font-bold text-amber-500">{avgScore}%</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">Avg. Score</div>
             </div>
           </div>
         </div>
 
-        {/* Most Eaten Plants */}
+        {/* Most Eaten Plants - List Style with Scrolling */}
         <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 dark:border-gray-700/50">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">🌱</span>
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Most Eaten Plants</h2>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center">
+                <span className="text-lg">🌱</span>
+              </div>
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">Eaten Plants</h2>
+            </div>
+            {topPlants.length > 4 && (
+              <button
+                onClick={() => setShowAllPlantsModal(!showAllPlantsModal)}
+                className="flex items-center gap-1 text-sm font-semibold text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
+              >
+                View All
+                <ChevronRight size={16} />
+              </button>
+            )}
           </div>
 
           {topPlants.length > 0 ? (
-            <div className="space-y-3">
-              {topPlants.map((plant, index) => (
-                <div key={plant.id} className="flex items-center gap-4 p-4 bg-gradient-to-r from-white/80 to-white/40 dark:from-gray-700/80 dark:to-gray-700/40 rounded-2xl border border-white/60 dark:border-gray-600/60 shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-600 text-white font-bold text-sm flex-shrink-0">
-                    {index + 1}
+            <div
+              className={`flex flex-col gap-3 ${showAllPlantsModal ? 'max-h-96 overflow-y-auto pr-1' : ''}`}
+              style={showAllPlantsModal ? { scrollbarWidth: 'thin' } : {}}
+            >
+              {(showAllPlantsModal ? topPlants : topPlants.slice(0, 4)).map((plant, index) => (
+                <div
+                  key={plant.id}
+                  className="flex items-center gap-4 bg-white dark:bg-gray-700 rounded-2xl p-4 border border-gray-100 dark:border-gray-600 shadow-sm hover:shadow-md transition-all"
+                >
+                  {/* Emoji in rounded box */}
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 flex items-center justify-center flex-shrink-0">
+                    <span className="text-3xl">{plant.emoji || '🌱'}</span>
                   </div>
-                  <div className="text-4xl flex-shrink-0">
-                    {plant.emoji || '🌱'}
-                  </div>
+
+                  {/* Plant info */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-gray-800 dark:text-white text-base mb-1">{plant.name}</h3>
-                    <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
-                      <span className="font-medium">Eaten {plant.times_eaten}x</span>
+                    <h3 className="font-bold text-gray-800 dark:text-white text-base truncate">{plant.name}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Eaten {plant.times_eaten}x</p>
+                    {/* Progress bar */}
+                    <div className="mt-2 w-full bg-gray-100 dark:bg-gray-600 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-gradient-to-r from-green-400 to-green-500 h-full rounded-full transition-all"
+                        style={{ width: `${Math.min((plant.times_eaten / 5) * 100, 100)}%` }}
+                      />
                     </div>
+                  </div>
+
+                  {/* Rank badge or checkmark */}
+                  <div className="flex-shrink-0">
+                    {plant.times_eaten >= 5 ? (
+                      <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center shadow-sm">
+                        <Check size={16} className="text-white" strokeWidth={3} />
+                      </div>
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                        {index + 1}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
+
+              {/* View all button at bottom */}
+              {topPlants.length > 4 && (
+                <button
+                  onClick={() => setShowAllPlantsModal(!showAllPlantsModal)}
+                  className="w-full py-3 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-700 text-green-700 dark:text-green-400 font-semibold text-sm hover:from-green-100 hover:to-green-200 dark:hover:from-green-900/30 dark:hover:to-green-800/30 transition-all flex items-center justify-center gap-2"
+                >
+                  <span>{showAllPlantsModal ? 'Show less' : `View all ${topPlants.length} plants`}</span>
+                  <ChevronRight size={16} className={`transition-transform ${showAllPlantsModal ? 'rotate-90' : ''}`} />
+                </button>
+              )}
             </div>
           ) : (
             <div className="text-center py-8">
