@@ -61,6 +61,22 @@ INSERT INTO plants (name, emoji, points, repeat_points, first_time_message, repe
     ('Melon', '🍈', 5, 1, 'Refreshing and nutritious!', 'Melon-choly no more!');
 
 -- ============================================
+-- SUPERFOODS (Fermented & Gut-Healthy)
+-- Higher points: 10 first time, 2 repeat
+-- ============================================
+INSERT INTO plants (name, emoji, points, repeat_points, first_time_message, repeat_message, is_superfood) VALUES
+    ('Kimchi', '🥬', 10, 2, 'SUPERFOOD! Korean fermented magic for your gut!', 'Kimchi power! Your microbiome thanks you!', 1),
+    ('Sauerkraut', '🥗', 10, 2, 'SUPERFOOD! German probiotic powerhouse!', 'Sauerkraut strikes again! Gut health boost!', 1),
+    ('Kefir', '🥛', 10, 2, 'SUPERFOOD! Probiotic-rich fermented milk!', 'Kefir keeps your gut happy!', 1),
+    ('Kombucha', '🍵', 10, 2, 'SUPERFOOD! Fizzy fermented tea goodness!', 'Kombucha culture for the win!', 1),
+    ('Miso', '🍜', 10, 2, 'SUPERFOOD! Ancient Japanese gut healer!', 'Miso good for your microbiome!', 1),
+    ('Tempeh', '🫘', 10, 2, 'SUPERFOOD! Fermented soy protein power!', 'Tempeh time! Gut bacteria rejoice!', 1),
+    ('Yogurt', '🥄', 10, 2, 'SUPERFOOD! Creamy probiotic classic!', 'Yogurt delivers billions of good bacteria!', 1),
+    ('Natto', '🫛', 10, 2, 'SUPERFOOD! Japanese fermented superfood!', 'Natto - the ultimate gut champion!', 1),
+    ('Apple Cider Vinegar', '🍎', 10, 2, 'SUPERFOOD! Fermented apple magic!', 'ACV keeps the gut doctor away!', 1),
+    ('Pickles', '🥒', 10, 2, 'SUPERFOOD! Naturally fermented crunch!', 'Pickle power for probiotic punch!', 1);
+
+-- ============================================
 -- DEFAULT BADGES
 -- ============================================
 INSERT INTO badges (name, emoji, description, points_required, sort_order) VALUES

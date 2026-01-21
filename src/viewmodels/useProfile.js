@@ -66,7 +66,7 @@ export const useProfile = () => {
   // Computed values from weekly data
   const totalPoints = weeklyData?.summary?.allTimePoints || 0;
   const weeklyPoints = weeklyData?.summary?.weeklyPoints || 0;
-  const weeklyGoal = weeklyData?.summary?.weeklyGoal || 30;
+  const weeklyGoal = weeklyData?.summary?.weeklyGoal || 150;
   const uniquePlantsThisWeek = weeklyData?.summary?.uniquePlants || 0;
 
   return {

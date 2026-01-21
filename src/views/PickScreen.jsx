@@ -236,34 +236,56 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
               filteredFoods.map((food) => {
                 const isNew = !eatenFoods.has(food.id);
                 const points = isNew ? food.points : food.repeatPoints;
-                
+                const isSuperfood = food.is_superfood;
+
                 return (
                   <button
                     key={food.id}
                     onClick={() => handleFoodSelect(food)}
-                    className="w-full bg-white dark:bg-gray-800 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all border-2 border-transparent hover:border-green-200 dark:hover:border-green-700"
+                    className={`w-full rounded-2xl p-4 flex items-center gap-4 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all border-2 ${
+                      isSuperfood
+                        ? 'bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-300 dark:border-purple-600 hover:border-purple-400'
+                        : 'bg-white dark:bg-gray-800 border-transparent hover:border-green-200 dark:hover:border-green-700'
+                    }`}
                   >
-                    <div className="w-14 h-14 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 rounded-xl flex items-center justify-center text-4xl flex-shrink-0">
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-4xl flex-shrink-0 ${
+                      isSuperfood
+                        ? 'bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 animate-pulse'
+                        : 'bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30'
+                    }`}>
                       {food.emoji || '🌱'}
                     </div>
 
                     <div className="flex-1 text-left min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <p className="font-semibold text-gray-900 dark:text-white truncate">
+                        <p className={`font-semibold truncate ${
+                          isSuperfood ? 'text-purple-700 dark:text-purple-300' : 'text-gray-900 dark:text-white'
+                        }`}>
                           {food.name}
                         </p>
-                        {isNew && (
+                        {isSuperfood && (
+                          <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <span>⚡</span> SUPER
+                          </span>
+                        )}
+                        {isNew && !isSuperfood && (
                           <span className="bg-yellow-100 dark:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 text-xs font-bold px-2 py-0.5 rounded-full">
                             NEW
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-green-600 dark:text-green-400 font-semibold">
+                      <p className={`text-sm font-semibold ${
+                        isSuperfood ? 'text-purple-600 dark:text-purple-400' : 'text-green-600 dark:text-green-400'
+                      }`}>
                         +{points} {points === 1 ? 'point' : 'points'}
                       </p>
                     </div>
 
-                    <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md ${
+                      isSuperfood
+                        ? 'bg-gradient-to-br from-purple-500 to-pink-500'
+                        : 'bg-green-500'
+                    }`}>
                       <Plus className="w-5 h-5 text-white" strokeWidth={3} />
                     </div>
                   </button>
@@ -509,24 +531,42 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
 
 // Reusable Food Card Component - DRY principle
 const FoodCard = ({ food, isNew, points, onSelect, isRecentlyAdded }) => {
+  const isSuperfood = food.is_superfood;
+
   return (
     <button
       onClick={() => onSelect(food)}
       className={`
-        relative bg-white dark:bg-gray-800 rounded-2xl p-3
+        relative rounded-2xl p-3
         transition-all duration-200
+        ${isSuperfood
+          ? 'bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/30 dark:to-pink-900/30'
+          : 'bg-white dark:bg-gray-800'
+        }
         ${isRecentlyAdded
-          ? 'scale-110 shadow-2xl ring-4 ring-green-400'
+          ? isSuperfood
+            ? 'scale-110 shadow-2xl ring-4 ring-purple-400 animate-pulse'
+            : 'scale-110 shadow-2xl ring-4 ring-green-400'
           : 'hover:shadow-lg hover:scale-105 active:scale-95'
         }
-        ${isNew
-          ? 'border-2 border-green-200 dark:border-green-700 shadow-md'
-          : 'border border-gray-200 dark:border-gray-700'
+        ${isSuperfood
+          ? 'border-2 border-purple-300 dark:border-purple-600 shadow-lg shadow-purple-200/50 dark:shadow-purple-900/50'
+          : isNew
+            ? 'border-2 border-green-200 dark:border-green-700 shadow-md'
+            : 'border border-gray-200 dark:border-gray-700'
         }
       `}
     >
+      {/* Superfood badge */}
+      {isSuperfood && (
+        <div className="absolute -top-2 -left-2 bg-gradient-to-br from-purple-500 to-pink-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 animate-pulse">
+          <span>⚡</span>
+          SUPER
+        </div>
+      )}
+
       {/* Visual indicator for new items */}
-      {isNew && (
+      {isNew && !isSuperfood && (
         <div className="absolute -top-1.5 -right-1.5 bg-gradient-to-br from-yellow-400 to-orange-400 text-white text-xs font-bold px-1.5 py-0.5 rounded-full shadow-lg flex items-center gap-1">
           <Sparkles className="w-2.5 h-2.5" />
           NEW
@@ -534,17 +574,23 @@ const FoodCard = ({ food, isNew, points, onSelect, isRecentlyAdded }) => {
       )}
 
       {/* Large emoji for recognition */}
-      <div className="text-4xl mb-2 flex justify-center h-12 items-center">
+      <div className={`text-4xl mb-2 flex justify-center h-12 items-center ${isSuperfood ? 'animate-bounce' : ''}`}>
         {food.emoji || '🌱'}
       </div>
 
       {/* Clear text hierarchy */}
       <div className="text-center mb-2">
-        <h3 className="font-bold text-gray-900 dark:text-white text-xs mb-0.5 leading-tight">
+        <h3 className={`font-bold text-xs mb-0.5 leading-tight ${
+          isSuperfood ? 'text-purple-700 dark:text-purple-300' : 'text-gray-900 dark:text-white'
+        }`}>
           {food.name}
         </h3>
         <p className={`text-xs font-semibold ${
-          isNew ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
+          isSuperfood
+            ? 'text-purple-600 dark:text-purple-400'
+            : isNew
+              ? 'text-green-600 dark:text-green-400'
+              : 'text-gray-500 dark:text-gray-400'
         }`}>
           +{points} {points === 1 ? 'pt' : 'pts'}
           {isNew && ' 🌟'}
@@ -555,13 +601,16 @@ const FoodCard = ({ food, isNew, points, onSelect, isRecentlyAdded }) => {
       <div className={`
         w-full py-2 rounded-xl flex items-center justify-center gap-1
         transition-all
-        ${isNew
-          ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-          : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
+        ${isSuperfood
+          ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
+          : isNew
+            ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+            : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
         }
       `}>
-        <Plus className={`w-4 h-4 ${isNew ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`} strokeWidth={3} />
-        {!isNew && <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">Add Again</span>}
+        <Plus className={`w-4 h-4 ${isSuperfood || isNew ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`} strokeWidth={3} />
+        {!isNew && !isSuperfood && <span className="text-xs font-semibold text-gray-600 dark:text-gray-300">Add Again</span>}
+        {isSuperfood && <span className="text-xs font-semibold text-white">+{points} pts</span>}
       </div>
     </button>
   );

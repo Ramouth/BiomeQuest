@@ -16,12 +16,17 @@ const ProgressPage = ({ score }) => {
   // Use ViewModels for business logic
   const {
     weeklyGoal,
+    uniquePlantsGoal,
     dailyLogs,
     loading,
     displayDayIndex,
     currentDayIndex,
     weeklyProgress,
+    uniquePlants,
+    pointsProgress,
+    plantsProgress,
     progressPercent,
+    goalAchieved,
     dailyPoints,
     totalScore,
     handleDaySelect,
@@ -146,52 +151,66 @@ const ProgressPage = ({ score }) => {
           <h2 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2 mb-4">
             <Calendar className="w-6 h-6 text-green-600 dark:text-green-400" />
             This Week
-            <span className="ml-auto text-sm font-semibold text-gray-600 dark:text-gray-400">
-              {weeklyProgress} / {weeklyGoal} points
-            </span>
           </h2>
 
           <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm space-y-4">
-            {/* Progress Bar */}
+            {/* Points Progress */}
             <div>
-              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-4 overflow-hidden">
+              <div className="flex justify-between text-sm mb-1">
+                <span className="font-medium text-gray-700 dark:text-gray-200">Points</span>
+                <span className="text-gray-600 dark:text-gray-400">{weeklyProgress} / {weeklyGoal}</span>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3 overflow-hidden">
                 <div
-                  className="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-500"
-                  style={{ width: `${progressPercent}%` }}
+                  className={`h-full transition-all duration-500 ${
+                    weeklyProgress >= weeklyGoal
+                      ? 'bg-gradient-to-r from-green-500 to-green-600'
+                      : 'bg-gradient-to-r from-blue-400 to-blue-500'
+                  }`}
+                  style={{ width: `${pointsProgress}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Unique Plants Progress */}
+            <div>
+              <div className="flex justify-between text-sm mb-1">
+                <span className="font-medium text-gray-700 dark:text-gray-200">Unique Plants</span>
+                <span className="text-gray-600 dark:text-gray-400">{uniquePlants} / {uniquePlantsGoal}</span>
+              </div>
+              <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3 overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-500 ${
+                    uniquePlants >= uniquePlantsGoal
+                      ? 'bg-gradient-to-r from-green-500 to-green-600'
+                      : 'bg-gradient-to-r from-purple-400 to-purple-500'
+                  }`}
+                  style={{ width: `${plantsProgress}%` }}
                 />
               </div>
             </div>
 
             {/* Weekly Goal Info */}
-            {weeklyGoal ? (
-              <div className="flex items-center justify-between py-3 px-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-700">
-                <div className="flex items-center gap-2">
-                  <span className="text-green-600 dark:text-green-400">✓</span>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Weekly goal: {weeklyGoal} points</span>
-                </div>
-                <button
-                  onClick={() => setShowGoalModal(true)}
-                  className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium text-sm"
-                >
-                  Edit
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setShowGoalModal(true)}
-                className="w-full px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
-              >
-                Set weekly goal
-              </button>
-            )}
+            <div className="py-3 px-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
+                Weekly goal: <span className="font-semibold">{weeklyGoal} points</span> or <span className="font-semibold">{uniquePlantsGoal} different plants</span>
+              </p>
+            </div>
 
             {/* Goal Achieved Message */}
-            {weeklyProgress >= weeklyGoal && (
+            {goalAchieved && (
               <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-3 flex items-center gap-2">
                 <span className="text-xl">🎉</span>
                 <div>
                   <p className="font-semibold text-green-600 dark:text-green-400">Goal achieved!</p>
-                  <p className="text-sm text-green-600 dark:text-green-400">You've reached your weekly goal of {weeklyGoal} points!</p>
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    {weeklyProgress >= weeklyGoal && uniquePlants >= uniquePlantsGoal
+                      ? `Amazing! You hit both goals: ${weeklyProgress} points AND ${uniquePlants} plants!`
+                      : weeklyProgress >= weeklyGoal
+                        ? `You've earned ${weeklyProgress} points this week!`
+                        : `You've logged ${uniquePlants} different plants this week!`
+                    }
+                  </p>
                 </div>
               </div>
             )}

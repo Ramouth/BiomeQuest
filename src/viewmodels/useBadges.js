@@ -91,7 +91,7 @@ export const getProgressToNextBadge = (totalPoints, nextBadge) => {
  * @param {number} weeklyGoal - Weekly goal
  * @returns {Object} Badge state and methods
  */
-export const useBadges = (totalPoints = 0, weeklyPoints = 0, weeklyGoal = 30) => {
+export const useBadges = (totalPoints = 0, weeklyPoints = 0, weeklyGoal = 150) => {
   const [showBadgePopup, setShowBadgePopup] = useState(null);
 
   // Computed values using memoization

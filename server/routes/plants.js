@@ -9,10 +9,10 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
   try {
     const plants = query(
-      'SELECT id, name, emoji, points, repeat_points, first_time_message, repeat_message FROM plants WHERE is_active = 1 ORDER BY name'
+      'SELECT id, name, emoji, points, repeat_points, first_time_message, repeat_message, is_superfood FROM plants WHERE is_active = 1 ORDER BY name'
     );
 
-    res.json(plants);
+    res.json(plants.map(p => ({ ...p, is_superfood: Boolean(p.is_superfood) })));
   } catch (error) {
     next(error);
   }
@@ -29,7 +29,7 @@ router.get('/:id', (req, res, next) => {
     }
 
     const plant = queryOne(
-      'SELECT id, name, emoji, points, repeat_points, first_time_message, repeat_message FROM plants WHERE id = ? AND is_active = 1',
+      'SELECT id, name, emoji, points, repeat_points, first_time_message, repeat_message, is_superfood FROM plants WHERE id = ? AND is_active = 1',
       [id]
     );
 
@@ -37,7 +37,7 @@ router.get('/:id', (req, res, next) => {
       throw createError.plantNotFound();
     }
 
-    res.json(plant);
+    res.json({ ...plant, is_superfood: Boolean(plant.is_superfood) });
   } catch (error) {
     next(error);
   }
@@ -57,11 +57,11 @@ router.get('/search/:query', (req, res, next) => {
     const searchQuery = `%${sanitizedTerm}%`;
 
     const plants = query(
-      'SELECT id, name, emoji, points, repeat_points FROM plants WHERE is_active = 1 AND name LIKE ? ORDER BY name LIMIT 10',
+      'SELECT id, name, emoji, points, repeat_points, is_superfood FROM plants WHERE is_active = 1 AND name LIKE ? ORDER BY name LIMIT 10',
       [searchQuery]
     );
 
-    res.json(plants);
+    res.json(plants.map(p => ({ ...p, is_superfood: Boolean(p.is_superfood) })));
   } catch (error) {
     next(error);
   }
@@ -79,6 +79,7 @@ router.get('/user/status', authenticateToken, (req, res, next) => {
         p.repeat_points,
         p.first_time_message,
         p.repeat_message,
+        p.is_superfood,
         CASE WHEN up.user_id IS NOT NULL THEN 1 ELSE 0 END as has_eaten,
         up.times_eaten,
         up.first_eaten_at
@@ -95,7 +96,7 @@ router.get('/user/status', authenticateToken, (req, res, next) => {
     );
 
     res.json({
-      plants,
+      plants: plants.map(p => ({ ...p, is_superfood: Boolean(p.is_superfood) })),
       totalPoints: totalPointsResult?.total || 0
     });
   } catch (error) {

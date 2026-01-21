@@ -63,7 +63,8 @@ export const getCurrentDayIndex = () => {
  * @returns {Object} Progress state and methods
  */
 export const useProgress = () => {
-  const [weeklyGoal, setWeeklyGoal] = useState(30);
+  const [weeklyGoal, setWeeklyGoal] = useState(150);
+  const uniquePlantsGoal = 30;
   const [selectedDayIndex, setSelectedDayIndex] = useState(null);
   const [weeklyData, setWeeklyData] = useState(null);
   const [dailyLogs, setDailyLogs] = useState([]);
@@ -92,7 +93,7 @@ export const useProgress = () => {
       setError(null);
       const data = await logsAPI.getWeekly();
       setWeeklyData(data);
-      setWeeklyGoal(data.summary?.weeklyGoal || 30);
+      setWeeklyGoal(data.summary?.weeklyGoal || 150);
     } catch (err) {
       console.error('Failed to fetch weekly data:', err);
       const errorMessage = getErrorMessage(err);
@@ -145,13 +146,18 @@ export const useProgress = () => {
 
   // Computed values
   const weeklyProgress = weeklyData?.summary?.weeklyPoints || 0;
-  const progressPercent = calculateProgressPercent(weeklyProgress, weeklyGoal);
+  const uniquePlants = weeklyData?.summary?.uniquePlants || 0;
+  const pointsProgress = calculateProgressPercent(weeklyProgress, weeklyGoal);
+  const plantsProgress = calculateProgressPercent(uniquePlants, uniquePlantsGoal);
+  const progressPercent = Math.max(pointsProgress, plantsProgress);
+  const goalAchieved = weeklyProgress >= weeklyGoal || uniquePlants >= uniquePlantsGoal;
   const dailyPoints = calculateDailyPoints(dailyLogs);
   const totalScore = weeklyData?.summary?.allTimePoints || 0;
 
   return {
     // State
     weeklyGoal,
+    uniquePlantsGoal,
     weeklyData,
     dailyLogs,
     loading,
@@ -161,7 +167,11 @@ export const useProgress = () => {
     currentDayIndex,
     // Computed
     weeklyProgress,
+    uniquePlants,
+    pointsProgress,
+    plantsProgress,
     progressPercent,
+    goalAchieved,
     dailyPoints,
     totalScore,
     // Methods

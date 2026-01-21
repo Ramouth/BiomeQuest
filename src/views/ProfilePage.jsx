@@ -8,6 +8,7 @@ import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles, Calendar, Check,
 import { useProfile } from '../viewmodels/useProfile';
 import { useBadges } from '../viewmodels/useBadges';
 import { useAuth } from '../context/AuthContext';
+import { useConfetti } from '../context/ConfettiContext';
 import { getAvatarUrl } from '../constants/avatars';
 
 const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnabled, onToggleAnimations, isDarkMode, onToggleDarkMode, isAdmin, onOpenAdmin }) => {
@@ -85,10 +86,16 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
   const [showAllPlantsModal, setShowAllPlantsModal] = useState(false);
   const { logout } = useAuth();
+  const { triggerConfetti } = useConfetti();
 
   const handleSignOut = () => {
     setShowSettingsMenu(false);
     logout();
+  };
+
+  const handleCelebrate = () => {
+    hideBadgePopup();
+    triggerConfetti();
   };
 
   if (loading) {
@@ -111,7 +118,7 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
               <p className="text-lg text-green-600 dark:text-green-400 font-semibold mb-2">{showBadgePopup.name}</p>
               <p className="text-gray-600 dark:text-gray-300 mb-6">You've reached {showBadgePopup.points} points!</p>
               <button
-                onClick={hideBadgePopup}
+                onClick={handleCelebrate}
                 className="bg-green-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-green-600 transition-colors"
               >
                 Celebrate! 🎉

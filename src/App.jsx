@@ -11,6 +11,7 @@
 import React, { useState, Component } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { ConfettiProvider } from './context/ConfettiContext';
 
 // Views
 import PickScreen from './views/PickScreen';
@@ -222,7 +223,7 @@ const AppContent = () => {
 
       {/* Celebration Screen */}
       {currentScreen === 'celebration' && selectedFood && (
-        <CelebrationScreen message={selectedFood.displayMessage} animationsEnabled={animationsEnabled} />
+        <CelebrationScreen message={selectedFood.displayMessage} animationsEnabled={animationsEnabled} isSuperfood={selectedFood.is_superfood} />
       )}
     </div>
   );
@@ -236,7 +237,9 @@ const App = () => {
     <ErrorBoundary>
       <AuthProvider>
         <ThemeProvider>
-          <AppContent />
+          <ConfettiProvider>
+            <AppContent />
+          </ConfettiProvider>
         </ThemeProvider>
       </AuthProvider>
     </ErrorBoundary>

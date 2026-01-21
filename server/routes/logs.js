@@ -240,17 +240,29 @@ router.get('/weekly', authenticateToken, (req, res, next) => {
       [req.user.userId]
     );
 
-    const weeklyGoal = user.weekly_goal || 30;
+    const weeklyGoal = user.weekly_goal || 150;
+    const uniquePlantsGoal = 30;
+    const weeklyPoints = summary?.total_points || 0;
+    const uniquePlants = summary?.unique_plants || 0;
+
+    // Goal is achieved if either 150 points OR 30 unique plants
+    const pointsProgress = Math.min(100, Math.round((weeklyPoints / weeklyGoal) * 100));
+    const plantsProgress = Math.min(100, Math.round((uniquePlants / uniquePlantsGoal) * 100));
+    const goalAchieved = weeklyPoints >= weeklyGoal || uniquePlants >= uniquePlantsGoal;
 
     res.json({
       dailyBreakdown: logs,
       summary: {
         totalLogs: summary?.total_logs || 0,
-        weeklyPoints: summary?.total_points || 0,
+        weeklyPoints,
         allTimePoints: allTimePoints?.total || 0,
-        uniquePlants: summary?.unique_plants || 0,
+        uniquePlants,
         weeklyGoal,
-        progress: Math.min(100, Math.round(((summary?.total_points || 0) / weeklyGoal) * 100))
+        uniquePlantsGoal,
+        pointsProgress,
+        plantsProgress,
+        progress: Math.max(pointsProgress, plantsProgress),
+        goalAchieved
       }
     });
   } catch (error) {

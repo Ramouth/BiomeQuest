@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Minus, Plus } from 'lucide-react';
 
 const GoalModal = ({ currentGoal, onSave, onClose }) => {
-  const [goal, setGoal] = useState(currentGoal || 30);
+  const [goal, setGoal] = useState(currentGoal || 150);
 
-  const increment = () => setGoal(prev => Math.min(prev + 5, 200));
-  const decrement = () => setGoal(prev => Math.max(prev - 5, 5));
+  const increment = () => setGoal(prev => Math.min(prev + 10, 500));
+  const decrement = () => setGoal(prev => Math.max(prev - 10, 50));
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50 pb-20">

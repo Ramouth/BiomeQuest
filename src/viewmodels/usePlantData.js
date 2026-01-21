@@ -20,7 +20,8 @@ export const transformPlant = (plant) => ({
   firstTimeMessage: plant.first_time_message || 'Congrats! You just helped your biome with a new plant!',
   repeatMessage: plant.repeat_message || 'Plants are good, but diversity is KING!',
   hasEaten: plant.has_eaten,
-  timesEaten: plant.times_eaten || 0
+  timesEaten: plant.times_eaten || 0,
+  is_superfood: plant.is_superfood || false
 });
 
 /**

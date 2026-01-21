@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     avatar_seed TEXT NOT NULL,              -- Seed for DiceBear avatar generation
-    weekly_goal INTEGER DEFAULT 30,         -- Weekly points goal
+    weekly_goal INTEGER DEFAULT 150,        -- Weekly points goal (or 30 unique plants)
     monthly_goal INTEGER DEFAULT 120,       -- Monthly points goal
     current_streak INTEGER DEFAULT 0,       -- Current consecutive days logged
     longest_streak INTEGER DEFAULT 0,       -- Best streak achieved
@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS plants (
     repeat_points INTEGER DEFAULT 1,        -- Points for repeat logging
     first_time_message TEXT DEFAULT 'Congrats! You just helped your biome with a new plant!',
     repeat_message TEXT DEFAULT 'Plants are good, but diversity is KING!',
+    is_superfood BOOLEAN DEFAULT 0,         -- Superfood flag for gut-healthy fermented foods
     is_active BOOLEAN DEFAULT 1,            -- Soft delete flag
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
