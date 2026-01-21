@@ -85,13 +85,13 @@ const AuthScreen = () => {
         </div>
 
         {/* Auth Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-8">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">
             {isLogin ? 'Welcome Back!' : 'Create Account'}
           </h2>
 
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4">
+            <div className="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl mb-4">
               {error}
             </div>
           )}
@@ -99,7 +99,7 @@ const AuthScreen = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                   Username
                 </label>
                 <input
@@ -107,7 +107,7 @@ const AuthScreen = () => {
                   name="username"
                   value={formData.username}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                   placeholder="Choose a username"
                   required={!isLogin}
                 />
@@ -115,7 +115,7 @@ const AuthScreen = () => {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                 Email
               </label>
               <input
@@ -123,14 +123,14 @@ const AuthScreen = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                 placeholder="Enter your email"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                 Password
               </label>
               <input
@@ -138,7 +138,7 @@ const AuthScreen = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                 placeholder="Enter your password"
                 required
               />
@@ -146,7 +146,7 @@ const AuthScreen = () => {
 
             {!isLogin && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                   Confirm Password
                 </label>
                 <input
@@ -154,7 +154,7 @@ const AuthScreen = () => {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                   placeholder="Confirm your password"
                   required={!isLogin}
                 />
@@ -175,12 +175,12 @@ const AuthScreen = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {isLogin ? "Don't have an account?" : 'Already have an account?'}
             </p>
             <button
               onClick={switchMode}
-              className="text-green-600 font-semibold hover:text-green-700 mt-1"
+              className="text-green-600 dark:text-green-400 font-semibold hover:text-green-700 dark:hover:text-green-300 mt-1"
             >
               {isLogin ? 'Sign Up' : 'Sign In'}
             </button>

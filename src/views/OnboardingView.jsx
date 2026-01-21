@@ -58,7 +58,7 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
         <div className="absolute top-8 right-5 z-50">
           <button
             onClick={handleSkip}
-            className="text-sm text-gray-500/80 hover:text-gray-700 font-medium transition-all px-4 py-2 rounded-full hover:bg-white/50 backdrop-blur-sm"
+            className="text-sm text-gray-500/80 dark:text-gray-400/80 hover:text-gray-700 dark:hover:text-gray-200 font-medium transition-all px-4 py-2 rounded-full hover:bg-white/50 dark:hover:bg-gray-800/50 backdrop-blur-sm"
           >
             Skip intro
           </button>
@@ -105,16 +105,16 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
               <div className="absolute inset-0 w-56 h-56 mx-auto rounded-[3rem] border-4 border-orange-300/30 animate-organic-ring" />
             </div>
 
-            <h1 className="text-4xl font-black text-gray-800 mb-3 tracking-tight">
+            <h1 className="text-4xl font-black text-gray-800 dark:text-white mb-3 tracking-tight">
               Meet Your
               <span className="block text-5xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
                 Gut Buddy
               </span>
             </h1>
 
-            <p className="text-gray-600 text-lg leading-relaxed mt-4 font-medium">
+            <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mt-4 font-medium">
               Your tiny helpers inside are hungry for
-              <span className="text-orange-500 font-bold"> plant power</span>!
+              <span className="text-orange-500 dark:text-orange-400 font-bold"> plant power</span>!
               Let's feed them together.
             </p>
 
@@ -133,54 +133,54 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
           <div className="w-full max-w-sm animate-fadeIn">
             <div className="text-center mb-8">
               <span className="text-5xl mb-4 block animate-pulse">🔬</span>
-              <h1 className="text-3xl font-black text-gray-800 mb-2">
-                Why <span className="text-purple-500">30 Plants</span>?
+              <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-2">
+                Why <span className="text-purple-500 dark:text-purple-400">30 Plants</span>?
               </h1>
-              <p className="text-gray-500 text-sm font-medium">The science is delicious</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">The science is delicious</p>
             </div>
 
             <div className="space-y-4">
               {/* Benefit 1 */}
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 animate-slideIn" style={{ animationDelay: '0.1s' }}>
+              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 dark:border-gray-700/50 animate-slideIn" style={{ animationDelay: '0.1s' }}>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-violet-500 flex items-center justify-center flex-shrink-0 shadow-lg">
                     <Heart className="text-white" size={26} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800 text-lg">Happier Gut</h3>
-                    <p className="text-gray-500 text-sm">More plant variety = more happy bacteria</p>
+                    <h3 className="font-bold text-gray-800 dark:text-white text-lg">Happier Gut</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">More plant variety = more happy bacteria</p>
                   </div>
                 </div>
               </div>
 
               {/* Benefit 2 */}
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 animate-slideIn" style={{ animationDelay: '0.2s' }}>
+              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 dark:border-gray-700/50 animate-slideIn" style={{ animationDelay: '0.2s' }}>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-fuchsia-400 to-pink-500 flex items-center justify-center flex-shrink-0 shadow-lg">
                     <Zap className="text-white" size={26} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800 text-lg">More Energy</h3>
-                    <p className="text-gray-500 text-sm">A diverse microbiome boosts vitality</p>
+                    <h3 className="font-bold text-gray-800 dark:text-white text-lg">More Energy</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">A diverse microbiome boosts vitality</p>
                   </div>
                 </div>
               </div>
 
               {/* Benefit 3 */}
-              <div className="bg-white/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 animate-slideIn" style={{ animationDelay: '0.3s' }}>
+              <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-white/50 dark:border-gray-700/50 animate-slideIn" style={{ animationDelay: '0.3s' }}>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-lg">
                     <Sparkles className="text-white" size={26} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-800 text-lg">Better Mood</h3>
-                    <p className="text-gray-500 text-sm">90% of serotonin is made in your gut!</p>
+                    <h3 className="font-bold text-gray-800 dark:text-white text-lg">Better Mood</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">90% of serotonin is made in your gut!</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <p className="text-center text-gray-400 text-xs mt-6 font-medium">
+            <p className="text-center text-gray-400 dark:text-gray-500 text-xs mt-6 font-medium">
               Studies show 30+ plants/week = optimal gut diversity
             </p>
           </div>
@@ -190,10 +190,10 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
         {currentStepData.type === 'how' && (
           <div className="w-full max-w-sm animate-fadeIn">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-black text-gray-800 mb-2">
-                Simple as <span className="text-teal-500">1, 2, 3</span>
+              <h1 className="text-3xl font-black text-gray-800 dark:text-white mb-2">
+                Simple as <span className="text-teal-500 dark:text-teal-400">1, 2, 3</span>
               </h1>
-              <p className="text-gray-500 text-sm font-medium">No counting calories, just plants!</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">No counting calories, just plants!</p>
             </div>
 
             {/* Step cards with connecting line */}
@@ -204,55 +204,55 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
               <div className="space-y-5">
                 {/* Step 1 */}
                 <div className="flex items-center gap-4 animate-slideIn" style={{ animationDelay: '0.1s' }}>
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white dark:border-gray-700">
                     <span className="text-white font-black text-xl">1</span>
                   </div>
-                  <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50">
-                    <h3 className="font-bold text-gray-800">Eat a plant</h3>
-                    <p className="text-gray-500 text-sm">Any fruit, veggie, nut, seed, or grain</p>
+                  <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50 dark:border-gray-700/50">
+                    <h3 className="font-bold text-gray-800 dark:text-white">Eat a plant</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">Any fruit, veggie, nut, seed, or grain</p>
                   </div>
                 </div>
 
                 {/* Step 2 */}
                 <div className="flex items-center gap-4 animate-slideIn" style={{ animationDelay: '0.2s' }}>
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white dark:border-gray-700">
                     <span className="text-white font-black text-xl">2</span>
                   </div>
-                  <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50">
-                    <h3 className="font-bold text-gray-800">Log it here</h3>
-                    <p className="text-gray-500 text-sm">Search & tap - takes 2 seconds!</p>
+                  <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50 dark:border-gray-700/50">
+                    <h3 className="font-bold text-gray-800 dark:text-white">Log it here</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">Search & tap - takes 2 seconds!</p>
                   </div>
                 </div>
 
                 {/* Step 3 */}
                 <div className="flex items-center gap-4 animate-slideIn" style={{ animationDelay: '0.3s' }}>
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-lime-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-lime-500 flex items-center justify-center flex-shrink-0 shadow-lg z-10 border-4 border-white dark:border-gray-700">
                     <span className="text-white font-black text-xl">3</span>
                   </div>
-                  <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50">
-                    <h3 className="font-bold text-gray-800">Watch it grow</h3>
-                    <p className="text-gray-500 text-sm">Your biome thrives, you earn badges!</p>
+                  <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-md rounded-2xl p-4 flex-1 shadow-lg border border-white/50 dark:border-gray-700/50">
+                    <h3 className="font-bold text-gray-800 dark:text-white">Watch it grow</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">Your biome thrives, you earn badges!</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Points explanation */}
-            <div className="mt-8 bg-white/50 backdrop-blur-md rounded-2xl p-4 border border-white/50">
+            <div className="mt-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md rounded-2xl p-4 border border-white/50 dark:border-gray-700/50">
               <div className="flex justify-around text-center">
                 <div>
-                  <div className="text-2xl font-black text-teal-500">+5</div>
-                  <div className="text-xs text-gray-500">New plant</div>
+                  <div className="text-2xl font-black text-teal-500 dark:text-teal-400">+5</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">New plant</div>
                 </div>
-                <div className="w-px bg-gray-200" />
+                <div className="w-px bg-gray-200 dark:bg-gray-600" />
                 <div>
-                  <div className="text-2xl font-black text-emerald-500">+1</div>
-                  <div className="text-xs text-gray-500">Repeat</div>
+                  <div className="text-2xl font-black text-emerald-500 dark:text-emerald-400">+1</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Repeat</div>
                 </div>
-                <div className="w-px bg-gray-200" />
+                <div className="w-px bg-gray-200 dark:bg-gray-600" />
                 <div>
-                  <div className="text-2xl font-black text-green-500">30</div>
-                  <div className="text-xs text-gray-500">Weekly goal</div>
+                  <div className="text-2xl font-black text-green-500 dark:text-green-400">30</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">Weekly goal</div>
                 </div>
               </div>
             </div>
@@ -292,38 +292,38 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
               <span className="absolute bottom-4 right-1/4 text-3xl animate-celebrateFloat4">✨</span>
             </div>
 
-            <h1 className="text-4xl font-black text-gray-800 mb-2">
+            <h1 className="text-4xl font-black text-gray-800 dark:text-white mb-2">
               You're <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-rose-500">Ready!</span>
             </h1>
 
-            <p className="text-gray-600 text-lg leading-relaxed font-medium mb-8">
+            <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed font-medium mb-8">
               Your gut buddies are excited to meet all the plants you'll eat!
             </p>
 
             {/* Starting stats */}
-            <div className="bg-white/60 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/50">
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Your starting stats</p>
+            <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md rounded-3xl p-6 shadow-xl border border-white/50 dark:border-gray-700/50">
+              <p className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">Your starting stats</p>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-orange-100 to-amber-100 flex items-center justify-center">
+                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 flex items-center justify-center">
                     <span className="text-2xl">🌱</span>
                   </div>
-                  <div className="text-2xl font-black text-gray-800">0</div>
-                  <div className="text-xs text-gray-400 font-medium">Plants</div>
+                  <div className="text-2xl font-black text-gray-800 dark:text-white">0</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500 font-medium">Plants</div>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-rose-100 to-pink-100 flex items-center justify-center">
+                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/30 dark:to-pink-900/30 flex items-center justify-center">
                     <span className="text-2xl">⭐</span>
                   </div>
-                  <div className="text-2xl font-black text-gray-800">0</div>
-                  <div className="text-xs text-gray-400 font-medium">Points</div>
+                  <div className="text-2xl font-black text-gray-800 dark:text-white">0</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500 font-medium">Points</div>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center">
+                  <div className="w-12 h-12 mx-auto mb-2 rounded-xl bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-900/30 dark:to-yellow-900/30 flex items-center justify-center">
                     <span className="text-2xl">🏆</span>
                   </div>
-                  <div className="text-2xl font-black text-gray-800">0</div>
-                  <div className="text-xs text-gray-400 font-medium">Badges</div>
+                  <div className="text-2xl font-black text-gray-800 dark:text-white">0</div>
+                  <div className="text-xs text-gray-400 dark:text-gray-500 font-medium">Badges</div>
                 </div>
               </div>
             </div>
@@ -338,10 +338,10 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
             key={index}
             className={`rounded-full transition-all duration-300 ${
               index === currentStep
-                ? 'w-8 h-2 bg-gray-800'
+                ? 'w-8 h-2 bg-gray-800 dark:bg-white'
                 : index < currentStep
-                ? 'w-2 h-2 bg-gray-400'
-                : 'w-2 h-2 bg-gray-300'
+                ? 'w-2 h-2 bg-gray-400 dark:bg-gray-500'
+                : 'w-2 h-2 bg-gray-300 dark:bg-gray-600'
             }`}
           />
         ))}
@@ -354,7 +354,7 @@ const OnboardingView = ({ onComplete, onSkipToPick }) => {
           className={`w-full py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-lg ${
             isLastStep
               ? 'bg-gradient-to-r from-orange-500 via-rose-500 to-pink-500 text-white hover:from-orange-600 hover:via-rose-600 hover:to-pink-600'
-              : 'bg-gray-800 text-white hover:bg-gray-900'
+              : 'bg-gray-800 dark:bg-white text-white dark:text-gray-800 hover:bg-gray-900 dark:hover:bg-gray-100'
           }`}
         >
           {isLastStep ? (

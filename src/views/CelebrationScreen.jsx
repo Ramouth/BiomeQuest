@@ -2,7 +2,7 @@ import React from 'react';
 
 const CelebrationScreen = ({ message, animationsEnabled = true }) => {
   return (
-    <div className="h-screen w-screen bg-gradient-to-b from-green-100 to-green-50 flex items-center justify-center p-6 relative overflow-hidden fixed inset-0">
+    <div className="h-screen w-screen bg-gradient-to-b from-green-100 to-green-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-6 relative overflow-hidden fixed inset-0">
       {/* Animated background particles - now organic */}
       {animationsEnabled && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -53,7 +53,7 @@ const CelebrationScreen = ({ message, animationsEnabled = true }) => {
         </div>
 
         {/* Celebration message */}
-        <h2 className={`text-4xl font-black text-gray-800 px-4 ${animationsEnabled ? 'animate-pulse' : ''}`}>
+        <h2 className={`text-4xl font-black text-gray-800 dark:text-white px-4 ${animationsEnabled ? 'animate-pulse' : ''}`}>
           {message}
         </h2>
       </div>

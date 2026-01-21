@@ -7,7 +7,7 @@ const Navbar = ({ activeTab, onTabChange, score, userId, avatarId }) => {
     <>
       
       {/* Navbar */}
-      <div className="absolute bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 flex items-center justify-around px-8">
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex items-center justify-around px-8">
         {/* Home Button */}
         <button
           onClick={() => onTabChange('home')}
@@ -15,12 +15,12 @@ const Navbar = ({ activeTab, onTabChange, score, userId, avatarId }) => {
         >
           <Home
             className={`w-6 h-6 transition-colors ${
-              activeTab === 'home' ? 'text-green-500' : 'text-gray-400'
+              activeTab === 'home' ? 'text-green-500' : 'text-gray-400 dark:text-gray-500'
             }`}
           />
           <span
             className={`text-xs transition-colors ${
-              activeTab === 'home' ? 'text-green-500' : 'text-gray-400'
+              activeTab === 'home' ? 'text-green-500' : 'text-gray-400 dark:text-gray-500'
             }`}
           >
             Home
@@ -48,7 +48,7 @@ const Navbar = ({ activeTab, onTabChange, score, userId, avatarId }) => {
           </div>
           <span
             className={`text-xs transition-colors ${
-              activeTab === 'profile' ? 'text-green-500' : 'text-gray-400'
+              activeTab === 'profile' ? 'text-green-500' : 'text-gray-400 dark:text-gray-500'
             }`}
           >
             Profile
@@ -65,12 +65,12 @@ const Navbar = ({ activeTab, onTabChange, score, userId, avatarId }) => {
         >
           <BarChart3
             className={`w-6 h-6 transition-colors ${
-              activeTab === 'progress' ? 'text-green-500' : 'text-gray-400'
+              activeTab === 'progress' ? 'text-green-500' : 'text-gray-400 dark:text-gray-500'
             }`}
           />
           <span
             className={`text-xs transition-colors ${
-              activeTab === 'progress' ? 'text-green-500' : 'text-gray-400'
+              activeTab === 'progress' ? 'text-green-500' : 'text-gray-400 dark:text-gray-500'
             }`}
           >
             Progress
