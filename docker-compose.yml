@@ -1,0 +1,28 @@
+services:
+  biomequest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: biomequest
+    ports:
+      - "3001:3001"
+    volumes:
+      # Persist SQLite database
+      - biomequest-db:/app/db
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - JWT_SECRET=${JWT_SECRET}
+      - SERVER_IP=${SERVER_IP}
+      - FRONTEND_URL=${FRONTEND_URL}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  biomequest-db:
+    driver: local

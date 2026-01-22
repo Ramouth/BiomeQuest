@@ -20,7 +20,56 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
   const filteredFoods = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const query = searchQuery.toLowerCase().trim();
-    return foods.filter(food => food.name.toLowerCase().includes(query));
+    const queryWords = query.split(/\s+/);
+
+    // Score each food based on match quality
+    const scored = foods.map(food => {
+      const name = food.name.toLowerCase();
+      const nameWords = name.split(/\s+/);
+      let score = 0;
+
+      // Exact match - highest priority
+      if (name === query) {
+        score += 100;
+      }
+      // Name starts with query
+      else if (name.startsWith(query)) {
+        score += 80;
+      }
+      // Any word starts with query
+      else if (nameWords.some(word => word.startsWith(query))) {
+        score += 60;
+      }
+      // All query words match (for multi-word searches like "bell pepper")
+      else if (queryWords.every(qWord => name.includes(qWord))) {
+        score += 50;
+      }
+      // Query is contained anywhere in name
+      else if (name.includes(query)) {
+        score += 30;
+      }
+      // Partial word matching - each query word that starts a name word
+      else {
+        queryWords.forEach(qWord => {
+          if (nameWords.some(nWord => nWord.startsWith(qWord))) {
+            score += 20;
+          }
+        });
+      }
+
+      // Bonus for shorter names (more specific matches)
+      if (score > 0) {
+        score += Math.max(0, 10 - name.length / 3);
+      }
+
+      return { food, score };
+    });
+
+    // Filter to matches and sort by score (highest first)
+    return scored
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(item => item.food);
   }, [searchQuery, foods]);
 
   // Pagination logic

@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+
+# Build output (will be rebuilt in container)
+dist
+
+# Git
+.git
+.gitignore
+
+# Environment files (use docker-compose env instead)
+.env
+.env.local
+.env.development
+.env.production
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test files
+coverage
+*.test.js
+*.spec.js
+__tests__
+jest.config.js
+
+# Documentation
+*.md
+LICENSE
+
+# Database files (will be mounted as volume)
+*.db
+db/*.db
+
+# Misc
+.eslintrc*
+.prettierrc*
