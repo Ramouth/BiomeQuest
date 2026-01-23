@@ -7,7 +7,10 @@ const Navbar = ({ activeTab, onTabChange, score, userId, avatarId }) => {
     <>
       
       {/* Navbar */}
-      <div className="absolute bottom-0 left-0 right-0 h-20 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex items-center justify-around px-8">
+      <div
+        className="fixed bottom-0 left-0 right-0 h-20 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex items-center justify-around px-8 z-50"
+        style={{ touchAction: 'none', userSelect: 'none', WebkitUserSelect: 'none' }}
+      >
         {/* Home Button */}
         <button
           onClick={() => onTabChange('home')}

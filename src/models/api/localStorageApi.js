@@ -278,7 +278,18 @@ export const logsAPI = {
     await new Promise(resolve => setTimeout(resolve, 100));
 
     const logs = getStoredLogs();
-    const dayLogs = logs.filter(log => log.timestamp.startsWith(date));
+    const dayLogs = logs
+      .filter(log => log.timestamp.startsWith(date))
+      .map(log => {
+        const plant = PLANTS_DATA.find(p => p.id === log.plantId);
+        return {
+          id: log.id,
+          plant_name: log.plantName,
+          emoji: plant?.emoji || '🌱',
+          points_earned: log.points,
+          timestamp: log.timestamp,
+        };
+      });
 
     return { logs: dayLogs };
   },
@@ -287,14 +298,29 @@ export const logsAPI = {
     await new Promise(resolve => setTimeout(resolve, 100));
 
     const logs = getStoredLogs();
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
+    const now = new Date();
 
-    const weekLogs = logs.filter(log => new Date(log.timestamp) >= weekAgo);
-    const totalPoints = weekLogs.reduce((sum, log) => sum + log.points, 0);
+    // Get start of current week (Monday)
+    const startOfWeek = new Date(now);
+    const dayOfWeek = now.getDay();
+    const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Adjust for Monday start
+    startOfWeek.setDate(now.getDate() - diff);
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const weekLogs = logs.filter(log => new Date(log.timestamp) >= startOfWeek);
+    const weeklyPoints = weekLogs.reduce((sum, log) => sum + log.points, 0);
     const uniquePlants = new Set(weekLogs.map(log => log.plantId)).size;
+    const allTimePoints = getTotalPoints();
 
-    return { logs: weekLogs, totalPoints, uniquePlants };
+    return {
+      logs: weekLogs,
+      summary: {
+        weeklyPoints,
+        uniquePlants,
+        weeklyGoal: 150,
+        allTimePoints
+      }
+    };
   },
 
   getMonthly: async () => {
