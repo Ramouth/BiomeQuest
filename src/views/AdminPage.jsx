@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Check, X, RefreshCw, AlertCircle, Users, Leaf, Trash2, Shield } from 'lucide-react';
+import { ArrowLeft, Check, X, RefreshCw, AlertCircle, Users, Leaf, Trash2, Shield, Bug, RotateCcw } from 'lucide-react';
 import { requestsAPI } from '../models/api/requestsApi';
 import { authAPI } from '../models/api/authApi';
 import { getAvatarUrl } from '../constants/avatars';
@@ -24,6 +24,9 @@ const AdminPage = ({ onBack }) => {
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+  // Debug state
+  const [debugMessage, setDebugMessage] = useState(null);
 
   const fetchPendingRequests = async () => {
     setRequestsLoading(true);
@@ -101,7 +104,7 @@ const AdminPage = ({ onBack }) => {
     }
   };
 
-  const isLoading = activeTab === 'requests' ? requestsLoading : usersLoading;
+  const isLoading = activeTab === 'requests' ? requestsLoading : activeTab === 'users' ? usersLoading : false;
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
@@ -187,6 +190,17 @@ const AdminPage = ({ onBack }) => {
             <span className="bg-gray-400 dark:bg-gray-600 text-white text-xs px-2 py-0.5 rounded-full">
               {users.length}
             </span>
+          </button>
+          <button
+            onClick={() => setActiveTab('debug')}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-semibold transition-all ${
+              activeTab === 'debug'
+                ? 'bg-white dark:bg-gray-700 text-orange-600 dark:text-orange-400 shadow-md'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            <Bug size={18} />
+            Debug
           </button>
         </div>
       </div>
@@ -375,6 +389,88 @@ const AdminPage = ({ onBack }) => {
                 ))}
               </div>
             )}
+          </>
+        )}
+
+        {/* Debug Tab */}
+        {activeTab === 'debug' && (
+          <>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white">Debug Tools</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Testing and debugging utilities
+              </p>
+            </div>
+
+            {/* Success/Info Message */}
+            {debugMessage && (
+              <div className="mb-4 p-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded-2xl flex items-center gap-3">
+                <Check size={20} className="text-green-600 dark:text-green-400 flex-shrink-0" />
+                <p className="text-green-700 dark:text-green-300 text-sm flex-1">{debugMessage}</p>
+                <button
+                  onClick={() => setDebugMessage(null)}
+                  className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {/* First Plant Tip Reset */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 flex items-center justify-center flex-shrink-0">
+                    <RotateCcw size={24} className="text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-800 dark:text-white">Reset First Plant Tip</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Clears the "hasSeenFirstPlantTip" flag from localStorage. The tip will show again after the next plant is added (if the user has no plant history).
+                    </p>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem('hasSeenFirstPlantTip');
+                        setDebugMessage('First Plant Tip has been reset. Add a plant to see the tip (requires no plant history).');
+                      }}
+                      className="mt-3 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
+                    >
+                      <RotateCcw size={16} />
+                      Reset Tip
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Current localStorage State */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 flex items-center justify-center flex-shrink-0">
+                    <Bug size={24} className="text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-800 dark:text-white">LocalStorage State</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-3">
+                      Current values of app-related localStorage keys:
+                    </p>
+                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 font-mono text-xs space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-400">hasSeenFirstPlantTip:</span>
+                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('hasSeenFirstPlantTip') || 'null'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-400">onboardingComplete:</span>
+                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('onboardingComplete') || 'null'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-400">animationsEnabled:</span>
+                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('animationsEnabled') || 'null'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </>
         )}
       </div>

@@ -16,6 +16,7 @@ import { ConfettiProvider } from './context/ConfettiContext';
 // Views
 import PickScreen from './views/PickScreen';
 import CelebrationScreen from './views/CelebrationScreen';
+import FirstPlantTip from './views/FirstPlantTip';
 import ProgressPage from './views/ProgressPage';
 import ProfilePage from './views/ProfilePage';
 import AdminPage from './views/AdminPage';
@@ -92,6 +93,9 @@ const AppContent = () => {
   const [currentScreen, setCurrentScreen] = useState(hasCompletedOnboarding ? 'pick' : 'onboarding');
   const [activeTab, setActiveTab] = useState('home');
 
+  // Track if we need to show first plant tip after celebration
+  const [showFirstPlantTip, setShowFirstPlantTip] = useState(false);
+
   // ViewModel: Plant data management
   const {
     foods,
@@ -140,21 +144,46 @@ const AppContent = () => {
    * Handle food selection with celebration flow
    */
   const handleFoodSelect = async (food) => {
+    // Check if this is the user's very first plant (before updating eatenFoods)
+    const isVeryFirstPlant = eatenFoods.size === 0;
+    const hasSeenTip = localStorage.getItem('hasSeenFirstPlantTip') === 'true';
+    const shouldShowTip = isVeryFirstPlant && !hasSeenTip;
+
     await selectFood(food);
-    
+
     // Only show celebration screen if animations are enabled
     if (animationsEnabled) {
       setCurrentScreen('celebration');
 
-      // Auto return to pick screen after 2 seconds
+      // Auto transition after 2 seconds
       setTimeout(() => {
-        setCurrentScreen('pick');
-        clearSelectedFood();
+        if (shouldShowTip) {
+          setShowFirstPlantTip(true);
+          setCurrentScreen('firstPlantTip');
+        } else {
+          setCurrentScreen('pick');
+          clearSelectedFood();
+        }
       }, 2000);
     } else {
-      // Skip celebration when animations are off
-      clearSelectedFood();
+      // Skip celebration when animations are off, but still show tip if first plant
+      if (shouldShowTip) {
+        setShowFirstPlantTip(true);
+        setCurrentScreen('firstPlantTip');
+      } else {
+        clearSelectedFood();
+      }
     }
+  };
+
+  /**
+   * Handle first plant tip dismissal
+   */
+  const handleFirstPlantTipContinue = () => {
+    localStorage.setItem('hasSeenFirstPlantTip', 'true');
+    setShowFirstPlantTip(false);
+    setCurrentScreen('pick');
+    clearSelectedFood();
   };
 
   // Show loading spinner while checking auth
@@ -190,6 +219,7 @@ const AppContent = () => {
               onFoodSelect={handleFoodSelect}
               foods={foods}
               eatenFoods={eatenFoods}
+              isLoading={plantsLoading}
             />
           )}
 
@@ -224,6 +254,11 @@ const AppContent = () => {
       {/* Celebration Screen */}
       {currentScreen === 'celebration' && selectedFood && (
         <CelebrationScreen message={selectedFood.displayMessage} animationsEnabled={animationsEnabled} isSuperfood={selectedFood.is_superfood} />
+      )}
+
+      {/* First Plant Tip Screen */}
+      {currentScreen === 'firstPlantTip' && (
+        <FirstPlantTip onContinue={handleFirstPlantTipContinue} animationsEnabled={animationsEnabled} />
       )}
     </div>
   );

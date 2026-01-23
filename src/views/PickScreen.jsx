@@ -4,7 +4,7 @@ import { requestsAPI } from '../models/api/requestsApi';
 
 const ITEMS_PER_PAGE = 6;
 
-const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
+const PickScreen = ({ score, onFoodSelect, foods, eatenFoods, isLoading = false }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [recentlyAdded, setRecentlyAdded] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -189,7 +189,12 @@ const PickScreen = ({ score, onFoodSelect, foods, eatenFoods }) => {
 
       {/* Content with smooth transitions */}
       <div className="flex-1 overflow-y-auto px-5 py-5 pb-32">
-        {!showSearchResults ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="w-16 h-16 border-4 border-green-200 border-t-green-500 rounded-full animate-spin mb-4"></div>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">Loading plants...</p>
+          </div>
+        ) : !showSearchResults ? (
           <div className="space-y-6">
             {/* All Plants Section */}
             {foods.length > 0 && (

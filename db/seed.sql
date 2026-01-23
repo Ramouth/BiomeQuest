@@ -10,6 +10,15 @@ INSERT INTO users (username, email, password_hash, avatar_seed, is_admin) VALUES
     ('admin', 'admin@biomequest.com', '$2b$10$G0fhyy50/QAGu8LW8D1hw.kNZDz7aWTwPvoikNe46n.iwmytLqKI2', 'admin-user', 1);
 
 -- ============================================
+-- TEST USER (for testing FirstPlantTip)
+-- Email: test@biomequest.com
+-- Password: admin123
+-- Has NO plant history - FirstPlantTip will show on first plant
+-- ============================================
+INSERT INTO users (username, email, password_hash, avatar_seed, is_admin) VALUES
+    ('testuser', 'test@biomequest.com', '$2b$10$G0fhyy50/QAGu8LW8D1hw.kNZDz7aWTwPvoikNe46n.iwmytLqKI2', 'test-user', 0);
+
+-- ============================================
 -- DEFAULT PLANTS (from current app)
 -- ============================================
 INSERT INTO plants (name, emoji, points, repeat_points, first_time_message, repeat_message) VALUES
@@ -22,7 +31,7 @@ INSERT INTO plants (name, emoji, points, repeat_points, first_time_message, repe
     ('Watermelon', '🍉', 5, 1, 'Congrats! You just helped your biome with a new plant!', 'Plants are good, but diversity is KING!'),
     ('Grape', '🍇', 5, 1, 'Congrats! You just helped your biome with a new plant!', 'Plants are good, but diversity is KING!'),
     ('Pineapple', '🍍', 5, 1, 'Congrats! You just helped your biome with a new plant!', 'Plants are good, but diversity is KING!'),
-    ('Papaya', '🧡', 5, 1, 'Congrats! You just helped your biome with a new plant!', 'Plants are good, but diversity is KING!');
+    ('Papaya', '🟠', 5, 1, 'Congrats! You just helped your biome with a new plant!', 'Plants are good, but diversity is KING!');
 
 -- Additional plants for diversity
 INSERT INTO plants (name, emoji, points, repeat_points, first_time_message, repeat_message) VALUES
@@ -48,7 +57,6 @@ INSERT INTO plants (name, emoji, points, repeat_points, first_time_message, repe
 
     -- Grains
     ('Rice', '🍚', 5, 1, 'A staple for billions, great for you!', 'Rice is nice!'),
-    ('Bread', '🍞', 5, 1, 'Whole grains feed your microbiome!', 'Bread for the win!'),
 
     -- Other fruits
     ('Cherry', '🍒', 5, 1, 'Sweet antioxidant boost!', 'Cherry on top!'),
