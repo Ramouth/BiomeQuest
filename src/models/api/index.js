@@ -1,14 +1,9 @@
 /**
  * API Index
- * Model Layer - exports all API modules
+ * Frontend-only version - uses localStorage instead of backend
  */
 
-import { authAPI } from './authApi';
-import { plantsAPI } from './plantsApi';
-import { logsAPI } from './logsApi';
-import { badgesAPI } from './badgesApi';
-import { requestsAPI } from './requestsApi';
-import { fetchAPI, API_URL } from './fetchApi';
+import { authAPI, plantsAPI, logsAPI, badgesAPI, requestsAPI, fetchAPI, API_URL } from './localStorageApi';
 
 // Named exports
 export { authAPI, plantsAPI, logsAPI, badgesAPI, requestsAPI, fetchAPI, API_URL };

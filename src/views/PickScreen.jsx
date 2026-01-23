@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Search, Plus, X, Sparkles, TrendingUp, ChevronLeft, ChevronRight, Send } from 'lucide-react';
-import { requestsAPI } from '../models/api/requestsApi';
+import { requestsAPI } from '../models/api';
 
 const ITEMS_PER_PAGE = 6;
 

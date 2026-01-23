@@ -5,8 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Check, X, RefreshCw, AlertCircle, Users, Leaf, Trash2, Shield, Bug, RotateCcw } from 'lucide-react';
-import { requestsAPI } from '../models/api/requestsApi';
-import { authAPI } from '../models/api/authApi';
+import { requestsAPI, authAPI } from '../models/api';
 import { getAvatarUrl } from '../constants/avatars';
 
 const AdminPage = ({ onBack }) => {
