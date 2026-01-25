@@ -3,10 +3,10 @@
  * Model Layer - handles HTTP communication
  */
 
-// Use environment variable for API URL, fallback to localhost for development
-const API_URL = import.meta.env.VITE_API_URL 
+// Use environment variable for API URL, fallback to relative URL (works when served from same origin)
+const API_URL = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api`
-  : 'http://localhost:3001/api';
+  : (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
 
 console.log('API URL configured:', API_URL); // Debug log
 
