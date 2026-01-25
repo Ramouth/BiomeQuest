@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles, Calendar, Check, ChevronRight, Moon, Shield } from 'lucide-react';
+import { Award, Trophy, TrendingUp, Settings, LogOut, Sparkles, Calendar, Check, ChevronRight, Moon, Shield, Bug } from 'lucide-react';
 import { useProfile } from '../viewmodels/useProfile';
 import { useBadges } from '../viewmodels/useBadges';
 import { useAuth } from '../context/AuthContext';
@@ -87,6 +87,31 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
   const [showAllPlantsModal, setShowAllPlantsModal] = useState(false);
   const { logout } = useAuth();
   const { triggerConfetti } = useConfetti();
+
+  const handleBugReport = () => {
+    const email = 's235437@student.dtu.dk';
+    const subject = encodeURIComponent('Bug Report: BiomeQuest');
+    const body = encodeURIComponent(`Hi,
+
+I found a bug in BiomeQuest:
+
+**What happened:**
+
+
+**Steps to reproduce:**
+1.
+2.
+3.
+
+**Expected behavior:**
+
+
+---
+User: ${userName} (ID: ${userId})
+`);
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    setShowSettingsMenu(false);
+  };
 
   const handleSignOut = () => {
     setShowSettingsMenu(false);
@@ -247,6 +272,17 @@ const ProfilePage = ({ onBack, userName, userId, avatarId, score, animationsEnab
                         {isDarkMode ? 'ON' : 'OFF'}
                       </span>
                     </div>
+                  </button>
+                </div>
+
+                {/* Bug Report Button */}
+                <div className="border-t border-gray-100 dark:border-gray-600">
+                  <button
+                    onClick={handleBugReport}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors"
+                  >
+                    <Bug size={18} />
+                    <span className="font-medium">Report Bug</span>
                   </button>
                 </div>
 

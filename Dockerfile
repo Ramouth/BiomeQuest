@@ -36,8 +36,11 @@ COPY --from=builder /app/dist ./dist
 # Copy server code
 COPY server ./server
 
+# Copy database schema and seed files
+COPY db/*.sql ./db/
+
 # Create database directory with proper permissions
-RUN mkdir -p /app/db && chown -R biomequest:nodejs /app/db
+RUN chown -R biomequest:nodejs /app/db
 
 # Switch to non-root user
 USER biomequest
