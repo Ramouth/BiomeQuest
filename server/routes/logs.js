@@ -41,18 +41,13 @@ router.post('/', authenticateToken, (req, res, next) => {
       [userId, plantId, pointsEarned, isFirstTime ? 1 : 0]
     );
 
-    // Update or insert user_plants record
-    if (isFirstTime) {
-      run(
-        'INSERT INTO user_plants (user_id, plant_id) VALUES (?, ?)',
-        [userId, plantId]
-      );
-    } else {
-      run(
-        'UPDATE user_plants SET times_eaten = times_eaten + 1 WHERE user_id = ? AND plant_id = ?',
-        [userId, plantId]
-      );
-    }
+    // Upsert user_plants record (handles race conditions with INSERT OR REPLACE pattern)
+    run(
+      `INSERT INTO user_plants (user_id, plant_id, times_eaten)
+       VALUES (?, ?, 1)
+       ON CONFLICT(user_id, plant_id) DO UPDATE SET times_eaten = times_eaten + 1`,
+      [userId, plantId]
+    );
 
     // Update streak
     updateStreak(userId);
