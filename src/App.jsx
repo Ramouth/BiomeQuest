@@ -8,7 +8,7 @@
  * - Views: src/views/* (UI components)
  */
 
-import React, { useState, Component } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { ConfettiProvider } from './context/ConfettiContext';
@@ -111,13 +111,25 @@ const AppContent = () => {
   const {
     selectedFood,
     selectFood,
-    clearSelectedFood
+    clearSelectedFood,
+    error: foodError,
+    clearError: clearFoodError
   } = useFood({
     eatenFoods,
     markFoodEaten,
     addPoints,
     setScore
   });
+
+  // Auto-dismiss food error after 4 seconds
+  useEffect(() => {
+    if (foodError) {
+      const timer = setTimeout(() => {
+        clearFoodError();
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [foodError, clearFoodError]);
 
   // User profile data from auth
   const userId = user?.id || 'GUEST';
@@ -149,7 +161,13 @@ const AppContent = () => {
     const hasSeenTip = localStorage.getItem('hasSeenFirstPlantTip') === 'true';
     const shouldShowTip = isVeryFirstPlant && !hasSeenTip;
 
-    await selectFood(food);
+    const result = await selectFood(food);
+
+    // If there was an error, don't show celebration - stay on pick screen
+    // The error toast will be shown via foodError state
+    if (result?.error) {
+      return;
+    }
 
     // Only show celebration screen if animations are enabled
     if (animationsEnabled) {
@@ -208,6 +226,26 @@ const AppContent = () => {
           onComplete={handleOnboardingComplete}
           onSkipToPick={handleOnboardingComplete}
         />
+      )}
+
+      {/* Error Toast - shown when plant logging fails */}
+      {foodError && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 animate-bounce">
+          <div className="bg-red-500 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3">
+            <span className="text-xl">⚠️</span>
+            <div>
+              <p className="font-bold text-sm">{foodError}</p>
+            </div>
+            <button
+              onClick={clearFoodError}
+              className="ml-2 hover:bg-red-600 rounded-full p-1 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Main App Screens */}

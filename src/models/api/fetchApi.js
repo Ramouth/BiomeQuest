@@ -84,7 +84,7 @@ export class ApiError extends Error {
       [ErrorCodes.PLANT_NOT_FOUND]: 'This plant is no longer available',
       [ErrorCodes.RESOURCE_NOT_FOUND]: 'The requested item could not be found',
       [ErrorCodes.DATABASE_ERROR]: 'Unable to save your data. Please try again',
-      [ErrorCodes.NETWORK_ERROR]: 'Unable to connect to the server. Please check your internet connection',
+      [ErrorCodes.NETWORK_ERROR]: 'May not have been logged. Please check your connection and try again',
       [ErrorCodes.INTERNAL_ERROR]: 'Something went wrong. Please try again later'
     };
 

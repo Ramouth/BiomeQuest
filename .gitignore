@@ -8,6 +8,7 @@ dist/
 build/
 *.tsbuildinfo
 HETZNER_DEPLOYMENT.md
+BETA_EVALUATION.md
 
 
 # Vite
