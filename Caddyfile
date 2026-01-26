@@ -1,0 +1,23 @@
+# Caddy reverse proxy configuration for HTTPS
+# Replace YOUR_SERVER_IP with your actual Hetzner server IP
+# Format: 123-45-67-89.sslip.io (use dashes instead of dots)
+
+{$DOMAIN:localhost} {
+    reverse_proxy biomequest:3001
+
+    # Enable compression
+    encode gzip
+
+    # Security headers
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+    }
+
+    # Logging
+    log {
+        output stdout
+        format console
+    }
+}

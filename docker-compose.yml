@@ -1,11 +1,28 @@
 services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    depends_on:
+      - biomequest
+    restart: unless-stopped
+
   biomequest:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: biomequest
-    ports:
-      - "3001:3001"
+    # Internal only - Caddy handles external traffic
+    expose:
+      - "3001"
     volumes:
       # Persist SQLite database
       - biomequest-db:/app/db
@@ -25,4 +42,8 @@ services:
 
 volumes:
   biomequest-db:
+    driver: local
+  caddy-data:
+    driver: local
+  caddy-config:
     driver: local

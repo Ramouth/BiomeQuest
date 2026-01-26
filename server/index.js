@@ -34,9 +34,14 @@ const getCorsOrigins = () => {
   // Add production origins if configured
   if (process.env.FRONTEND_URL) {
     origins.push(process.env.FRONTEND_URL);
+    // Also add HTTPS version
+    if (process.env.FRONTEND_URL.startsWith('http://')) {
+      origins.push(process.env.FRONTEND_URL.replace('http://', 'https://'));
+    }
   }
   if (process.env.SERVER_IP) {
     origins.push(`http://${process.env.SERVER_IP}:${PORT}`);
+    origins.push(`https://${process.env.SERVER_IP}`);
   }
 
   return origins;
