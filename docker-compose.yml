@@ -20,9 +20,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: biomequest
-    # Internal only - Caddy handles external traffic
-    expose:
-      - "3001"
+    ports:
+      - "3001:3001"
     volumes:
       # Persist SQLite database
       - biomequest-db:/app/db
