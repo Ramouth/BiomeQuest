@@ -33,6 +33,11 @@ export const logsAPI = {
   getMonthly: () => fetchAPI('/logs/monthly'),
 
   /**
+   * Get weekly summary for popup (compares with personal bests)
+   */
+  getWeeklySummary: () => fetchAPI('/logs/weekly-summary'),
+
+  /**
    * Get top plants by consumption
    * @param {number} limit - Number of plants to return
    */

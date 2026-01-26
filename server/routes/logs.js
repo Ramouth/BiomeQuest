@@ -265,6 +265,88 @@ router.get('/weekly', authenticateToken, (req, res, next) => {
   }
 });
 
+// Get weekly summary for popup (compares last week with personal bests)
+router.get('/weekly-summary', authenticateToken, (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+
+    // Verify user exists and get current bests
+    const user = queryOne(
+      'SELECT weekly_goal, best_weekly_points, best_weekly_plants FROM users WHERE id = ?',
+      [userId]
+    );
+    if (!user) {
+      throw createError.userNotFound();
+    }
+
+    // Get last week's stats (Monday to Sunday of the previous week)
+    // Calculate last week's date range
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const daysToLastSunday = dayOfWeek === 0 ? 7 : dayOfWeek;
+    const lastSunday = new Date(now);
+    lastSunday.setDate(now.getDate() - daysToLastSunday);
+    lastSunday.setHours(23, 59, 59, 999);
+
+    const lastMonday = new Date(lastSunday);
+    lastMonday.setDate(lastSunday.getDate() - 6);
+    lastMonday.setHours(0, 0, 0, 0);
+
+    const lastMondayStr = lastMonday.toISOString().split('T')[0];
+    const lastSundayStr = lastSunday.toISOString().split('T')[0];
+
+    // Get last week's points and unique plants
+    const lastWeekStats = queryOne(`
+      SELECT
+        COALESCE(SUM(points_earned), 0) as points,
+        COUNT(DISTINCT plant_id) as unique_plants
+      FROM plant_logs
+      WHERE user_id = ?
+        AND DATE(logged_at) >= ?
+        AND DATE(logged_at) <= ?
+    `, [userId, lastMondayStr, lastSundayStr]);
+
+    const lastWeekPoints = lastWeekStats?.points || 0;
+    const lastWeekPlants = lastWeekStats?.unique_plants || 0;
+
+    // Check for new personal bests
+    const currentBestPoints = user.best_weekly_points || 0;
+    const currentBestPlants = user.best_weekly_plants || 0;
+
+    const isNewPointsRecord = lastWeekPoints > currentBestPoints;
+    const isNewPlantsRecord = lastWeekPlants > currentBestPlants;
+
+    // Update personal bests if new records were set
+    if (isNewPointsRecord || isNewPlantsRecord) {
+      run(
+        `UPDATE users SET
+          best_weekly_points = MAX(best_weekly_points, ?),
+          best_weekly_plants = MAX(best_weekly_plants, ?)
+        WHERE id = ?`,
+        [lastWeekPoints, lastWeekPlants, userId]
+      );
+    }
+
+    res.json({
+      lastWeek: {
+        points: lastWeekPoints,
+        uniquePlants: lastWeekPlants,
+        startDate: lastMondayStr,
+        endDate: lastSundayStr
+      },
+      personalBests: {
+        points: isNewPointsRecord ? lastWeekPoints : currentBestPoints,
+        uniquePlants: isNewPlantsRecord ? lastWeekPlants : currentBestPlants
+      },
+      isNewPointsRecord,
+      isNewPlantsRecord,
+      currentGoal: user.weekly_goal || 150
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Get user's monthly summary (last 30 days)
 router.get('/monthly', authenticateToken, (req, res, next) => {
   try {

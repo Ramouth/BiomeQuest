@@ -20,6 +20,9 @@ export async function initDatabase() {
     const fileBuffer = fs.readFileSync(DB_PATH);
     db = new SQL.Database(fileBuffer);
     console.log('Loaded existing database');
+
+    // Run migrations for existing databases
+    runMigrations();
   } else {
     db = new SQL.Database();
     console.log('Created new database');
@@ -39,6 +42,23 @@ export async function initDatabase() {
   }
 
   return db;
+}
+
+// Run database migrations for existing databases
+function runMigrations() {
+  // Migration: Add best_weekly_points and best_weekly_plants columns to users table
+  try {
+    // Check if columns exist by trying to select them
+    const testQuery = db.prepare("SELECT best_weekly_points FROM users LIMIT 1");
+    testQuery.free();
+  } catch (e) {
+    // Columns don't exist, add them
+    console.log('Running migration: Adding weekly best columns to users table');
+    db.run("ALTER TABLE users ADD COLUMN best_weekly_points INTEGER DEFAULT 0");
+    db.run("ALTER TABLE users ADD COLUMN best_weekly_plants INTEGER DEFAULT 0");
+    saveDatabase();
+    console.log('Migration complete: Added best_weekly_points and best_weekly_plants columns');
+  }
 }
 
 export function getDatabase() {

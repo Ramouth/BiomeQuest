@@ -23,10 +23,15 @@ import AdminPage from './views/AdminPage';
 import Navbar from './views/Navbar';
 import OnboardingView from './views/OnboardingView';
 import AuthScreen from './views/AuthScreen';
+import WeeklySummaryModal from './views/WeeklySummaryModal';
 
 // ViewModels
 import { usePlantData } from './viewmodels/usePlantData';
 import { useFood } from './viewmodels/useFood';
+
+// API
+import { logsAPI } from './models/api/logsApi';
+import { authAPI } from './models/api/authApi';
 
 /**
  * Error Boundary to catch rendering errors
@@ -96,6 +101,10 @@ const AppContent = () => {
   // Track if we need to show first plant tip after celebration
   const [showFirstPlantTip, setShowFirstPlantTip] = useState(false);
 
+  // Weekly summary modal state
+  const [showWeeklySummary, setShowWeeklySummary] = useState(false);
+  const [weeklySummaryData, setWeeklySummaryData] = useState(null);
+
   // ViewModel: Plant data management
   const {
     foods,
@@ -130,6 +139,53 @@ const AppContent = () => {
       return () => clearTimeout(timer);
     }
   }, [foodError, clearFoodError]);
+
+  // Check if we should show weekly summary popup (on first app open of a new week)
+  useEffect(() => {
+    if (!isAuthenticated || !hasCompletedOnboarding) return;
+
+    const checkWeeklySummary = async () => {
+      // Get current week number (ISO week)
+      const now = new Date();
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      const days = Math.floor((now - startOfYear) / (24 * 60 * 60 * 1000));
+      const currentWeek = `${now.getFullYear()}-W${Math.ceil((days + startOfYear.getDay() + 1) / 7)}`;
+
+      const lastShownWeek = localStorage.getItem('lastWeeklySummaryShown');
+
+      // Only show if we haven't shown for this week yet (show on Monday or first open of week)
+      if (lastShownWeek !== currentWeek) {
+        // Check if it's Monday or if we're past day 1 of the week and haven't seen summary
+        const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday
+        const isMondayOrLater = dayOfWeek >= 1 || dayOfWeek === 0; // Monday through Sunday
+
+        if (isMondayOrLater) {
+          try {
+            const data = await logsAPI.getWeeklySummary();
+            // Only show if there was activity last week OR if user has been using the app
+            if (data.lastWeek.points > 0 || data.personalBests.points > 0) {
+              setWeeklySummaryData(data);
+              setShowWeeklySummary(true);
+              localStorage.setItem('lastWeeklySummaryShown', currentWeek);
+            }
+          } catch (err) {
+            console.error('Failed to fetch weekly summary:', err);
+          }
+        }
+      }
+    };
+
+    // Small delay to let the app fully load
+    const timer = setTimeout(checkWeeklySummary, 500);
+    return () => clearTimeout(timer);
+  }, [isAuthenticated, hasCompletedOnboarding]);
+
+  /**
+   * Handle setting weekly goal from the summary modal
+   */
+  const handleSetWeeklyGoal = async (goal) => {
+    await authAPI.updateGoals(goal, null);
+  };
 
   // User profile data from auth
   const userId = user?.id || 'GUEST';
@@ -297,6 +353,19 @@ const AppContent = () => {
       {/* First Plant Tip Screen */}
       {currentScreen === 'firstPlantTip' && (
         <FirstPlantTip onContinue={handleFirstPlantTipContinue} animationsEnabled={animationsEnabled} />
+      )}
+
+      {/* Weekly Summary Modal */}
+      {showWeeklySummary && weeklySummaryData && (
+        <WeeklySummaryModal
+          lastWeek={weeklySummaryData.lastWeek}
+          personalBests={weeklySummaryData.personalBests}
+          isNewPointsRecord={weeklySummaryData.isNewPointsRecord}
+          isNewPlantsRecord={weeklySummaryData.isNewPlantsRecord}
+          currentGoal={weeklySummaryData.currentGoal}
+          onSetGoal={handleSetWeeklyGoal}
+          onClose={() => setShowWeeklySummary(false)}
+        />
       )}
     </div>
   );

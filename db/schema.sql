@@ -19,6 +19,8 @@ CREATE TABLE IF NOT EXISTS users (
     longest_streak INTEGER DEFAULT 0,       -- Best streak achieved
     last_log_date DATE,                     -- Last date user logged a plant
     is_admin BOOLEAN DEFAULT 0,             -- Admin flag for privileged access
+    best_weekly_points INTEGER DEFAULT 0,   -- Personal best weekly points
+    best_weekly_plants INTEGER DEFAULT 0,   -- Personal best unique plants in a week
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
