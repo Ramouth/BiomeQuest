@@ -123,6 +123,22 @@ CREATE INDEX IF NOT EXISTS idx_plant_requests_status ON plant_requests(status);
 CREATE INDEX IF NOT EXISTS idx_plant_requests_user ON plant_requests(user_id);
 
 -- ============================================
+-- BETA_FEEDBACK TABLE
+-- Collects feedback from beta testers
+-- ============================================
+CREATE TABLE IF NOT EXISTS beta_feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    feedback_text TEXT,
+    app_version TEXT DEFAULT '1.0.0-beta',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_beta_feedback_user ON beta_feedback(user_id);
+
+-- ============================================
 -- VIEWS FOR COMMON QUERIES
 -- ============================================
 

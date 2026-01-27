@@ -19,6 +19,7 @@ import plantRoutes from './routes/plants.js';
 import logRoutes from './routes/logs.js';
 import badgeRoutes from './routes/badges.js';
 import requestRoutes from './routes/requests.js';
+import feedbackRoutes from './routes/feedback.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -65,6 +66,7 @@ async function startServer() {
     app.use('/api/logs', logRoutes);
     app.use('/api/badges', badgeRoutes);
     app.use('/api/requests', requestRoutes);
+    app.use('/api/feedback', feedbackRoutes);
 
     // Root route - API info (development only, production serves React app)
     if (process.env.NODE_ENV !== 'production') {

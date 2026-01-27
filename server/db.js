@@ -48,16 +48,36 @@ export async function initDatabase() {
 function runMigrations() {
   // Migration: Add best_weekly_points and best_weekly_plants columns to users table
   try {
-    // Check if columns exist by trying to select them
     const testQuery = db.prepare("SELECT best_weekly_points FROM users LIMIT 1");
     testQuery.free();
   } catch (e) {
-    // Columns don't exist, add them
     console.log('Running migration: Adding weekly best columns to users table');
     db.run("ALTER TABLE users ADD COLUMN best_weekly_points INTEGER DEFAULT 0");
     db.run("ALTER TABLE users ADD COLUMN best_weekly_plants INTEGER DEFAULT 0");
     saveDatabase();
     console.log('Migration complete: Added best_weekly_points and best_weekly_plants columns');
+  }
+
+  // Migration: Create beta_feedback table
+  try {
+    const testQuery = db.prepare("SELECT id FROM beta_feedback LIMIT 1");
+    testQuery.free();
+  } catch (e) {
+    console.log('Running migration: Creating beta_feedback table');
+    db.run(`
+      CREATE TABLE IF NOT EXISTS beta_feedback (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+        feedback_text TEXT,
+        app_version TEXT DEFAULT '1.0.0-beta',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+    db.run("CREATE INDEX IF NOT EXISTS idx_beta_feedback_user ON beta_feedback(user_id)");
+    saveDatabase();
+    console.log('Migration complete: Created beta_feedback table');
   }
 }
 

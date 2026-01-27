@@ -4,9 +4,10 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Check, X, RefreshCw, AlertCircle, Users, Leaf, Trash2, Shield, Bug, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Check, X, RefreshCw, AlertCircle, Users, Leaf, Trash2, Shield, Bug, RotateCcw, MessageSquare, Star } from 'lucide-react';
 import { requestsAPI } from '../models/api/requestsApi';
 import { authAPI } from '../models/api/authApi';
+import { feedbackAPI } from '../models/api/feedbackApi';
 import { getAvatarUrl } from '../constants/avatars';
 
 const AdminPage = ({ onBack }) => {
@@ -19,6 +20,11 @@ const AdminPage = ({ onBack }) => {
   // Users state
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(true);
+
+  // Feedback state
+  const [feedback, setFeedback] = useState([]);
+  const [feedbackStats, setFeedbackStats] = useState(null);
+  const [feedbackLoading, setFeedbackLoading] = useState(true);
 
   // Shared state
   const [error, setError] = useState(null);
@@ -54,9 +60,24 @@ const AdminPage = ({ onBack }) => {
     }
   };
 
+  const fetchFeedback = async () => {
+    setFeedbackLoading(true);
+    setError(null);
+    try {
+      const data = await feedbackAPI.getAll();
+      setFeedback(data.feedback);
+      setFeedbackStats(data.stats);
+    } catch (err) {
+      setError(err.userMessage || 'Failed to load feedback');
+    } finally {
+      setFeedbackLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchPendingRequests();
     fetchUsers();
+    fetchFeedback();
   }, []);
 
   const handleApprove = async (id, plantName, suggestedEmoji) => {
@@ -99,12 +120,14 @@ const AdminPage = ({ onBack }) => {
   const handleRefresh = () => {
     if (activeTab === 'requests') {
       fetchPendingRequests();
-    } else {
+    } else if (activeTab === 'users') {
       fetchUsers();
+    } else if (activeTab === 'feedback') {
+      fetchFeedback();
     }
   };
 
-  const isLoading = activeTab === 'requests' ? requestsLoading : activeTab === 'users' ? usersLoading : false;
+  const isLoading = activeTab === 'requests' ? requestsLoading : activeTab === 'users' ? usersLoading : activeTab === 'feedback' ? feedbackLoading : false;
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-b from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
@@ -192,6 +215,22 @@ const AdminPage = ({ onBack }) => {
             </span>
           </button>
           <button
+            onClick={() => setActiveTab('feedback')}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-semibold transition-all ${
+              activeTab === 'feedback'
+                ? 'bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-md'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+            }`}
+          >
+            <MessageSquare size={18} />
+            Feedback
+            {feedback.length > 0 && (
+              <span className="bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full">
+                {feedback.length}
+              </span>
+            )}
+          </button>
+          <button
             onClick={() => setActiveTab('debug')}
             className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-semibold transition-all ${
               activeTab === 'debug'
@@ -200,7 +239,6 @@ const AdminPage = ({ onBack }) => {
             }`}
           >
             <Bug size={18} />
-            Debug
           </button>
         </div>
       </div>
@@ -392,6 +430,96 @@ const AdminPage = ({ onBack }) => {
           </>
         )}
 
+        {/* Feedback Tab */}
+        {activeTab === 'feedback' && (
+          <>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-gray-800 dark:text-white">Beta Feedback</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {feedback.length} response{feedback.length !== 1 ? 's' : ''} from beta testers
+              </p>
+            </div>
+
+            {/* Stats Summary */}
+            {feedbackStats && feedbackStats.totalResponses > 0 && (
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg border border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Star size={18} className="text-yellow-500 fill-yellow-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Avg Rating</span>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-800 dark:text-white">
+                    {feedbackStats.avgRating}/5
+                  </p>
+                </div>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg border border-gray-100 dark:border-gray-700">
+                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Sentiment</div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-500 font-bold">{feedbackStats.positiveCount} positive</span>
+                    <span className="text-gray-400">/</span>
+                    <span className="text-red-500 font-bold">{feedbackStats.negativeCount} negative</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {feedbackLoading && (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <RefreshCw size={32} className="text-purple-500 animate-spin mx-auto mb-3" />
+                  <p className="text-gray-500 dark:text-gray-400">Loading feedback...</p>
+                </div>
+              </div>
+            )}
+
+            {!feedbackLoading && feedback.length === 0 && (
+              <div className="bg-white/70 dark:bg-gray-800/70 rounded-3xl p-8 text-center">
+                <div className="text-6xl mb-4">📝</div>
+                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">No Feedback Yet</h3>
+                <p className="text-gray-500 dark:text-gray-400">Feedback from beta testers will appear here.</p>
+              </div>
+            )}
+
+            {!feedbackLoading && feedback.length > 0 && (
+              <div className="space-y-4">
+                {feedback.map((item) => (
+                  <div
+                    key={item.id}
+                    className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <p className="font-bold text-gray-800 dark:text-white">{item.username}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{item.email}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            size={16}
+                            className={star <= item.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-gray-600'}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {item.feedback_text && (
+                      <p className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 mb-3">
+                        "{item.feedback_text}"
+                      </p>
+                    )}
+
+                    <div className="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
+                      <span>{new Date(item.created_at).toLocaleString()}</span>
+                      <span>{item.plants_logged} plants logged, {item.total_points} pts</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
         {/* Debug Tab */}
         {activeTab === 'debug' && (
           <>
@@ -466,6 +594,39 @@ const AdminPage = ({ onBack }) => {
                         <span className="text-gray-600 dark:text-gray-400">animationsEnabled:</span>
                         <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('animationsEnabled') || 'null'}</span>
                       </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-400">feedbackStatus:</span>
+                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('feedbackStatus') || 'null'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600 dark:text-gray-400">sessionCount:</span>
+                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('sessionCount') || 'null'}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <button
+                        onClick={() => {
+                          localStorage.removeItem('feedbackStatus');
+                          localStorage.removeItem('feedbackRemindLater');
+                          localStorage.removeItem('sessionCount');
+                          localStorage.removeItem('firstUseDate');
+                          setDebugMessage('Feedback triggers reset. Refresh the page to test.');
+                        }}
+                        className="flex-1 flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
+                      >
+                        <RotateCcw size={16} />
+                        Reset Feedback
+                      </button>
+                      <button
+                        onClick={() => {
+                          localStorage.removeItem('lastWeeklySummaryShown');
+                          setDebugMessage('Weekly summary reset. Refresh the page to see it.');
+                        }}
+                        className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
+                      >
+                        <RotateCcw size={16} />
+                        Reset Weekly
+                      </button>
                     </div>
                   </div>
                 </div>

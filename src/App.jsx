@@ -24,6 +24,7 @@ import Navbar from './views/Navbar';
 import OnboardingView from './views/OnboardingView';
 import AuthScreen from './views/AuthScreen';
 import WeeklySummaryModal from './views/WeeklySummaryModal';
+import FeedbackModal from './views/FeedbackModal';
 
 // ViewModels
 import { usePlantData } from './viewmodels/usePlantData';
@@ -32,6 +33,7 @@ import { useFood } from './viewmodels/useFood';
 // API
 import { logsAPI } from './models/api/logsApi';
 import { authAPI } from './models/api/authApi';
+import { feedbackAPI } from './models/api/feedbackApi';
 
 /**
  * Error Boundary to catch rendering errors
@@ -104,6 +106,9 @@ const AppContent = () => {
   // Weekly summary modal state
   const [showWeeklySummary, setShowWeeklySummary] = useState(false);
   const [weeklySummaryData, setWeeklySummaryData] = useState(null);
+
+  // Feedback modal state
+  const [showFeedback, setShowFeedback] = useState(false);
 
   // ViewModel: Plant data management
   const {
@@ -185,6 +190,86 @@ const AppContent = () => {
    */
   const handleSetWeeklyGoal = async (goal) => {
     await authAPI.updateGoals(goal, null);
+  };
+
+  // Check if we should show feedback modal
+  useEffect(() => {
+    if (!isAuthenticated || !hasCompletedOnboarding) return;
+
+    const checkFeedbackTrigger = async () => {
+      // Check if already submitted or dismissed permanently
+      const feedbackStatus = localStorage.getItem('feedbackStatus');
+      if (feedbackStatus === 'submitted') return;
+
+      // Check "remind later" - wait at least 1 day
+      const remindLaterTime = localStorage.getItem('feedbackRemindLater');
+      if (remindLaterTime) {
+        const daysSinceRemind = (Date.now() - parseInt(remindLaterTime)) / (1000 * 60 * 60 * 24);
+        if (daysSinceRemind < 1) return;
+      }
+
+      // Track session count
+      const sessionCount = parseInt(localStorage.getItem('sessionCount') || '0') + 1;
+      localStorage.setItem('sessionCount', sessionCount.toString());
+
+      // Check if user has already submitted via API
+      try {
+        const status = await feedbackAPI.getStatus();
+        if (status.hasSubmitted) {
+          localStorage.setItem('feedbackStatus', 'submitted');
+          return;
+        }
+      } catch (err) {
+        console.error('Failed to check feedback status:', err);
+        return;
+      }
+
+      // Calculate days since first use
+      const firstUseDate = localStorage.getItem('firstUseDate');
+      if (!firstUseDate) {
+        localStorage.setItem('firstUseDate', Date.now().toString());
+      }
+      const daysSinceFirstUse = firstUseDate
+        ? (Date.now() - parseInt(firstUseDate)) / (1000 * 60 * 60 * 24)
+        : 0;
+
+      // Trigger conditions (OR logic):
+      // 1. 5+ plants logged (eatenFoods.size >= 5)
+      // 2. 3+ days since first use
+      // 3. First badge earned (score >= 10)
+      // 4. 3+ sessions
+      const hasEnoughPlants = eatenFoods.size >= 5;
+      const hasEnoughDays = daysSinceFirstUse >= 3;
+      const hasFirstBadge = score >= 10;
+      const hasEnoughSessions = sessionCount >= 3;
+
+      if (hasEnoughPlants || hasEnoughDays || hasFirstBadge || hasEnoughSessions) {
+        // Small delay to not interrupt initial load
+        setTimeout(() => {
+          setShowFeedback(true);
+        }, 2000);
+      }
+    };
+
+    // Only check once per session, after a delay
+    const timer = setTimeout(checkFeedbackTrigger, 3000);
+    return () => clearTimeout(timer);
+  }, [isAuthenticated, hasCompletedOnboarding, eatenFoods.size, score]);
+
+  /**
+   * Handle feedback submission
+   */
+  const handleFeedbackSubmit = async (rating, feedbackText) => {
+    await feedbackAPI.submit(rating, feedbackText);
+    localStorage.setItem('feedbackStatus', 'submitted');
+  };
+
+  /**
+   * Handle "remind me later" for feedback
+   */
+  const handleFeedbackRemindLater = () => {
+    localStorage.setItem('feedbackRemindLater', Date.now().toString());
+    setShowFeedback(false);
   };
 
   // User profile data from auth
@@ -365,6 +450,15 @@ const AppContent = () => {
           currentGoal={weeklySummaryData.currentGoal}
           onSetGoal={handleSetWeeklyGoal}
           onClose={() => setShowWeeklySummary(false)}
+        />
+      )}
+
+      {/* Beta Feedback Modal */}
+      {showFeedback && (
+        <FeedbackModal
+          onSubmit={handleFeedbackSubmit}
+          onRemindLater={handleFeedbackRemindLater}
+          onClose={() => setShowFeedback(false)}
         />
       )}
     </div>

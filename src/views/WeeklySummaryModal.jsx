@@ -37,10 +37,12 @@ const WeeklySummaryModal = ({
         {/* Celebration background for new records */}
         {hasNewRecord && (
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-4 left-4 text-2xl animate-bounce">🎉</div>
-            <div className="absolute top-8 right-6 text-xl animate-pulse">✨</div>
-            <div className="absolute bottom-20 left-6 text-xl animate-bounce delay-100">🌟</div>
-            <div className="absolute bottom-24 right-4 text-2xl animate-pulse delay-200">🎊</div>
+            <div className="absolute -top-1 -left-1 text-3xl animate-bounce opacity-80">🎉</div>
+            <div className="absolute top-16 -right-2 text-2xl animate-pulse opacity-70">✨</div>
+            <div className="absolute bottom-32 -left-2 text-2xl animate-bounce opacity-70" style={{animationDelay: '0.15s'}}>🌟</div>
+            <div className="absolute bottom-16 -right-1 text-3xl animate-pulse opacity-80" style={{animationDelay: '0.3s'}}>🎊</div>
+            <div className="absolute top-1/2 -left-3 text-xl animate-ping opacity-50">⭐</div>
+            <div className="absolute top-1/3 -right-3 text-xl animate-ping opacity-50" style={{animationDelay: '0.2s'}}>⭐</div>
           </div>
         )}
 
