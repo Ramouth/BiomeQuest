@@ -133,28 +133,28 @@ const AdminPage = ({ onBack }) => {
     <div className="w-full min-h-screen bg-gradient-to-b from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Delete User?</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Are you sure you want to delete <span className="font-semibold">{deleteConfirm.username}</span>? This action cannot be undone.
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 max-w-xs w-full shadow-xl border border-gray-100 dark:border-gray-700">
+            <h3 className="text-base font-semibold text-gray-800 dark:text-white mb-1.5">Delete User?</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Are you sure you want to delete <span className="font-medium text-gray-700 dark:text-gray-300">{deleteConfirm.username}</span>? This cannot be undone.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 py-2 px-4 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-xl font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                className="flex-1 py-2 px-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-150 active:scale-[0.98]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDeleteUser(deleteConfirm.id)}
                 disabled={actionLoading === deleteConfirm.id}
-                className="flex-1 py-2 px-4 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-red-300 transition-colors flex items-center justify-center gap-2"
+                className="flex-1 py-2 px-4 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 disabled:bg-red-300 transition-all duration-150 active:scale-[0.98] flex items-center justify-center gap-1.5"
               >
                 {actionLoading === deleteConfirm.id ? (
-                  <RefreshCw size={18} className="animate-spin" />
+                  <RefreshCw size={16} className="animate-spin" />
                 ) : (
-                  <Trash2 size={18} />
+                  <Trash2 size={16} />
                 )}
                 Delete
               </button>
@@ -261,10 +261,10 @@ const AdminPage = ({ onBack }) => {
         {/* Plant Requests Tab */}
         {activeTab === 'requests' && (
           <>
-            <div className="mb-4">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white">Pending Plant Requests</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {requests.length} request{requests.length !== 1 ? 's' : ''} awaiting review
+            <div className="mb-3 flex items-baseline justify-between">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Pending Requests</h2>
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                {requests.length} awaiting review
               </p>
             </div>
 
@@ -278,61 +278,63 @@ const AdminPage = ({ onBack }) => {
             )}
 
             {!requestsLoading && requests.length === 0 && (
-              <div className="bg-white/70 dark:bg-gray-800/70 rounded-3xl p-8 text-center">
-                <div className="text-6xl mb-4">🌱</div>
-                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">No Pending Requests</h3>
-                <p className="text-gray-500 dark:text-gray-400">All plant requests have been reviewed.</p>
+              <div className="bg-white/70 dark:bg-gray-800/70 rounded-2xl p-8 text-center">
+                <div className="text-5xl mb-3">🌱</div>
+                <h3 className="text-base font-semibold text-gray-600 dark:text-gray-300 mb-1">No Pending Requests</h3>
+                <p className="text-sm text-gray-400 dark:text-gray-500">All plant requests have been reviewed.</p>
               </div>
             )}
 
             {!requestsLoading && requests.length > 0 && (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {requests.map((request) => (
                   <div
                     key={request.id}
-                    className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700"
+                    className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-sm hover:shadow-md border border-gray-100/80 dark:border-gray-700/60 transition-all duration-200"
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30 flex items-center justify-center flex-shrink-0">
-                        <span className="text-4xl">{request.suggested_emoji || '🌱'}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-800/20 flex items-center justify-center flex-shrink-0">
+                        <span className="text-2xl">{request.suggested_emoji || '🌱'}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-gray-800 dark:text-white text-lg">{request.plant_name}</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                          Requested by <span className="font-medium text-gray-700 dark:text-gray-300">{request.requested_by}</span>
-                        </p>
-                        {request.description && (
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3">
-                            {request.description}
-                          </p>
-                        )}
-                        <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                          {new Date(request.created_at).toLocaleDateString()}
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-gray-800 dark:text-white truncate">{request.plant_name}</h3>
+                          <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                            {new Date(request.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          by <span className="font-medium text-gray-600 dark:text-gray-300">{request.requested_by}</span>
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-3 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    {request.description && (
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 bg-gray-50/80 dark:bg-gray-700/30 rounded-lg px-3 py-2 leading-relaxed">
+                        {request.description}
+                      </p>
+                    )}
+                    <div className="flex gap-2 mt-3">
                       <button
                         onClick={() => handleApprove(request.id, request.plant_name, request.suggested_emoji)}
                         disabled={actionLoading === request.id}
-                        className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 active:scale-[0.98] disabled:bg-green-300 text-white font-medium py-2.5 px-4 rounded-xl transition-all duration-150"
                       >
                         {actionLoading === request.id ? (
-                          <RefreshCw size={18} className="animate-spin" />
+                          <RefreshCw size={16} className="animate-spin" />
                         ) : (
-                          <Check size={18} />
+                          <Check size={16} />
                         )}
                         Approve
                       </button>
                       <button
                         onClick={() => handleReject(request.id, request.plant_name)}
                         disabled={actionLoading === request.id}
-                        className="flex-1 flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+                        className="flex-1 flex items-center justify-center gap-2 bg-gray-100 hover:bg-red-50 dark:bg-gray-700 dark:hover:bg-red-900/30 text-gray-600 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400 font-medium py-2.5 px-4 rounded-xl transition-all duration-150 active:scale-[0.98]"
                       >
                         {actionLoading === request.id ? (
-                          <RefreshCw size={18} className="animate-spin" />
+                          <RefreshCw size={16} className="animate-spin" />
                         ) : (
-                          <X size={18} />
+                          <X size={16} />
                         )}
                         Reject
                       </button>
@@ -347,10 +349,10 @@ const AdminPage = ({ onBack }) => {
         {/* Users Tab */}
         {activeTab === 'users' && (
           <>
-            <div className="mb-4">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white">User Management</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {users.length} registered user{users.length !== 1 ? 's' : ''}
+            <div className="mb-3 flex items-baseline justify-between">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Users</h2>
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                {users.length} registered
               </p>
             </div>
 
@@ -364,23 +366,22 @@ const AdminPage = ({ onBack }) => {
             )}
 
             {!usersLoading && users.length === 0 && (
-              <div className="bg-white/70 dark:bg-gray-800/70 rounded-3xl p-8 text-center">
-                <div className="text-6xl mb-4">👤</div>
-                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">No Users</h3>
-                <p className="text-gray-500 dark:text-gray-400">No users have registered yet.</p>
+              <div className="bg-white/70 dark:bg-gray-800/70 rounded-2xl p-8 text-center">
+                <div className="text-5xl mb-3">👤</div>
+                <h3 className="text-base font-semibold text-gray-600 dark:text-gray-300 mb-1">No Users</h3>
+                <p className="text-sm text-gray-400 dark:text-gray-500">No users have registered yet.</p>
               </div>
             )}
 
             {!usersLoading && users.length > 0 && (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {users.map((user) => (
                   <div
                     key={user.id}
-                    className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg border border-gray-100 dark:border-gray-700"
+                    className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-3 shadow-sm hover:shadow-md border border-gray-100/80 dark:border-gray-700/60 transition-all duration-200"
                   >
-                    <div className="flex items-center gap-4">
-                      {/* Avatar */}
-                      <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/50 dark:to-green-800/50 flex-shrink-0">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/30 dark:to-green-800/30 flex-shrink-0 ring-2 ring-white dark:ring-gray-700">
                         <img
                           src={getAvatarUrl(user.avatarSeed)}
                           alt={user.username}
@@ -388,38 +389,31 @@ const AdminPage = ({ onBack }) => {
                         />
                       </div>
 
-                      {/* User Info */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-gray-800 dark:text-white truncate">{user.username}</h3>
+                          <h3 className="font-semibold text-gray-800 dark:text-white text-sm truncate">{user.username}</h3>
                           {user.isAdmin && (
-                            <span className="flex items-center gap-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-xs px-2 py-0.5 rounded-full">
-                              <Shield size={12} />
+                            <span className="flex items-center gap-0.5 bg-purple-50 dark:bg-purple-900/20 text-purple-500 dark:text-purple-400 text-[10px] px-1.5 py-0.5 rounded-full font-medium">
+                              <Shield size={10} />
                               Admin
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
-                        <div className="flex items-center gap-4 mt-1">
-                          <span className="text-xs text-gray-400 dark:text-gray-500">
-                            {user.totalPoints} pts
-                          </span>
-                          <span className="text-xs text-gray-400 dark:text-gray-500">
-                            {user.uniquePlants} plants
-                          </span>
-                          <span className="text-xs text-gray-400 dark:text-gray-500">
-                            Joined {new Date(user.createdAt).toLocaleDateString()}
+                        <div className="flex items-center gap-3 mt-0.5">
+                          <span className="text-xs text-gray-400 dark:text-gray-500">{user.totalPoints} pts</span>
+                          <span className="text-xs text-gray-400 dark:text-gray-500">{user.uniquePlants} plants</span>
+                          <span className="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline">
+                            {new Date(user.createdAt).toLocaleDateString()}
                           </span>
                         </div>
                       </div>
 
-                      {/* Delete Button (not for admins) */}
                       {!user.isAdmin && (
                         <button
                           onClick={() => setDeleteConfirm(user)}
-                          className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                          className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-150"
                         >
-                          <Trash2 size={20} />
+                          <Trash2 size={16} />
                         </button>
                       )}
                     </div>
@@ -433,31 +427,31 @@ const AdminPage = ({ onBack }) => {
         {/* Feedback Tab */}
         {activeTab === 'feedback' && (
           <>
-            <div className="mb-4">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white">Beta Feedback</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {feedback.length} response{feedback.length !== 1 ? 's' : ''} from beta testers
+            <div className="mb-3 flex items-baseline justify-between">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Feedback</h2>
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                {feedback.length} response{feedback.length !== 1 ? 's' : ''}
               </p>
             </div>
 
             {/* Stats Summary */}
             {feedbackStats && feedbackStats.totalResponses > 0 && (
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg border border-gray-100 dark:border-gray-700">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Star size={18} className="text-yellow-500 fill-yellow-500" />
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Avg Rating</span>
+              <div className="flex gap-3 mb-4">
+                <div className="flex-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-3 shadow-sm border border-gray-100/80 dark:border-gray-700/60">
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <Star size={14} className="text-yellow-500 fill-yellow-500" />
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Avg Rating</span>
                   </div>
-                  <p className="text-2xl font-bold text-gray-800 dark:text-white">
-                    {feedbackStats.avgRating}/5
+                  <p className="text-xl font-bold text-gray-800 dark:text-white">
+                    {feedbackStats.avgRating}<span className="text-sm font-normal text-gray-400">/5</span>
                   </p>
                 </div>
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg border border-gray-100 dark:border-gray-700">
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">Sentiment</div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-green-500 font-bold">{feedbackStats.positiveCount} positive</span>
-                    <span className="text-gray-400">/</span>
-                    <span className="text-red-500 font-bold">{feedbackStats.negativeCount} negative</span>
+                <div className="flex-1 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl p-3 shadow-sm border border-gray-100/80 dark:border-gray-700/60">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Sentiment</div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-green-500 font-semibold text-sm">{feedbackStats.positiveCount} pos</span>
+                    <span className="text-gray-300 dark:text-gray-600">|</span>
+                    <span className="text-red-400 font-semibold text-sm">{feedbackStats.negativeCount} neg</span>
                   </div>
                 </div>
               </div>
@@ -473,46 +467,45 @@ const AdminPage = ({ onBack }) => {
             )}
 
             {!feedbackLoading && feedback.length === 0 && (
-              <div className="bg-white/70 dark:bg-gray-800/70 rounded-3xl p-8 text-center">
-                <div className="text-6xl mb-4">📝</div>
-                <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">No Feedback Yet</h3>
-                <p className="text-gray-500 dark:text-gray-400">Feedback from beta testers will appear here.</p>
+              <div className="bg-white/70 dark:bg-gray-800/70 rounded-2xl p-8 text-center">
+                <div className="text-5xl mb-3">📝</div>
+                <h3 className="text-base font-semibold text-gray-600 dark:text-gray-300 mb-1">No Feedback Yet</h3>
+                <p className="text-sm text-gray-400 dark:text-gray-500">Feedback from beta testers will appear here.</p>
               </div>
             )}
 
             {!feedbackLoading && feedback.length > 0 && (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {feedback.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700"
+                    className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-sm hover:shadow-md border border-gray-100/80 dark:border-gray-700/60 transition-all duration-200"
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <p className="font-bold text-gray-800 dark:text-white">{item.username}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{item.email}</p>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <p className="font-semibold text-gray-800 dark:text-white text-sm">{item.username}</p>
+                        <span className="text-xs text-gray-400 dark:text-gray-500">{item.plants_logged} plants, {item.total_points} pts</span>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-0.5">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <Star
                             key={star}
-                            size={16}
-                            className={star <= item.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 dark:text-gray-600'}
+                            size={13}
+                            className={star <= item.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200 dark:text-gray-600'}
                           />
                         ))}
                       </div>
                     </div>
 
                     {item.feedback_text && (
-                      <p className="text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 mb-3">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 bg-gray-50/80 dark:bg-gray-700/30 rounded-lg px-3 py-2 leading-relaxed italic">
                         "{item.feedback_text}"
                       </p>
                     )}
 
-                    <div className="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
-                      <span>{new Date(item.created_at).toLocaleString()}</span>
-                      <span>{item.plants_logged} plants logged, {item.total_points} pts</span>
-                    </div>
+                    <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-2">
+                      {new Date(item.created_at).toLocaleString()}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -523,11 +516,8 @@ const AdminPage = ({ onBack }) => {
         {/* Debug Tab */}
         {activeTab === 'debug' && (
           <>
-            <div className="mb-4">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white">Debug Tools</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Testing and debugging utilities
-              </p>
+            <div className="mb-3">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Debug Tools</h2>
             </div>
 
             {/* Success/Info Message */}
@@ -544,91 +534,87 @@ const AdminPage = ({ onBack }) => {
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {/* First Plant Tip Reset */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 flex items-center justify-center flex-shrink-0">
-                    <RotateCcw size={24} className="text-orange-600 dark:text-orange-400" />
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-gray-100/80 dark:border-gray-700/60 transition-all duration-200">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 flex items-center justify-center flex-shrink-0">
+                    <RotateCcw size={18} className="text-orange-500 dark:text-orange-400" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-800 dark:text-white">Reset First Plant Tip</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      Clears the "hasSeenFirstPlantTip" flag from localStorage. The tip will show again after the next plant is added (if the user has no plant history).
-                    </p>
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem('hasSeenFirstPlantTip');
-                        setDebugMessage('First Plant Tip has been reset. Add a plant to see the tip (requires no plant history).');
-                      }}
-                      className="mt-3 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
-                    >
-                      <RotateCcw size={16} />
-                      Reset Tip
-                    </button>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 dark:text-white text-sm">Reset First Plant Tip</h3>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">Clear hasSeenFirstPlantTip flag</p>
                   </div>
                 </div>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('hasSeenFirstPlantTip');
+                    setDebugMessage('First Plant Tip has been reset. Add a plant to see the tip (requires no plant history).');
+                  }}
+                  className="w-full flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-medium py-2 px-4 rounded-xl transition-all duration-150 text-sm"
+                >
+                  <RotateCcw size={14} />
+                  Reset Tip
+                </button>
               </div>
 
               {/* Current localStorage State */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-lg border border-gray-100 dark:border-gray-700">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 flex items-center justify-center flex-shrink-0">
-                    <Bug size={24} className="text-blue-600 dark:text-blue-400" />
+              <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-gray-100/80 dark:border-gray-700/60 transition-all duration-200">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 flex items-center justify-center flex-shrink-0">
+                    <Bug size={18} className="text-blue-500 dark:text-blue-400" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-800 dark:text-white">LocalStorage State</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-3">
-                      Current values of app-related localStorage keys:
-                    </p>
-                    <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 font-mono text-xs space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">hasSeenFirstPlantTip:</span>
-                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('hasSeenFirstPlantTip') || 'null'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">onboardingComplete:</span>
-                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('onboardingComplete') || 'null'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">animationsEnabled:</span>
-                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('animationsEnabled') || 'null'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">feedbackStatus:</span>
-                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('feedbackStatus') || 'null'}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600 dark:text-gray-400">sessionCount:</span>
-                        <span className="text-gray-800 dark:text-gray-200">{localStorage.getItem('sessionCount') || 'null'}</span>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 mt-3">
-                      <button
-                        onClick={() => {
-                          localStorage.removeItem('feedbackStatus');
-                          localStorage.removeItem('feedbackRemindLater');
-                          localStorage.removeItem('sessionCount');
-                          localStorage.removeItem('firstUseDate');
-                          setDebugMessage('Feedback triggers reset. Refresh the page to test.');
-                        }}
-                        className="flex-1 flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
-                      >
-                        <RotateCcw size={16} />
-                        Reset Feedback
-                      </button>
-                      <button
-                        onClick={() => {
-                          localStorage.removeItem('lastWeeklySummaryShown');
-                          setDebugMessage('Weekly summary reset. Refresh the page to see it.');
-                        }}
-                        className="flex-1 flex items-center justify-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
-                      >
-                        <RotateCcw size={16} />
-                        Reset Weekly
-                      </button>
-                    </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 dark:text-white text-sm">LocalStorage State</h3>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">App-related localStorage keys</p>
                   </div>
+                </div>
+                <div className="bg-gray-50/80 dark:bg-gray-700/30 rounded-lg p-2.5 font-mono text-[11px] space-y-1 mb-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">hasSeenFirstPlantTip</span>
+                    <span className="text-gray-700 dark:text-gray-300">{localStorage.getItem('hasSeenFirstPlantTip') || 'null'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">onboardingComplete</span>
+                    <span className="text-gray-700 dark:text-gray-300">{localStorage.getItem('onboardingComplete') || 'null'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">animationsEnabled</span>
+                    <span className="text-gray-700 dark:text-gray-300">{localStorage.getItem('animationsEnabled') || 'null'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">feedbackStatus</span>
+                    <span className="text-gray-700 dark:text-gray-300">{localStorage.getItem('feedbackStatus') || 'null'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 dark:text-gray-400">sessionCount</span>
+                    <span className="text-gray-700 dark:text-gray-300">{localStorage.getItem('sessionCount') || 'null'}</span>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('feedbackStatus');
+                      localStorage.removeItem('feedbackRemindLater');
+                      localStorage.removeItem('sessionCount');
+                      localStorage.removeItem('firstUseDate');
+                      setDebugMessage('Feedback triggers reset. Refresh the page to test.');
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-purple-500 hover:bg-purple-600 active:scale-[0.98] text-white font-medium py-2 px-3 rounded-xl transition-all duration-150 text-sm"
+                  >
+                    <RotateCcw size={14} />
+                    Reset Feedback
+                  </button>
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem('lastWeeklySummaryShown');
+                      setDebugMessage('Weekly summary reset. Refresh the page to see it.');
+                    }}
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-yellow-500 hover:bg-yellow-600 active:scale-[0.98] text-white font-medium py-2 px-3 rounded-xl transition-all duration-150 text-sm"
+                  >
+                    <RotateCcw size={14} />
+                    Reset Weekly
+                  </button>
                 </div>
               </div>
             </div>

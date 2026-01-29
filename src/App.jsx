@@ -201,11 +201,11 @@ const AppContent = () => {
       const feedbackStatus = localStorage.getItem('feedbackStatus');
       if (feedbackStatus === 'submitted') return;
 
-      // Check "remind later" - wait at least 1 day
+      // Check "remind later" / dismissed - wait at least 7 days
       const remindLaterTime = localStorage.getItem('feedbackRemindLater');
       if (remindLaterTime) {
         const daysSinceRemind = (Date.now() - parseInt(remindLaterTime)) / (1000 * 60 * 60 * 24);
-        if (daysSinceRemind < 1) return;
+        if (daysSinceRemind < 7) return;
       }
 
       // Track session count
@@ -458,7 +458,10 @@ const AppContent = () => {
         <FeedbackModal
           onSubmit={handleFeedbackSubmit}
           onRemindLater={handleFeedbackRemindLater}
-          onClose={() => setShowFeedback(false)}
+          onClose={() => {
+            localStorage.setItem('feedbackRemindLater', Date.now().toString());
+            setShowFeedback(false);
+          }}
         />
       )}
     </div>
